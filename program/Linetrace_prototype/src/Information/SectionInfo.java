@@ -6,17 +6,17 @@ public class SectionInfo {
 	private float kp;
 	private float ki;
 	private float kd;
-	private float target_brightness;
-	private float target_forward;
+	private float targetBrightness;
+	private float targetForward;
 
-	public SectionInfo(int sectionID,float distance,float kp,float ki,float kd,float target_brightness,float target_forward){
+	public SectionInfo(int sectionID,float distance,float kp,float ki,float kd,float targetBrightness,float targetForward){
 		this.sectionID = sectionID;
 		this.distance = distance;
 		this.kp = kp;
 		this.ki = ki;
 		this.kd = kd;
-		this.target_brightness = target_brightness;
-		this.target_forward = target_forward;
+		this.targetBrightness = targetBrightness;
+		this.targetForward = targetForward;
 	}
 
 	public int getSectionID(){
@@ -40,11 +40,11 @@ public class SectionInfo {
 	}
 
 	public float getTargetBrightness(){
-		return this.target_brightness;
+		return this.targetBrightness;
 	}
 
 	public float getTargetForward(){
-		return this.target_forward;
+		return this.targetForward;
 	}
 
 }
