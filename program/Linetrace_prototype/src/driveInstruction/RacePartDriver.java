@@ -11,7 +11,7 @@ import driveControl.Linetracer;
 
 public class RacePartDriver {
 
-	private DistanceMeasure disMeasure;
+	private DistanceMeasure disMeasure = new DistanceMeasure();
 	private ArmController armCtrl;
 	private Linetracer tracer;
 
@@ -24,9 +24,9 @@ public class RacePartDriver {
 
 		//コースIDによってLとRどちらを走行するか決定する
 		if(courseID == 1){	//Lコース
-			sectionList.add(new SectionInfo(0,8.0F,50.0F,0.0F,0.0F,0.2F,100.0F));
-			sectionList.add(new SectionInfo(1,18.0F,50.0F,0.0F,0.0F,0.2F,100.0F));
-			sectionList.add(new SectionInfo(2,30.0F,50.0F,0.0F,0.0F,0.2F,0.0F));
+			sectionList.add(new SectionInfo(0,1000.0F,1000.0F,1000.0F,1000.0F,0.2F,50.0F));
+			sectionList.add(new SectionInfo(1,1001.0F,50.0F,0.0F,0.0F,0.2F,0.0F));
+			sectionList.add(new SectionInfo(2,1002.0F,50.0F,0.0F,0.0F,0.2F,0.0F));
 		}
 		else if(courseID == 2){	//Rコース
 			sectionList.add(new SectionInfo(0,10.0F,50.0F,0.0F,0.0F,0.2F,100.0F));
@@ -42,7 +42,9 @@ public class RacePartDriver {
 	public void driveRacePart(){
 
 		Timer timer = new Timer();
+		
 		TimerTask timerTask = new TimerTask(){
+			
 			public void run(){
 				presumeCurrentSection();
 				if(currentSectionID != -1){
@@ -52,6 +54,7 @@ public class RacePartDriver {
 							sectionList.get(currentSectionID).getTargetBrightness(),
 							sectionList.get(currentSectionID).getTargetForward());
 				}
+				
 			}
 		};
 
@@ -60,7 +63,10 @@ public class RacePartDriver {
 		while(currentSectionID != -1){
 			armCtrl.controlArmNormalAngel();
 		}
+		
+		
 	}
+	
 
 	private void presumeCurrentSection(){
 		float distance = disMeasure.getDistance();
@@ -77,5 +83,6 @@ public class RacePartDriver {
 				currentSectionID = -1;
 			}
 		}
+		
 	}
 }

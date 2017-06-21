@@ -23,11 +23,11 @@ public class Hardware {
     public static SensorMode touchMode = touch.getTouchMode();
 
     //超音波センサ
-    public static EV3UltrasonicSensor sonar = new EV3UltrasonicSensor(SensorPort.S2);
+    public static EV3UltrasonicSensor sonar = new EV3UltrasonicSensor(SensorPort.S3);
     public static SampleProvider distanceMode = sonar.getDistanceMode(); // 距離検出モード
 
     //カラーセンサ
-    public static EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S3);
+    public static EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S2);
     public static  SensorMode redMode = colorSensor.getRedMode();     // 輝度検出モード
 
     // ジャイロセンサ

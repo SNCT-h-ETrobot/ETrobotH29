@@ -10,7 +10,6 @@ public class DistanceMeasure {
 		float rotate = (Hardware.motorPortL.getTachoCount() + Hardware.motorPortR.getTachoCount())/2.0F;
 
 		distance = (rotate / 360.0F) * 26.2F; //センチメートルにする
-
 		return distance;
 	}
 
