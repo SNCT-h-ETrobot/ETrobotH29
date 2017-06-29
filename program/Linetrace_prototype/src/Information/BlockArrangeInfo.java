@@ -1,7 +1,9 @@
 package Information;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class BlockArrangeInfo {
@@ -13,60 +15,60 @@ public class BlockArrangeInfo {
 	static private int[] blockPlaceIDList = new int[5];
 	static private Map<Integer,Map<Vertex,Path>> connectionList = new HashMap<Integer,Map<Vertex,Path>>();
 
-	static public BlockPlace b000 = new BlockPlace(0,1);
-	static public BlockPlace b004 = new BlockPlace(4,3);
-	static public BlockPlace b008 = new BlockPlace(8,4);
-	static public BlockPlace b012 = new BlockPlace(12,3);
-	static public BlockPlace b044 = new BlockPlace(44,4);
-	static public BlockPlace b052 = new BlockPlace(52,2);
-	static public BlockPlace b060 = new BlockPlace(60,1);
-	static public BlockPlace b074 = new BlockPlace(74,1);
-	static public BlockPlace b081 = new BlockPlace(81,3);
-	static public BlockPlace b090 = new BlockPlace(90,2);
-	static public BlockPlace b119 = new BlockPlace(119,2);
-	static public BlockPlace b121 = new BlockPlace(121,3);
-	static public BlockPlace b128 = new BlockPlace(128,4);
-	static public BlockPlace b132 = new BlockPlace(132,1);
-	static public BlockPlace b139 = new BlockPlace(139,4);
+	static public BlockPlace b000 = new BlockPlace(0,0,0,1);
+	static public BlockPlace b004 = new BlockPlace(4,0,0,3);
+	static public BlockPlace b008 = new BlockPlace(8,0,0,4);
+	static public BlockPlace b012 = new BlockPlace(12,0,0,3);
+	static public BlockPlace b044 = new BlockPlace(44,0,0,4);
+	static public BlockPlace b052 = new BlockPlace(52,0,0,2);
+	static public BlockPlace b060 = new BlockPlace(60,0,0,1);
+	static public BlockPlace b074 = new BlockPlace(74,0,0,1);
+	static public BlockPlace b081 = new BlockPlace(81,0,0,3);
+	static public BlockPlace b090 = new BlockPlace(90,0,0,2);
+	static public BlockPlace b119 = new BlockPlace(119,0,0,2);
+	static public BlockPlace b121 = new BlockPlace(121,0,0,3);
+	static public BlockPlace b128 = new BlockPlace(128,0,0,4);
+	static public BlockPlace b132 = new BlockPlace(132,0,0,1);
+	static public BlockPlace b139 = new BlockPlace(139,0,0,4);
 
-	static public VirtualVertex v002 = new VirtualVertex(2,true);
-	static public VirtualVertex v006 = new VirtualVertex(6,true);
-	static public VirtualVertex v010 = new VirtualVertex(10,true);
-	static public VirtualVertex v015 = new VirtualVertex(15,true);
-	static public VirtualVertex v018 = new VirtualVertex(18,false);
-	static public VirtualVertex v020 = new VirtualVertex(20,true);
-	static public VirtualVertex v023 = new VirtualVertex(23,true);
-	static public VirtualVertex v026 = new VirtualVertex(26,false);
-	static public VirtualVertex v028 = new VirtualVertex(28,true);
-	static public VirtualVertex v031 = new VirtualVertex(31,true);
-	static public VirtualVertex v034 = new VirtualVertex(34,false);
-	static public VirtualVertex v036 = new VirtualVertex(36,true);
-	static public VirtualVertex v039 = new VirtualVertex(39,true);
-	static public VirtualVertex v042 = new VirtualVertex(42,false);
-	static public VirtualVertex v048 = new VirtualVertex(48,false);
-	static public VirtualVertex v056 = new VirtualVertex(56,false);
-	static public VirtualVertex v062 = new VirtualVertex(62,false);
-	static public VirtualVertex v065 = new VirtualVertex(65,true);
-	static public VirtualVertex v068 = new VirtualVertex(68,true);
-	static public VirtualVertex v071 = new VirtualVertex(71,true);
-	static public VirtualVertex v077 = new VirtualVertex(77,true);
-	static public VirtualVertex v078 = new VirtualVertex(78,true);
-	static public VirtualVertex v084 = new VirtualVertex(84,true);
-	static public VirtualVertex v087 = new VirtualVertex(87,true);
-	static public VirtualVertex v093 = new VirtualVertex(93,true);
-	static public VirtualVertex v095 = new VirtualVertex(95,false);
-	static public VirtualVertex v098 = new VirtualVertex(98,true);
-	static public VirtualVertex v101 = new VirtualVertex(101,false);
-	static public VirtualVertex v104 = new VirtualVertex(104,true);
-	static public VirtualVertex v105 = new VirtualVertex(105,true);
-	static public VirtualVertex v108 = new VirtualVertex(108,false);
-	static public VirtualVertex v111 = new VirtualVertex(111,true);
-	static public VirtualVertex v114 = new VirtualVertex(114,false);
-	static public VirtualVertex v116 = new VirtualVertex(116,true);
-	static public VirtualVertex v124 = new VirtualVertex(124,true);
-	static public VirtualVertex v130 = new VirtualVertex(130,true);
-	static public VirtualVertex v136 = new VirtualVertex(136,true);
-	static public VirtualVertex v151 = new VirtualVertex(151,false);
+	static public VirtualVertex v002 = new VirtualVertex(2,0,0,true);
+	static public VirtualVertex v006 = new VirtualVertex(6,0,0,true);
+	static public VirtualVertex v010 = new VirtualVertex(10,0,0,true);
+	static public VirtualVertex v015 = new VirtualVertex(15,0,0,true);
+	static public VirtualVertex v018 = new VirtualVertex(18,0,0,false);
+	static public VirtualVertex v020 = new VirtualVertex(20,0,0,true);
+	static public VirtualVertex v023 = new VirtualVertex(23,0,0,true);
+	static public VirtualVertex v026 = new VirtualVertex(26,0,0,false);
+	static public VirtualVertex v028 = new VirtualVertex(28,0,0,true);
+	static public VirtualVertex v031 = new VirtualVertex(31,0,0,true);
+	static public VirtualVertex v034 = new VirtualVertex(34,0,0,false);
+	static public VirtualVertex v036 = new VirtualVertex(36,0,0,true);
+	static public VirtualVertex v039 = new VirtualVertex(39,0,0,true);
+	static public VirtualVertex v042 = new VirtualVertex(42,0,0,false);
+	static public VirtualVertex v048 = new VirtualVertex(48,0,0,false);
+	static public VirtualVertex v056 = new VirtualVertex(56,0,0,false);
+	static public VirtualVertex v062 = new VirtualVertex(62,0,0,false);
+	static public VirtualVertex v065 = new VirtualVertex(65,0,0,true);
+	static public VirtualVertex v068 = new VirtualVertex(68,0,0,true);
+	static public VirtualVertex v071 = new VirtualVertex(71,0,0,true);
+	static public VirtualVertex v077 = new VirtualVertex(77,0,0,true);
+	static public VirtualVertex v078 = new VirtualVertex(78,0,0,true);
+	static public VirtualVertex v084 = new VirtualVertex(84,0,0,true);
+	static public VirtualVertex v087 = new VirtualVertex(87,0,0,true);
+	static public VirtualVertex v093 = new VirtualVertex(93,0,0,true);
+	static public VirtualVertex v095 = new VirtualVertex(95,0,0,false);
+	static public VirtualVertex v098 = new VirtualVertex(98,0,0,true);
+	static public VirtualVertex v101 = new VirtualVertex(101,0,0,false);
+	static public VirtualVertex v104 = new VirtualVertex(104,0,0,true);
+	static public VirtualVertex v105 = new VirtualVertex(105,0,0,true);
+	static public VirtualVertex v108 = new VirtualVertex(108,0,0,false);
+	static public VirtualVertex v111 = new VirtualVertex(111,0,0,true);
+	static public VirtualVertex v114 = new VirtualVertex(114,0,0,false);
+	static public VirtualVertex v116 = new VirtualVertex(116,0,0,true);
+	static public VirtualVertex v124 = new VirtualVertex(124,0,0,true);
+	static public VirtualVertex v130 = new VirtualVertex(130,0,0,true);
+	static public VirtualVertex v136 = new VirtualVertex(136,0,0,true);
+	static public VirtualVertex v151 = new VirtualVertex(151,0,0,false);
 
 	static public Path p001 = new Path(1,38.971F,0,true);
 	static public Path p003 = new Path(3,38.971F,0,true);
@@ -588,15 +590,30 @@ public class BlockArrangeInfo {
 		}
 	}
 
-	public static int[] getConnectionVertex(int pointID){
-		Iterator<Vertex> iterV = connectionList.get(pointID).keySet().iterator();
-		int[] array = new int[connectionList.get(pointID).keySet().size()];
-		int i =0;
-		while(iterV.hasNext()){
-			array[i] = iterV.next().getPointID();
-			i++;
+	public static List<Vertex> getConnectionVertex(int pointID){
+		List<Vertex> list = new ArrayList<Vertex>();
+		if(connectionList.containsKey(pointID)){
+			Iterator<Vertex> iterV = connectionList.get(pointID).keySet().iterator();
+			while(iterV.hasNext()){
+				list.add(iterV.next());
+			}
 		}
-		return array;
+		else{
+		}
+		return list;
+	}
+
+	public static List<Path> getConnectionPath(int pointID){
+		List<Path> list = new ArrayList<Path>();
+		if(connectionList.containsKey(pointID)){
+			Iterator<Path> iterP = connectionList.get(pointID).values().iterator();
+			while(iterP.hasNext()){
+				list.add(iterP.next());
+			}
+		}
+		else{
+		}
+		return list;
 	}
 
 	public static int[] getBlockPlaceIDList() {
