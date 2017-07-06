@@ -3,10 +3,10 @@ package Information;
 public class Path {
 	private int pointID;
 	private float distance;
-	private int angle;
+	private float angle;
 	private boolean isLine;	//実線かどうか
 
-	public Path(int pointID, float distance, int angle, boolean isLine) {
+	public Path(int pointID, float distance, float angle, boolean isLine) {
 		this.pointID = pointID;
 		this.distance = distance;
 		this.angle = angle;
@@ -20,7 +20,7 @@ public class Path {
 		return distance;
 	}
 
-	public int getAngle() {
+	public float getAngle() {
 		return angle;
 	}
 
