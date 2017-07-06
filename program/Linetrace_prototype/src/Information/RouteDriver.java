@@ -1,5 +1,6 @@
 package Information;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RouteDriver {
 
@@ -137,6 +138,40 @@ public class RouteDriver {
 	// ルートのリストを渡すとコストが返ってくるメソッド
 	private int calcCost(List<Integer> route){
 		int cost = 0;
+		int[] array = new int[route.size()];
+		List<Path> tempPathList = new ArrayList<Path>();
+		int preAngle = 0;
+		int nextAngle = 0;
+		//頂点、エッジ、頂点、エッジ……と並ぶと想定
+		for(int i = 0; i<route.size();i++){
+			//何度もアクセスすると遅いので一度Listから出す
+			//メモリ足りなくなるなら辞め
+			array[i] = route.get(i);
+		}
+
+		for(int i = 0; i<route.size()-2;i=i+2){
+			tempPathList = BlockArrangeInfo.getConnectionPath(array[i]);
+			for(int j = 0;j<tempPathList.size();j++){
+				if(tempPathList.get(j).getPointID() == array[i+1]){
+					if(array[i] < array[i+2]){
+						nextAngle = tempPathList.get(j).getAngle();
+					}
+					else{
+						nextAngle = tempPathList.get(j).getAngle() * -1;
+					}
+
+					if(tempPathList.get(j).getAngle() > 180){
+						cost += tempPathList.get(j).getDistance()
+								+Math.abs(preAngle - (nextAngle-180))*DEGRESS_MULT;
+					}
+					else{
+						cost += tempPathList.get(j).getDistance()
+								+Math.abs(preAngle - nextAngle)*DEGRESS_MULT;
+					}
+					preAngle = nextAngle;
+				}
+			}
+		}
 
 		return cost;
 	}
