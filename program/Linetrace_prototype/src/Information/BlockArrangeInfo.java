@@ -14,6 +14,7 @@ public class BlockArrangeInfo {
 	static private final int K_BLUE = 1;
 	static private int[] blockPlaceIDList = new int[5];
 	static private Map<Integer,Map<Vertex,Path>> connectionList = new HashMap<Integer,Map<Vertex,Path>>();
+	static private List<Object> pointList = new ArrayList();
 
 	static public BlockPlace b000 = new BlockPlace(0,0,0,1);
 	static public BlockPlace b004 = new BlockPlace(4,0,0,3);
@@ -417,6 +418,159 @@ public class BlockArrangeInfo {
 		connectionList.get(v151.getPointID()).put(b128, p144);
 		connectionList.get(v151.getPointID()).put(v130, p145);
 		connectionList.get(v151.getPointID()).put(b132, p146);
+
+		pointList.add(b000);
+		pointList.add(p001);
+		pointList.add(v002);
+		pointList.add(p003);
+		pointList.add(b004);
+		pointList.add(p005);
+		pointList.add(v006);
+		pointList.add(p007);
+		pointList.add(b008);
+		pointList.add(p009);
+		pointList.add(v010);
+		pointList.add(p011);
+		pointList.add(b012);
+		pointList.add(p013);
+		pointList.add(p014);
+		pointList.add(v015);
+		pointList.add(p016);
+		pointList.add(p017);
+		pointList.add(v018);
+		pointList.add(p019);
+		pointList.add(v020);
+		pointList.add(p021);
+		pointList.add(p022);
+		pointList.add(v023);
+		pointList.add(p024);
+		pointList.add(p025);
+		pointList.add(v026);
+		pointList.add(p027);
+		pointList.add(v028);
+		pointList.add(p029);
+		pointList.add(p030);
+		pointList.add(v031);
+		pointList.add(p032);
+		pointList.add(p033);
+		pointList.add(v034);
+		pointList.add(p035);
+		pointList.add(v036);
+		pointList.add(p037);
+		pointList.add(p038);
+		pointList.add(v039);
+		pointList.add(p040);
+		pointList.add(p041);
+		pointList.add(v042);
+		pointList.add(p043);
+		pointList.add(b044);
+		pointList.add(p045);
+		pointList.add(p046);
+		pointList.add(p047);
+		pointList.add(v048);
+		pointList.add(p049);
+		pointList.add(p050);
+		pointList.add(p051);
+		pointList.add(b052);
+		pointList.add(p053);
+		pointList.add(p054);
+		pointList.add(p055);
+		pointList.add(v056);
+		pointList.add(p057);
+		pointList.add(p058);
+		pointList.add(p059);
+		pointList.add(b060);
+		pointList.add(p061);
+		pointList.add(v062);
+		pointList.add(p063);
+		pointList.add(p064);
+		pointList.add(v065);
+		pointList.add(p066);
+		pointList.add(p067);
+		pointList.add(v068);
+		pointList.add(p069);
+		pointList.add(p070);
+		pointList.add(v071);
+		pointList.add(p072);
+		pointList.add(p073);
+		pointList.add(b074);
+		pointList.add(p075);
+		pointList.add(p076);
+		pointList.add(v077);
+		pointList.add(v078);
+		pointList.add(p079);
+		pointList.add(p080);
+		pointList.add(b081);
+		pointList.add(p082);
+		pointList.add(p083);
+		pointList.add(v084);
+		pointList.add(p085);
+		pointList.add(p086);
+		pointList.add(v087);
+		pointList.add(p088);
+		pointList.add(p089);
+		pointList.add(b090);
+		pointList.add(p091);
+		pointList.add(p092);
+		pointList.add(v093);
+		pointList.add(p094);
+		pointList.add(v095);
+		pointList.add(p096);
+		pointList.add(p097);
+		pointList.add(v098);
+		pointList.add(p099);
+		pointList.add(p100);
+		pointList.add(v101);
+		pointList.add(p102);
+		pointList.add(p103);
+		pointList.add(v104);
+		pointList.add(v105);
+		pointList.add(p106);
+		pointList.add(p107);
+		pointList.add(v108);
+		pointList.add(p109);
+		pointList.add(p110);
+		pointList.add(v111);
+		pointList.add(p112);
+		pointList.add(p113);
+		pointList.add(v114);
+		pointList.add(p115);
+		pointList.add(v116);
+		pointList.add(p117);
+		pointList.add(p118);
+		pointList.add(b119);
+		pointList.add(p120);
+		pointList.add(b121);
+		pointList.add(p122);
+		pointList.add(p123);
+		pointList.add(v124);
+		pointList.add(p125);
+		pointList.add(p126);
+		pointList.add(p127);
+		pointList.add(b128);
+		pointList.add(p129);
+		pointList.add(v130);
+		pointList.add(p131);
+		pointList.add(b132);
+		pointList.add(p133);
+		pointList.add(p134);
+		pointList.add(p135);
+		pointList.add(v136);
+		pointList.add(p137);
+		pointList.add(p138);
+		pointList.add(b139);
+		pointList.add(p140);
+		pointList.add(p141);
+		pointList.add(p142);
+		pointList.add(p143);
+		pointList.add(p144);
+		pointList.add(p145);
+		pointList.add(p146);
+		pointList.add(p147);
+		pointList.add(p148);
+		pointList.add(p149);
+		pointList.add(p150);
+		pointList.add(v151);
 	}
 
 	public static void setBlockPlace(int code){
@@ -427,7 +581,7 @@ public class BlockArrangeInfo {
 
 		i = (int)(n/K_BLACK);
 		n = n - (i*K_BLACK);
-		switch(i){
+		switch(i+1){
 			case 1:
 				blockPlaceIDList[0] = 0;
 				break;
@@ -477,7 +631,7 @@ public class BlockArrangeInfo {
 
 		i = (int)(n/K_RED);
 		n = n - (i*K_RED);
-		switch(i){
+		switch(i+1){
 			case 1:
 				blockPlaceIDList[1] = 4;
 				break;
@@ -515,7 +669,7 @@ public class BlockArrangeInfo {
 
 		i = (int)(n/K_YELLOW);
 		n = n - (i*K_YELLOW);
-		switch(i){
+		switch(i+1){
 			case 1:
 				blockPlaceIDList[4] = 0;
 				break;
@@ -526,7 +680,7 @@ public class BlockArrangeInfo {
 				blockPlaceIDList[4] = 12;
 				break;
 			case 4:
-				blockPlaceIDList[4] = 51;
+				blockPlaceIDList[4] = 52;
 				break;
 			case 5:
 				blockPlaceIDList[4] = 60;
@@ -553,7 +707,7 @@ public class BlockArrangeInfo {
 
 		i = (int)(n/K_BLUE);
 		n = n - (i*K_BLUE);
-		switch(i){
+		switch(i+1){
 			case 1:
 				blockPlaceIDList[3] = 0;
 				break;
@@ -564,7 +718,7 @@ public class BlockArrangeInfo {
 				blockPlaceIDList[3] = 44;
 				break;
 			case 4:
-				blockPlaceIDList[3] = 51;
+				blockPlaceIDList[3] = 52;
 				break;
 			case 5:
 				blockPlaceIDList[3] = 60;
@@ -614,6 +768,10 @@ public class BlockArrangeInfo {
 		else{
 		}
 		return list;
+	}
+
+	public static Object getPointObject(int pointID){
+		return pointList.get(pointID);
 	}
 
 	public static int[] getBlockPlaceIDList() {
