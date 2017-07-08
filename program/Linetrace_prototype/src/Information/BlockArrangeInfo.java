@@ -770,6 +770,15 @@ public class BlockArrangeInfo {
 		return list;
 	}
 
+	public static Path getConnectionPath(int pointID1,int pointID2){
+		if((connectionList.containsKey(pointID1) &&(connectionList.get(pointID1).containsKey(pointID2)))){
+			return connectionList.get(pointID1).get(pointID2);
+		}
+		else{
+			return null;
+		}
+	}
+
 	public static Object getPointObject(int pointID){
 		return pointList.get(pointID);
 	}
