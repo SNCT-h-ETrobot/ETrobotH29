@@ -427,7 +427,7 @@ public class BlockArrangeInfo {
 
 		i = (int)(n/K_BLACK);
 		n = n - (i*K_BLACK);
-		switch(i){
+		switch(i+1){
 			case 1:
 				blockPlaceIDList[0] = 0;
 				break;
@@ -477,7 +477,7 @@ public class BlockArrangeInfo {
 
 		i = (int)(n/K_RED);
 		n = n - (i*K_RED);
-		switch(i){
+		switch(i+1){
 			case 1:
 				blockPlaceIDList[1] = 4;
 				break;
@@ -515,7 +515,7 @@ public class BlockArrangeInfo {
 
 		i = (int)(n/K_YELLOW);
 		n = n - (i*K_YELLOW);
-		switch(i){
+		switch(i+1){
 			case 1:
 				blockPlaceIDList[4] = 0;
 				break;
@@ -526,7 +526,7 @@ public class BlockArrangeInfo {
 				blockPlaceIDList[4] = 12;
 				break;
 			case 4:
-				blockPlaceIDList[4] = 51;
+				blockPlaceIDList[4] = 52;
 				break;
 			case 5:
 				blockPlaceIDList[4] = 60;
@@ -553,7 +553,7 @@ public class BlockArrangeInfo {
 
 		i = (int)(n/K_BLUE);
 		n = n - (i*K_BLUE);
-		switch(i){
+		switch(i+1){
 			case 1:
 				blockPlaceIDList[3] = 0;
 				break;
@@ -564,7 +564,7 @@ public class BlockArrangeInfo {
 				blockPlaceIDList[3] = 44;
 				break;
 			case 4:
-				blockPlaceIDList[3] = 51;
+				blockPlaceIDList[3] = 52;
 				break;
 			case 5:
 				blockPlaceIDList[3] = 60;
