@@ -14,7 +14,7 @@ public class BlockArrangeInfo {
 	static private final int K_BLUE = 1;
 	static private int[] blockPlaceIDList = new int[5];
 	static private Map<Integer,Map<Vertex,Path>> connectionList = new HashMap<Integer,Map<Vertex,Path>>();
-	static private List<Object> pointList = new ArrayList();
+	static private List<Object> pointList = new ArrayList<Object>();
 
 	static public BlockPlace b000 = new BlockPlace(0,0,0,1);
 	static public BlockPlace b004 = new BlockPlace(4,0,0,3);
@@ -771,8 +771,8 @@ public class BlockArrangeInfo {
 	}
 
 	public static Path getConnectionPath(int pointID1,int pointID2){
-		if((connectionList.containsKey(pointID1) &&(connectionList.get(pointID1).containsKey(pointID2)))){
-			return connectionList.get(pointID1).get(pointID2);
+		if((connectionList.containsKey(pointID1) &&(connectionList.get(pointID1).containsKey((Vertex)getPointObject(pointID2))))){
+			return connectionList.get(pointID1).get((Vertex)getPointObject(pointID2));
 		}
 		else{
 			return null;

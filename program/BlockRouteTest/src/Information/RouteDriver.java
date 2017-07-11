@@ -187,15 +187,16 @@ public class RouteDriver {
 			List<Integer> tempRoute = new ArrayList<Integer>();
 			tempRoute.add(0, selectID);
 			while(true){
-				tempRoute.add(0,BlockArrangeInfo.getConnectionPath(tempRoute.get(0), map.get(tempRoute.get(0))).getPointID());
-				tempRoute.add(0, map.get(tempRoute.get(1)));
 				if(tempRoute.get(0) == startID){
 					break;
 				}
+				tempRoute.add(0,BlockArrangeInfo.getConnectionPath(tempRoute.get(0), map.get(tempRoute.get(0))).getPointID());
+				tempRoute.add(0, map.get(tempRoute.get(1)));
 			}
 
 			//親の概算コスト
-			float[] coordinatesPar = tempVertexList.get(selectID).getCoordinates();
+			Vertex parent = (Vertex) BlockArrangeInfo.getPointObject(tempRoute.get(tempRoute.size()-1));
+			float[] coordinatesPar = parent.getCoordinates();
 			double hn = Math.sqrt(Math.pow(coordinatesPar[0]-coordinateTarget[0],2.0F)+Math.pow(coordinatesPar[1]-coordinateTarget[1],2.0F));
 
 			for(int i = 0;i<tempVertexList.size();i++){
