@@ -14,7 +14,7 @@ public class BlockArrangeInfo {
 	static private final int K_BLUE = 1;
 	static private int[] blockPlaceIDList = new int[5];
 	static private Map<Integer,Map<Vertex,Path>> connectionList = new HashMap<Integer,Map<Vertex,Path>>();
-	static private List<Object> pointList = new ArrayList();
+	static private List<Object> pointList = new ArrayList<Object>();
 
 	static public BlockPlace b000 = new BlockPlace(0,0,0,1);
 	static public BlockPlace b004 = new BlockPlace(4,0,0,3);
@@ -239,6 +239,10 @@ public class BlockArrangeInfo {
 		connectionList.get(v034.getPointID()).put(v010, p033);
 		connectionList.get(v034.getPointID()).put(v031, p032);
 		connectionList.get(v034.getPointID()).put(v036, p035);
+		connectionList.put(v036.getPointID(), new HashMap<Vertex,Path>());
+		connectionList.get(v036.getPointID()).put(b012, p037);
+		connectionList.get(v036.getPointID()).put(v034, p035);
+		connectionList.get(v036.getPointID()).put(b060, p061);
 		connectionList.put(v039.getPointID(), new HashMap<Vertex,Path>());
 		connectionList.get(v039.getPointID()).put(b000, p013);
 		connectionList.get(v039.getPointID()).put(v042, p040);
@@ -771,8 +775,12 @@ public class BlockArrangeInfo {
 	}
 
 	public static Path getConnectionPath(int pointID1,int pointID2){
-		if((connectionList.containsKey(pointID1) &&(connectionList.get(pointID1).containsKey(pointID2)))){
-			return connectionList.get(pointID1).get(pointID2);
+		System.out.println(pointID1);
+		System.out.println(pointID2);
+		boolean a = connectionList.containsKey(pointID1);
+		boolean b = connectionList.get(pointID1).containsKey((Vertex)getPointObject(pointID2));
+		if((connectionList.containsKey(pointID1) &&(connectionList.get(pointID1).containsKey((Vertex)getPointObject(pointID2))))){
+			return connectionList.get(pointID1).get((Vertex)getPointObject(pointID2));
 		}
 		else{
 			return null;

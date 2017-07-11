@@ -137,7 +137,7 @@ public class RouteDriver {
 		List<Integer> closeList = new ArrayList<Integer>();
 
 		//コスト
-		double[] f = new double[150];
+		double[] f = new double[152];
 		for(int i = 0;i<150;i++){
 			f[i] = 0.0F;
 		}
@@ -175,10 +175,16 @@ public class RouteDriver {
 			List<Vertex> tempVertexList = new ArrayList<Vertex>(BlockArrangeInfo.getConnectionVertex(selectID));
 
 			//ブロックで埋まってる場合除外
-			for(int i = 0;i < tempVertexList.size();i++){
+			int k = 0;
+			while(tempVertexList.size() > k){
 				for(int j = 0;j < 5;j++){
-					if(tempVertexList.get(i).getPointID() == blockPlace[j]){
-						tempVertexList.remove(i);
+					if(tempVertexList.get(k).getPointID() == blockPlace[j]){
+						tempVertexList.remove(k);
+						k = 0;
+						break;
+					}
+					if(j == 4){
+						k++;
 					}
 				}
 			}
@@ -187,15 +193,16 @@ public class RouteDriver {
 			List<Integer> tempRoute = new ArrayList<Integer>();
 			tempRoute.add(0, selectID);
 			while(true){
-				tempRoute.add(0,BlockArrangeInfo.getConnectionPath(tempRoute.get(0), map.get(tempRoute.get(0))).getPointID());
-				tempRoute.add(0, map.get(tempRoute.get(1)));
 				if(tempRoute.get(0) == startID){
 					break;
 				}
+				tempRoute.add(0,BlockArrangeInfo.getConnectionPath(tempRoute.get(0), map.get(tempRoute.get(0))).getPointID());
+				tempRoute.add(0, map.get(tempRoute.get(1)));
 			}
 
 			//親の概算コスト
-			float[] coordinatesPar = tempVertexList.get(selectID).getCoordinates();
+			Vertex parent = (Vertex) BlockArrangeInfo.getPointObject(tempRoute.get(tempRoute.size()-1));
+			float[] coordinatesPar = parent.getCoordinates();
 			double hn = Math.sqrt(Math.pow(coordinatesPar[0]-coordinateTarget[0],2.0F)+Math.pow(coordinatesPar[1]-coordinateTarget[1],2.0F));
 
 			for(int i = 0;i<tempVertexList.size();i++){
@@ -232,21 +239,24 @@ public class RouteDriver {
 
 			//openListはindexが先頭に行くほどコストが低い
 			//バブルなので遅かったら変える
+			System.out.println("sort");
 			for(int i = 0; i < openList.size()-1; i++){
 				for(int j = openList.size()-1; j > i ; j--){
 					//コスト比較
 					if(f[openList.get(j)] <f[openList.get(j-1)]){
 						int temp = openList.get(j);
-						openList.add(j, openList.get(j-1));
-						openList.add(j-1, temp);
+						openList.set(j, openList.get(j-1));
+						openList.set(j-1, temp);
 					}
 				}
 			}
 		}
 
+		System.out.println("routing");
 		//route生成
 		route.add(0,map.get(targetID));
 		do{
+			System.out.println(route.get(0));
 			route.add(0,BlockArrangeInfo.getConnectionPath(route.get(0),map.get(route.get(0))).getPointID());
 			route.add(0,map.get(route.get(1)));
 		}while(route.get(0)==startID);
