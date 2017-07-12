@@ -12,7 +12,7 @@ public class BlockRouteTest {
 		RouteDriver routeDriver = new RouteDriver();
 		BlockArrangeInfo.makeConnection();
 		int code;
-		int[] blockPlace = {1,1,1,1}; //初期値。競技規約に対応。BRYB
+		int[] blockPlace = {2,3,4,5}; //初期値。競技規約に対応。BRYB
 		while(blockPlace[0] <= 15){//Bが範囲外になるまで
 			while(blockPlace[1] <= 11){//Rが範囲外になるまで
 				while(blockPlace[2] <= 11){//Yが範囲外になるまで
@@ -21,15 +21,17 @@ public class BlockRouteTest {
 								+(blockPlace[1]-1)*11*11
 								+(blockPlace[2]-1)*11
 								+(blockPlace[3]-1);
-						BlockArrangeInfo.setBlockPlace(code);
-						System.out.println("Decoding Result of "+code);
+						BlockArrangeInfo.setBlockPlace(12008);
+						System.out.println("Decoding Result of 12008");
 						int[] decodeResult = BlockArrangeInfo.getBlockPlaceIDList();
 						for(int i = 0; i < 5;i++){
 							System.out.println(decodeResult[i]);
 						}
 						System.out.println("ID:");
 						routeDriver.deriveRoute();
+						System.out.println("Route:");
 						List<Integer> list = new ArrayList<Integer>();
+						list = routeDriver.getRoute();
 						for(int i = 0;i<list.size();i++){
 							System.out.println(list.get(i));
 						}
