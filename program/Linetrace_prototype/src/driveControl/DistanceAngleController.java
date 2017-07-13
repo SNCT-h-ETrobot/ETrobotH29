@@ -31,18 +31,29 @@ public class DistanceAngleController {
 		{
 			adjustedDistance = 0;
 		}
-		
-		//とりあえずspeedが40の時は想定通りの距離で動作する それ以上の時は速さに応じて早めに止まるようになっているため、例えばspeedが100の時に10cm以下にすると大幅に狂うので注意
-		while( ( ( motoranglemeasure.getMotorAngle() )[0] ) <= 360.000F * ( (TargetDistance - ( adjustedDistance * 3.000F / 20.000F) ) / TIRE_CIRCUMFERENCE) 
-				|| ( ( motoranglemeasure.getMotorAngle() )[1] ) <= 360.000F * ( (TargetDistance - ( adjustedDistance * 3.000F / 20.000F) ) / TIRE_CIRCUMFERENCE) )
+		if(TargetDistance >= 0)
 		{
-			wheelCtrl.controlWheels(0.000F,targetSpeed);
-			
+			//とりあえずspeedが40の時は想定通りの距離で動作する それ以上の時は速さに応じて早めに止まるようになっているため、例えばspeedが100の時に10cm以下にすると大幅に狂うので注意
+			while( ( ( motoranglemeasure.getMotorAngle() )[0] ) <= 360.000F * ( (TargetDistance - ( adjustedDistance * 3.000F / 20.000F) ) / TIRE_CIRCUMFERENCE) 
+					|| ( ( motoranglemeasure.getMotorAngle() )[1] ) <= 360.000F * ( (TargetDistance - ( adjustedDistance * 3.000F / 20.000F) ) / TIRE_CIRCUMFERENCE) )
+			{
+				wheelCtrl.controlWheels(0.000F,targetSpeed);
+				
+			}
+		}
+		else
+		{
+			while( ( ( motoranglemeasure.getMotorAngle() )[0] ) >= 360.000F * ( (TargetDistance - ( adjustedDistance * 3.000F / 20.000F) ) / TIRE_CIRCUMFERENCE) 
+					|| ( ( motoranglemeasure.getMotorAngle() )[1] ) >= 360.000F * ( (TargetDistance - ( adjustedDistance * 3.000F / 20.000F) ) / TIRE_CIRCUMFERENCE) )
+			{
+				wheelCtrl.controlWheelsDirect((int)-speed, (int)-speed);
+				
+			}
 		}
 	}
 	
 	//第一引数で動かす角度、第二引数でブロックを持っているかどうか（持っているときはtrue）
-	void Turn(float angle , boolean holdblock)
+	public void Turn(float angle , boolean holdblock)
 	{
 		float adjustedValue = 0.000F;
 		if(holdblock)
@@ -56,11 +67,22 @@ public class DistanceAngleController {
 		
 		targetTurnAngle = angle;
 		motoranglemeasure.resetMotorAngle();
-		//TachoCountが360で180度回転するが、角度が大きくなるほど若干足りなくなったため170で割っている。ブロックを持ってる時は160で割るとちょうど良かった
-		while(( ( motoranglemeasure.getMotorAngle() )[0] ) <= 360.000F * (targetTurnAngle / (180.000F - adjustedValue)))
+		if(targetTurnAngle >= 0)
 		{
-			wheelCtrl.controlWheelsDirect(64, -32);
-			
+			//TachoCountが360で180度回転するが、角度が大きくなるほど若干足りなくなったため170で割っている。ブロックを持ってる時は160で割るとちょうど良かった
+			while(( ( motoranglemeasure.getMotorAngle() )[0] ) <= 360.000F * (targetTurnAngle / (180.000F - adjustedValue)))
+			{
+				wheelCtrl.controlWheelsDirect(64, -32);
+				
+			}
+		}
+		else
+		{
+			while(( ( motoranglemeasure.getMotorAngle() )[0] ) >= 360.000F * (targetTurnAngle / (180.000F - adjustedValue)))
+			{
+				wheelCtrl.controlWheelsDirect(-32, 64);
+				
+			}
 		}
 	}
 
