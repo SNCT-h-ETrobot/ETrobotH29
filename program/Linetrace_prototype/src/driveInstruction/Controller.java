@@ -2,7 +2,8 @@ package driveInstruction;
 
 public class Controller {	//クラス名は再考が必要
 
-	static RacePartDriver RPdriver;
+	static RacePartDriver RPDriver;
+	static GamePartDriver GPDriver;
 
 	private int courseID;
 
@@ -12,11 +13,14 @@ public class Controller {	//クラス名は再考が必要
 
 		//Rコース
 		//courseID = 2;
-		RPdriver = new RacePartDriver(courseID);
+
+		RPDriver = new RacePartDriver(courseID);
+		GPDriver = new GamePartDriver(courseID);
 	}
 
 	public void drive(){
-		RPdriver.driveRacePart();
+		RPDriver.driveRacePart();
 		//以後ゲー区間
+		GPDriver.driveGamePart();
 	}
 }

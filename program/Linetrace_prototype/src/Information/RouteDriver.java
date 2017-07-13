@@ -9,7 +9,7 @@ public class RouteDriver {
 	private List<Integer> routeList = new ArrayList<Integer>();// ルート計算の結果
 	private final float DEGRESS_MULT = 0;// 角度を距離に直すときの倍率
 
-	public void deriveRoute(){
+	public void driveRoute(){
 		//右と左のルートとそれぞれのルートのコスト
 		List<Integer> tempList = new ArrayList<Integer>();
 		List<Integer> tempList2 = new ArrayList<Integer>();
@@ -17,22 +17,22 @@ public class RouteDriver {
 
 
 		for (int i = 0; i < 2; i++) {
-			int blockCarryTarget[];// ブロックを置く目標位置
-			if(i == 0) blockCarryTarget = new int[]{150, 0, 90, 4,44};// 左
-			else       blockCarryTarget = new int[]{150,66,119,12, 8};// 右
+			int blockCarryTarget[];// ブロックを置く目標位置  黒、赤、緑、青、黄の順
+			if(i == 0) blockCarryTarget = new int[]{151, 0, 90, 4,44};// 左
+			else       blockCarryTarget = new int[]{151,60,119,12, 8};// 右
 
 			int robotPlace = 90; // 走行体の位置 初期値は走行区間から続く緑のブロック置き場
 			//一回ごとにリストとコストをリセット
 			tempList.clear();
 			routeCost = 0;
 
-			int[] blockPlace = BlockArrangeInfo.getBlockPlaceIDList();
+			int[] blockPlace = BlockArrangeInfo.getBlockPlaceIDList();// ブロックの置いてある位置
 			for (int j = 0; j < 5; j++) {
-
 				// 移動先が開いているブロックの色を調べる
 				boolean[] canCarry = new boolean[5];
 				boolean canNotCarryAll = true;
 				for (int k = 0; k < 5; k++) {
+					// それぞれのブロックに対して、ブロックの移動先にいずれかのブロックが置いてあるなら運べない
 					canCarry[k] = true;
 					for (int k2 = 0; k2 < 5; k2++) {
 						if(blockCarryTarget[k] == blockPlace[k2]){
@@ -40,8 +40,7 @@ public class RouteDriver {
 							break;
 						}
 					}
-					if(canCarry[k] = true)canNotCarryAll = false;
-
+					if(canCarry[k] == true)canNotCarryAll = false;
 				}
 
 				// 動かせないときの処理
@@ -51,12 +50,17 @@ public class RouteDriver {
 					List<Integer> lowestRoute = null;
 					int lowestColor = 0;
 					for (int k = 0; k < 5; k++) {
-						List<Integer> tempRoute = aStar(robotPlace, blockPlace[k], blockPlace, false);
-						int tempCost = calcCost(tempRoute);
-						if(lowestCost > tempCost){
-							lowestCost = tempCost;
-							lowestRoute = tempRoute;
-							lowestColor = k;
+						// すでに置いた場所をターゲットとすることがないように
+						if(blockCarryTarget[k] == blockPlace[k])continue;
+						//同一地点をターゲットとすることがないように
+						if(robotPlace != blockPlace[k]){
+							List<Integer> tempRoute = aStar(robotPlace, blockPlace[k], blockPlace, false);
+							int tempCost = calcCost(tempRoute);
+							if(lowestCost > tempCost){
+								lowestCost = tempCost;
+								lowestRoute = tempRoute;
+								lowestColor = k;
+							}
 						}
 					}
 					tempList.addAll(lowestRoute);
@@ -75,14 +79,25 @@ public class RouteDriver {
 										: place ==  8 ? 52
 													  : 52;
 
-					List<Integer> tempRoute = aStar(blockPlace[lowestColor], blockTempTarget, blockPlace, true);
+					List<Integer> tempRoute = aStar(place, blockTempTarget, blockPlace, true);
 					int tempCost = calcCost(tempRoute);
 					tempList.addAll(tempRoute);
 					routeCost += tempCost;
 
 					// 走行体とブロックの位置を更新
-					blockPlace[lowestColor] = blockTempTarget;
-					robotPlace = blockTempTarget;
+					robotPlace = blockPlace[lowestColor] = blockTempTarget;
+
+					// 移動先が開いているブロックの色を再度調べる
+					for (int k = 0; k < 5; k++) {
+						canCarry[k] = true;
+						for (int k2 = 0; k2 < 5; k2++) {
+							if(blockCarryTarget[k] == blockPlace[k2]){
+								canCarry[k] = false;
+								break;
+							}
+						}
+					}
+
 
 				}
 
@@ -92,27 +107,40 @@ public class RouteDriver {
 				int lowestColor = 0;
 				for (int k = 0; k < 5; k++) {
 					if(!canCarry[k])continue;
-					List<Integer> tempRoute = aStar(robotPlace, blockPlace[k],blockPlace, false);
-					int tempCost = calcCost(tempRoute);
-					if(lowestCost > tempCost){
-						lowestCost = tempCost;
-						lowestRoute = tempRoute;
-						lowestColor = k;
+					//System.out.println(robotPlace + "->" + blockPlace[k]);
+					//同一地点をターゲットとすることがないように
+					if(robotPlace != blockPlace[k]){
+						List<Integer> tempRoute = aStar(robotPlace, blockPlace[k],blockPlace, false);
+						int tempCost = calcCost(tempRoute);
+						if(lowestCost > tempCost){
+							lowestCost = tempCost;
+							lowestRoute = tempRoute;
+							lowestColor = k;
+						}
 					}
 				}
 				tempList.addAll(lowestRoute);
 				routeCost += lowestCost;
 
 				// ブロックから目標位置まで
-				List<Integer> tempRoute = aStar(blockPlace[lowestColor], blockCarryTarget[lowestColor],blockPlace, true);
-				int tempCost = calcCost(tempRoute);
-				tempList.addAll(tempRoute);
-				routeCost += tempCost;
+				//同一地点をターゲットとすることがないように
+				if(blockPlace[lowestColor] != blockCarryTarget[lowestColor]){
+					List<Integer> tempRoute = aStar(blockPlace[lowestColor], blockCarryTarget[lowestColor],blockPlace, true);
+					int tempCost = calcCost(tempRoute);
+					tempList.addAll(tempRoute);
+					routeCost += tempCost;
+				}
 
 				// 走行体とブロックの位置を更新
-				blockPlace[lowestColor] = blockCarryTarget[lowestColor];
-				robotPlace = blockCarryTarget[lowestColor];
+				robotPlace = blockPlace[lowestColor] = blockCarryTarget[lowestColor];
 			}
+
+			// 脱出地点に向かう
+			List<Integer> tempRoute = aStar(robotPlace, 65, blockPlace, true);
+			int tempCost = calcCost(tempRoute);
+			tempList.addAll(tempRoute);
+			routeCost += tempCost;
+
 
 			// 最初に計算したルートとコストを保存
 			if(i==0){
@@ -136,6 +164,7 @@ public class RouteDriver {
 		List<Integer> openList = new ArrayList<Integer>();
 		List<Integer> closeList = new ArrayList<Integer>();
 
+		//System.out.println(startID+"to"+targetID);
 		//コスト
 		double[] f = new double[152];
 		for(int i = 0;i<150;i++){
@@ -155,7 +184,7 @@ public class RouteDriver {
 		while(true){
 			//解なし
 			if(openList.isEmpty()){
-				System.out.println("Routing Fault");
+				//System.out.println("Routing Fault");
 				break;
 			}
 
@@ -174,11 +203,15 @@ public class RouteDriver {
 			//選択した箇所と隣接してるやつのコストに応じて処理
 			List<Vertex> tempVertexList = new ArrayList<Vertex>(BlockArrangeInfo.getConnectionVertex(selectID));
 
-			//ブロックで埋まってる場合除外
+			//目的ではないブロックで埋まってる場合除外
 			int k = 0;
 			while(tempVertexList.size() > k){
 				for(int j = 0;j < 5;j++){
-					if(tempVertexList.get(k).getPointID() == blockPlace[j]){
+					if(tempVertexList.get(k).getPointID() == targetID){
+						//目的地の場合何もしない
+					}
+					else if(tempVertexList.get(k).getPointID() == blockPlace[j]){
+						//そうではないときは選択肢から外す
 						tempVertexList.remove(k);
 						k = 0;
 						break;
@@ -239,7 +272,6 @@ public class RouteDriver {
 
 			//openListはindexが先頭に行くほどコストが低い
 			//バブルなので遅かったら変える
-			System.out.println("sort");
 			for(int i = 0; i < openList.size()-1; i++){
 				for(int j = openList.size()-1; j > i ; j--){
 					//コスト比較
@@ -252,14 +284,16 @@ public class RouteDriver {
 			}
 		}
 
-		System.out.println("routing");
+		//System.out.println("routing");
 		//route生成
-		route.add(0,map.get(targetID));
+		route.add(0,targetID);
 		do{
-			System.out.println(route.get(0));
+			//System.out.println(route.get(0));
 			route.add(0,BlockArrangeInfo.getConnectionPath(route.get(0),map.get(route.get(0))).getPointID());
+			//System.out.println(route.get(0));
 			route.add(0,map.get(route.get(1)));
-		}while(route.get(0)==startID);
+		}while(route.get(0)!=startID);
+		//System.out.println(route.get(0));
 
 		return route;
 	}

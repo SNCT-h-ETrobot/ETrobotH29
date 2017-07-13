@@ -2,9 +2,12 @@ package UserInterface;
 
 import virtualDevices.ArmController;
 import virtualDevices.BrightnessMeasure;
+import virtualDevices.Communicator;
 import virtualDevices.DistanceMeasure;
 import virtualDevices.MotorAngleMeasure;
 import Hardware.Hardware;
+import Information.BlockArrangeInfo;
+import Information.RouteDriver;
 import driveInstruction.Controller;
 
 public class Starter {
@@ -14,6 +17,8 @@ public class Starter {
 	private BrightnessMeasure briMeasure;
 	private MotorAngleMeasure angMeasure;
 	private ArmController armCtrl;
+	private Communicator com;
+	private RouteDriver routeDriver;
 
 	public Starter(){
 		controller = new Controller();
@@ -21,6 +26,8 @@ public class Starter {
 		briMeasure = new BrightnessMeasure();
 		angMeasure = new MotorAngleMeasure();
 		armCtrl = new ArmController();
+		com = new Communicator();
+		routeDriver = new RouteDriver();
 
 	}
 
@@ -37,6 +44,11 @@ public class Starter {
 		disMeasure.resetDistance();
 		angMeasure.resetMotorAngle();
 		armCtrl.resetArm();
+		BlockArrangeInfo.makeConnection();
+		com.establishConnection();
+		int code = com.readCode();
+		BlockArrangeInfo.setBlockPlace(code);
+		routeDriver.driveRoute();
 	}
 	public void touchStart(){
 		float[] sampleTouch = new float[Hardware.touch.sampleSize()];
