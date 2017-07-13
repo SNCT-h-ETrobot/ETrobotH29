@@ -243,6 +243,7 @@ public class BlockArrangeInfo {
 		connectionList.get(v036.getPointID()).put(b012, p037);
 		connectionList.get(v036.getPointID()).put(v034, p035);
 		connectionList.get(v036.getPointID()).put(b060, p061);
+		connectionList.get(v036.getPointID()).put(v062, p063);
 		connectionList.put(v039.getPointID(), new HashMap<Vertex,Path>());
 		connectionList.get(v039.getPointID()).put(b000, p013);
 		connectionList.get(v039.getPointID()).put(v042, p040);
@@ -788,7 +789,8 @@ public class BlockArrangeInfo {
 	}
 
 	public static int[] getBlockPlaceIDList() {
-		return blockPlaceIDList;
+		int[] list = (int[])blockPlaceIDList.clone();
+		return list;
 	}
 
 	public static void setBlockPlaceIDList(int blackID,int redID,int greenID,int blueID,int yellowID) {
