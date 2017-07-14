@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class RouteDriver {
 
-	private List<Integer> routeList = new ArrayList<Integer>();// ルート計算の結果
+	private static List<Integer> routeList = new ArrayList<Integer>();// ルート計算の結果
 	private final float DEGRESS_MULT = 0;// 角度を距離に直すときの倍率
 
 	public void driveRoute(){

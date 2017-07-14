@@ -1,5 +1,6 @@
 package UserInterface;
 
+import lejos.hardware.lcd.LCD;
 import virtualDevices.ArmController;
 import virtualDevices.BrightnessMeasure;
 import virtualDevices.Communicator;
@@ -44,7 +45,9 @@ public class Starter {
 		disMeasure.resetDistance();
 		angMeasure.resetMotorAngle();
 		armCtrl.resetArm();
+		LCD.drawString("Connect Ready", 0, 0);
 		BlockArrangeInfo.makeConnection();
+		LCD.drawString("Connect OK   ", 0, 0);
 		com.establishConnection();
 		int code = com.readCode();
 		BlockArrangeInfo.setBlockPlace(code);
@@ -52,12 +55,14 @@ public class Starter {
 	}
 	public void touchStart(){
 		float[] sampleTouch = new float[Hardware.touch.sampleSize()];
+		LCD.drawString("Touch Ready", 0, 0);
 		while(true){
 			Hardware.touchMode.fetchSample(sampleTouch, 0);
 			if(sampleTouch[0] != 0){
 				break;
 			}
 		}
+		LCD.drawString("Start      ", 0, 0);
 
 		controller.drive();
 	}

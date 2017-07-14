@@ -3,6 +3,8 @@ package driveInstruction;
 import java.util.ArrayList;
 import java.util.List;
 
+import lejos.hardware.lcd.LCD;
+import lejos.utility.Delay;
 import Information.BlockArrangeInfo;
 import Information.DriveInfo;
 import Information.Path;
@@ -30,7 +32,7 @@ public class GamePartDriver {
 		if(courceID == 1)
 		{
 			//ブロック並べに突入するときの進行方向は右上方向なので315度
-			currentAngle = 315.000F;
+			currentAngle = 300.000F;
 			currentID = 90;
 			//blockArrangeInfo = new BlockArrangeInfo();
 		}
@@ -45,6 +47,9 @@ public class GamePartDriver {
 	public void driveGamePart()
 	{
 		createMissionScenario(routeDriver.getRoute());
+
+		LCD.drawString("Size:" + missionScenario.size(), 0, 0);
+		Delay.msDelay(3000);
 		for(int i=0;i<missionScenario.size();i++)
 		{
 		  dACtrl.Turn(missionScenario.get(i).getTurnAngle(),missionScenario.get(i).getHoldBlock());
@@ -64,7 +69,7 @@ public class GamePartDriver {
 		for(int i=1;i<route.size();i+=2)
 		{
 			//目的地に到着
-			if(route.get(i) == route.get(i-1))
+			if(route.get(i).equals(route.get(i-1)))
 			{
 				//ブロックを置く処理
 				if(blockhold)
@@ -78,10 +83,14 @@ public class GamePartDriver {
 			}
 			else
 			{
-				Path path = (Path)BlockArrangeInfo.getPointObject(i);
-
+				Path path = (Path)BlockArrangeInfo.getPointObject(route.get(i));
+				
 				float angle = path.getAngle() - currentAngle;
-
+				if(currentID > route.get(i+1))
+				{
+					angle += 180.000F;
+				}
+				
 				if( (angle > 180.000F) || (angle < -180.000F) )
 				{
 					if(angle > 0.000F)
@@ -94,7 +103,7 @@ public class GamePartDriver {
 					}
 
 				}
-
+				System.out.println("i:" +i+ " angle:"+angle);
 				//とりあえずspeedは40　後で距離に応じて変えたりするようにする
 				missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),40 ));
 
@@ -123,6 +132,7 @@ public class GamePartDriver {
 					currentAngle = path.getAngle();
 					correctedDistance = 0.000F;
 				}
+				currentID = route.get(i+1);
 			}
 		}
 

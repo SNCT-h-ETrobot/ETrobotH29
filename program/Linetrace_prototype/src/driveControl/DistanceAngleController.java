@@ -78,7 +78,7 @@ public class DistanceAngleController {
 		}
 		else
 		{
-			while(( ( motoranglemeasure.getMotorAngle() )[0] ) >= 360.000F * (targetTurnAngle / (180.000F - adjustedValue)))
+			while(( ( motoranglemeasure.getMotorAngle() )[1] ) <= 360.000F * (-targetTurnAngle / (180.000F - adjustedValue)))
 			{
 				wheelCtrl.controlWheelsDirect(-32, 64);
 				
