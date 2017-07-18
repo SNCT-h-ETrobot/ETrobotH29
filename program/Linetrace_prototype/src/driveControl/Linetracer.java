@@ -26,8 +26,8 @@ public class Linetracer {
 
 		float turn = kp * currentDiff;
 
-		turn += kp * (this.currentDiff - preDiff)/DELTA_T;
-		turn += kp * ((currentDiff + preDiff) / 2.0F)*DELTA_T;
+		turn += ki * (this.currentDiff - preDiff)/DELTA_T;
+		turn += kd * ((currentDiff + preDiff) / 2.0F)*DELTA_T;
 
 		preDiff = currentDiff;
 

@@ -10,6 +10,7 @@ import Information.DriveInfo;
 import Information.Path;
 import Information.RouteDriver;
 import driveControl.DistanceAngleController;
+import driveControl.WheelController;
 
 public class GamePartDriver {
 
@@ -17,6 +18,7 @@ public class GamePartDriver {
 	private int currentID;
 	//名前をシナリオかinfoに統一する
 	private ArrayList<DriveInfo> missionScenario;
+	private WheelController wheelCtrl;
 
 	private DistanceAngleController dACtrl;
 	//private BlockArrangeInfo blockArrangeInfo;
@@ -50,10 +52,19 @@ public class GamePartDriver {
 
 		LCD.drawString("Size:" + missionScenario.size(), 0, 0);
 		Delay.msDelay(3000);
+		wheelCtrl = new WheelController();
+
 		for(int i=0;i<missionScenario.size();i++)
 		{
-		  dACtrl.Turn(missionScenario.get(i).getTurnAngle(),missionScenario.get(i).getHoldBlock());
-		  dACtrl.GoStraightAhead(missionScenario.get(i).getDistance(),missionScenario.get(i).getSpeed());
+			dACtrl.Turn(missionScenario.get(i).getTurnAngle(),missionScenario.get(i).getHoldBlock());
+			//動くごとに一時停止する
+			wheelCtrl.controlWheels(0.000F,0);
+			Delay.msDelay(500);
+
+			dACtrl.GoStraightAhead(missionScenario.get(i).getDistance(),missionScenario.get(i).getSpeed());
+			wheelCtrl.controlWheels(0.000F,0);
+			Delay.msDelay(500);
+
 		}
 
 	}
@@ -84,13 +95,13 @@ public class GamePartDriver {
 			else
 			{
 				Path path = (Path)BlockArrangeInfo.getPointObject(route.get(i));
-				
+
 				float angle = path.getAngle() - currentAngle;
 				if(currentID > route.get(i+1))
 				{
 					angle += 180.000F;
 				}
-				
+
 				if( (angle > 180.000F) || (angle < -180.000F) )
 				{
 					if(angle > 0.000F)
@@ -103,12 +114,16 @@ public class GamePartDriver {
 					}
 
 				}
-				System.out.println("i:" +i+ " angle:"+angle);
+				System.out.println("i:" +i+ " "+ currentID + "->" + route.get(i+1) + " angle:"+angle);
 				//とりあえずspeedは40　後で距離に応じて変えたりするようにする
 				missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),40 ));
 
 
 				currentAngle = path.getAngle();
+				if(currentID > route.get(i+1))
+				{
+					currentAngle += 180.000F;
+				}
 
 				//ズレを考慮したものにする
 				if(correctedDistance != 0.000F)
@@ -129,7 +144,6 @@ public class GamePartDriver {
 					}
 					//とりあえずspeedは40　後で距離に応じて変えたりするようにする
 					missionScenario.add(new DriveInfo(angle,false,-correctedDistance,40) );
-					currentAngle = path.getAngle();
 					correctedDistance = 0.000F;
 				}
 				currentID = route.get(i+1);

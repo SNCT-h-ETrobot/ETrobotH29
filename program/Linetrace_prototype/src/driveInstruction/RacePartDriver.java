@@ -24,7 +24,7 @@ public class RacePartDriver {
 
 		//コースIDによってLとRどちらを走行するか決定する
 		if(courseID == 1){	//Lコース
-			sectionList.add(new SectionInfo(0,1000.0F,1000.0F,1000.0F,1000.0F,0.2F,50.0F));
+			sectionList.add(new SectionInfo(0,1000.0F,-100.0F,10.0F,10.0F,0.15F,80.0F));
 			sectionList.add(new SectionInfo(1,1001.0F,50.0F,0.0F,0.0F,0.2F,0.0F));
 			sectionList.add(new SectionInfo(2,1002.0F,50.0F,0.0F,0.0F,0.2F,0.0F));
 		}
