@@ -6,10 +6,10 @@ import java.util.Map;
 
 public class RouteDriver {
 
-	private List<Integer> routeList = new ArrayList<Integer>();// ルート計算の結果
+	private static List<Integer> routeList = new ArrayList<Integer>();// ルート計算の結果
 	private final float DEGRESS_MULT = 0;// 角度を距離に直すときの倍率
 
-	public void deriveRoute(){
+	public void driveRoute(){
 		//右と左のルートとそれぞれのルートのコスト
 		List<Integer> tempList = new ArrayList<Integer>();
 		List<Integer> tempList2 = new ArrayList<Integer>();
@@ -107,7 +107,7 @@ public class RouteDriver {
 				int lowestColor = 0;
 				for (int k = 0; k < 5; k++) {
 					if(!canCarry[k])continue;
-					System.out.println(robotPlace + "->" + blockPlace[k]);
+					//System.out.println(robotPlace + "->" + blockPlace[k]);
 					//同一地点をターゲットとすることがないように
 					if(robotPlace != blockPlace[k]){
 						List<Integer> tempRoute = aStar(robotPlace, blockPlace[k],blockPlace, false);
@@ -164,7 +164,7 @@ public class RouteDriver {
 		List<Integer> openList = new ArrayList<Integer>();
 		List<Integer> closeList = new ArrayList<Integer>();
 
-		System.out.println(startID+"to"+targetID);
+		//System.out.println(startID+"to"+targetID);
 		//コスト
 		double[] f = new double[152];
 		for(int i = 0;i<150;i++){
@@ -184,7 +184,7 @@ public class RouteDriver {
 		while(true){
 			//解なし
 			if(openList.isEmpty()){
-				System.out.println("Routing Fault");
+				//System.out.println("Routing Fault");
 				break;
 			}
 
@@ -284,19 +284,16 @@ public class RouteDriver {
 			}
 		}
 
-		System.out.println("routing");
+		//System.out.println("routing");
 		//route生成
 		route.add(0,targetID);
 		do{
-			if(startID == 8 && targetID == 139){
-				System.out.println("!!");
-			}
-			System.out.println(route.get(0));
+			//System.out.println(route.get(0));
 			route.add(0,BlockArrangeInfo.getConnectionPath(route.get(0),map.get(route.get(0))).getPointID());
-			System.out.println(route.get(0));
+			//System.out.println(route.get(0));
 			route.add(0,map.get(route.get(1)));
 		}while(route.get(0)!=startID);
-		System.out.println(route.get(0));
+		//System.out.println(route.get(0));
 
 		return route;
 	}
