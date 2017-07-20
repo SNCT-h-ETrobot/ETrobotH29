@@ -1,11 +1,12 @@
 package virtualDevices;
 
+import lejos.utility.Delay;
 import Hardware.Hardware;
 
 public class ArmController {
 
 	//カラーセンサーで測定する角度。通常状態
-	private final int NORMAL_ANGLE = 0;
+	private final int NORMAL_ANGLE = 20;
 
 	private final float P_GAIN = 2.5F;		//比例定数
 	private final float MAX_ABS_PWM = 60.0F;//pwmの絶対値の最大
@@ -32,7 +33,16 @@ public class ArmController {
 	}
 
 	public void resetArm(){
-		Hardware.motorPortA.resetTachoCount();
+		int preAngle = -9999;
+		while(true){
+			Hardware.motorPortA.controlMotor(-20, 1);
+			Delay.msDelay(100);
+			if(preAngle == Hardware.motorPortA.getTachoCount()){
+				Hardware.motorPortA.resetTachoCount();
+				break;
+			}
+			preAngle = Hardware.motorPortA.getTachoCount();
+		}
 	}
 
 }
