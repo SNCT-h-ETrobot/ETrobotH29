@@ -25,14 +25,19 @@ public class MotorControlTest {
 			Hardware.motorPortL.controlMotor(0, 1);
 			Hardware.motorPortR.controlMotor(0, 1);
 		}
-		LCD.drawString(""+mAM.getMotorAngle()[0], 0, 0);
+		//LCD.drawString(""+mAM.getMotorAngle()[0], 0, 0);
 
 		//distCtrl.goStraightAhead(100.0F, 50.0F);
 		distCtrl.turn(-90.0F, false);
-		Delay.msDelay(4);
+		Delay.msDelay(500);
 		Hardware.motorPortL.controlMotor(0, 1);
 		Hardware.motorPortR.controlMotor(0, 1);
-		LCD.drawString("END", 0, 3);	
+		//distCtrl.turn(-90.0F, false);
+
+		Delay.msDelay(500);
+		Hardware.motorPortL.controlMotor(0, 1);
+		Hardware.motorPortR.controlMotor(0, 1);
+		LCD.drawString("END", 0, 3);
 
 	}
 
