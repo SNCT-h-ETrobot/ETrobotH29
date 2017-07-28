@@ -372,7 +372,7 @@ public class BlockArrangeInfo {
 		connectionList.put(v114.getPointID(), new HashMap<Vertex,Path>());
 		connectionList.get(v114.getPointID()).put(v084, p113);
 		connectionList.get(v114.getPointID()).put(v087, p086);
-		connectionList.get(v114.getPointID()).put(v111, p109);
+		connectionList.get(v114.getPointID()).put(v111, p112);
 		connectionList.get(v114.getPointID()).put(v116, p115);
 		connectionList.put(v116.getPointID(), new HashMap<Vertex,Path>());
 		connectionList.get(v116.getPointID()).put(v114, p115);

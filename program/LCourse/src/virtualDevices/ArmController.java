@@ -1,5 +1,8 @@
 package virtualDevices;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import lejos.utility.Delay;
 import Hardware.Hardware;
 
@@ -29,7 +32,14 @@ public class ArmController {
 	}
 
 	public void controlArmNormalAngel(){
-		controlArm(NORMAL_ANGLE);
+		Timer timer = new Timer();
+		TimerTask task = new TimerTask(){
+
+			public void run(){
+				controlArm(NORMAL_ANGLE);
+			}
+		};
+		timer.scheduleAtFixedRate(task, 0, 4);
 	}
 
 	public void resetArm(){
