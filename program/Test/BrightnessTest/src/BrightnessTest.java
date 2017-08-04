@@ -5,6 +5,7 @@ import lejos.hardware.lcd.LCD;
 import virtualDevices.ArmController;
 import virtualDevices.BrightnessMeasure;
 import virtualDevices.LogSender;
+import Hardware.Hardware;
 
 
 public class BrightnessTest {
@@ -20,19 +21,26 @@ public class BrightnessTest {
 			//条件合わせるため空実行
 			briMeasure.getBrightness();
 			log.addLog("dammy", 0.0F, 0.1F);
+			Hardware.motorPortL.controlMotor(0, 1);
+			Hardware.motorPortR.controlMotor(0, 1);
 		}
 		log.clear();
 
-		while(log.connect()){
-			LCD.drawString("conecting", 0, 0);
-		}
+		LCD.drawString("conecting", 0, 0);
+		log.connect();
+
 		LCD.clear();
 		LCD.drawString("success", 0, 0);
+
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask(){
-			float time = 0.00F;
+			float time = 0.000F;
 			public void run(){
+
+				Hardware.motorPortL.controlMotor(30, 1);
+				Hardware.motorPortR.controlMotor(30, 1);
 				log.addLog("Brightness",briMeasure.getBrightness(),time);
+				log.addLog("BrightnessDirect",briMeasure.getBrightnessDirect(),time);
 				time+=0.004F;
 			}
 		};
@@ -40,13 +48,26 @@ public class BrightnessTest {
 		timer.scheduleAtFixedRate(task, 0, 4);
 
 		while(true){
-			if(log.recieve() == "L"){
+			if(touchSensorIsPressed()){
 				timer.cancel();
+
+				Hardware.motorPortL.controlMotor(0, 1);
+				Hardware.motorPortR.controlMotor(0, 1);
+				LCD.clear();
+				LCD.drawString("END", 0, 0);
+
+				log.send();
 				break;
 			}
 		}
-		log.send();
+
 		log.disconnect();
 	}
+
+    public static boolean touchSensorIsPressed() {
+    	float[] sampleTouch = new float[Hardware.touch.sampleSize()];
+        Hardware.touchMode.fetchSample(sampleTouch , 0);
+        return ((int)sampleTouch[0] != 0);
+    }
 
 }
