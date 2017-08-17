@@ -3,6 +3,7 @@ package driveControl;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import lejos.hardware.lcd.LCD;
 import virtualDevices.MotorAngleMeasure;
 
 public class DistanceAngleController {
@@ -20,12 +21,12 @@ public class DistanceAngleController {
 	private final float I_GAIN_S = 1.0F;//速度用I係数
 	private final float D_GAIN_S = 0.1F;//速度用D係数
 
-	private final float P_GAIN_A = 3.5F;//旋回角度用P係数
-	private final float I_GAIN_A = 2.0F;//旋回角度用I係数
-	private final float D_GAIN_A = 0.5F;//旋回角度用D係数
-	private final float P_GAIN_AS = 3.5F;//速度用P係数
-	private final float I_GAIN_AS = 2.0F;//速度用I係数
-	private final float D_GAIN_AS = 0.5F;//速度用D係数
+	private final float P_GAIN_A = 1.0F;//旋回角度用P係数
+	private final float I_GAIN_A = 0.6F;//旋回角度用I係数
+	private final float D_GAIN_A = 0.1F;//旋回角度用D係数
+	private final float P_GAIN_AS = 1.0F;//速度用P係数
+	private final float I_GAIN_AS = 0.6F;//速度用I係数
+	private final float D_GAIN_AS = 0.1F;//速度用D係数
 
 	private final float DELTA_T = 0.004F;	//制御周期
 	private final int MAX_PWM_MARGIN = 10;	//PWM値のマージン。指定スピード+これ
@@ -123,8 +124,8 @@ public class DistanceAngleController {
 			angleR = motorAngleMeasure.getMotorAngle()[1];
 			angle = (angleL+angleR)/2.0F;
 			distance = (angle/360)*TIRE_CIRCUMFERENCE;
-			//LCD.drawString("dist:"+distance+",target:"+targetDistance, 0, 5);
-			if(n == 5000){
+			LCD.drawString("dist:"+distance+",target:"+targetDistance, 0, 5);
+			if(n == 100){
 				if(distance == preDistance){
 					break;
 				}
@@ -133,7 +134,7 @@ public class DistanceAngleController {
 			}
 			n++;
 		}
-		while(Math.abs(distance) <= Math.abs(targetDistance));
+		while(distance <= targetDistance);
 
 		timerEnd = true;
 		timer.cancel();
@@ -142,7 +143,7 @@ public class DistanceAngleController {
 	//第一引数で動かす角度、第二引数でブロックを持っているかどうか（持っているときはtrue）
 	public void turn(float targetAngle , boolean holdblock)
 	{
-		targetSpeed = 55; //旋回時は固定
+		targetSpeed = 60; //旋回時は固定
 		targetTurnAngle = targetAngle;
 		motorAngleMeasure.resetMotorAngle();
 		timerEnd = false;
@@ -172,8 +173,8 @@ public class DistanceAngleController {
 
 				turnAngleR = angleR*230.0F/360.0F;
 
-				currentDiffL = (float)targetTurnAngle*1.1F - turnAngleL;	//指定旋回角度を目標
-				currentDiffR = (-1.0F)*(float)targetTurnAngle - turnAngleR;	//指定旋回角度の逆を目標(Rは応答が悪い?)
+				currentDiffL = (float)targetTurnAngle - turnAngleL;	//指定旋回角度を目標
+				currentDiffR = (-0.9F)*(float)targetTurnAngle - turnAngleR;	//指定旋回角度の逆を目標(Rは応答が悪い?)
 				//旋回角度ベースで制御
 				pwmL = P_GAIN_A*currentDiffL
 						+ I_GAIN_A*(currentDiffL-preDiffL)*DELTA_T
@@ -202,8 +203,8 @@ public class DistanceAngleController {
 					pwmR = -targetSpeed;
 				}
 
-				//LCD.drawString("PL:"+(P_GAIN_A*currentDiffL)+" "+angleL+" "+angleR, 0, 2);
-				//LCD.drawString("PR:"+(P_GAIN_AS*currentDiffR)+" "+angleL+" "+angleR, 0, 3);
+				LCD.drawString("PL:"+(P_GAIN_A*currentDiffL)+" "+angleL+" "+angleR, 0, 2);
+				LCD.drawString("PR:"+(P_GAIN_AS*currentDiffR)+" "+angleL+" "+angleR, 0, 3);
 
 				//更新
 				preDiffL = currentDiffL;
@@ -234,7 +235,7 @@ public class DistanceAngleController {
 			//LCD.drawString("turnL:"+turnAngle, 0, 5);
 			//LCD.drawString("turnR:"+angleR*230.0F/360.0F, 0, 6);
 
-			if(n == 5000){
+			if(n == 100){
 				if(turnAngle == preAngle){
 					break;
 				}

@@ -31,7 +31,7 @@ public class ArmController {
 		Hardware.motorPortA.controlMotor((int)pwm, 1);
 	}
 
-	public void controlArmNormalAngel(){
+	public void controlArmNormalAngle(){
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask(){
 
@@ -39,6 +39,7 @@ public class ArmController {
 				controlArm(NORMAL_ANGLE);
 			}
 		};
+
 		timer.scheduleAtFixedRate(task, 0, 4);
 	}
 
