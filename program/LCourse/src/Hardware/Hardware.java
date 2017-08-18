@@ -28,7 +28,8 @@ public class Hardware {
 
     //カラーセンサ
     public static EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S2);
-    public static  SensorMode redMode = colorSensor.getRedMode();     // 輝度検出モード
+    public static SensorMode redMode = colorSensor.getRedMode();     // 輝度検出モード
+    public static SensorMode RGBMode = colorSensor.getRGBMode();
 
     // ジャイロセンサ
     public static EV3GyroSensor gyro = new EV3GyroSensor(SensorPort.S4);

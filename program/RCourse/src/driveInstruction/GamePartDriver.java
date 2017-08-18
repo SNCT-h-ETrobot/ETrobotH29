@@ -6,26 +6,26 @@ import java.util.List;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import sectionRun.SectionRun;
-import Information.BlockArrangeInfo;
+/*import Information.BlockArrangeInfo;
 import Information.DriveInfo;
 import Information.Path;
 import Information.RouteDriver;
+*/
 import Information.SectionRunScenario;
 import driveControl.DistanceAngleController;
 import driveControl.WheelController;
-
 public class GamePartDriver {
 	private int courseID;
 
 	private float currentAngle;
 	private int currentID;
 	//名前をシナリオかinfoに統一する
-	private ArrayList<DriveInfo> missionScenario;
+	//private ArrayList<DriveInfo> missionScenario;
 	private WheelController wheelCtrl;
 
 	private DistanceAngleController dACtrl;
 	//private BlockArrangeInfo blockArrangeInfo;
-	private RouteDriver routeDriver;
+	//private RouteDriver routeDriver;
 
 	private SectionRunScenario sectionScenario;
 
@@ -36,13 +36,6 @@ public class GamePartDriver {
 		//Lコース
 		if(courceID == 1)
 		{
-			missionScenario = new ArrayList<DriveInfo>();
-			routeDriver = new RouteDriver();
-
-			//ブロック並べに突入するときの進行方向は右上方向なので315度
-			currentAngle = 300.000F;
-			currentID = 90;
-			//blockArrangeInfo = new BlockArrangeInfo();
 		}
 		//Rコース
 		else if(courceID == 2)
@@ -55,24 +48,6 @@ public class GamePartDriver {
 	public void driveGamePart()
 	{
 		if(courseID ==1){
-			createMissionScenario(routeDriver.getRoute());
-
-			LCD.drawString("Size:" + missionScenario.size(), 0, 0);
-			Delay.msDelay(3000);
-			wheelCtrl = new WheelController();
-
-			for(int i=0;i<missionScenario.size();i++)
-			{
-				dACtrl.Turn(missionScenario.get(i).getTurnAngle(),missionScenario.get(i).getHoldBlock());
-				//動くごとに一時停止する
-				wheelCtrl.controlWheels(0.000F,0);
-				Delay.msDelay(500);
-
-				dACtrl.GoStraightAhead(missionScenario.get(i).getDistance(),missionScenario.get(i).getSpeed());
-				wheelCtrl.controlWheels(0.000F,0);
-				Delay.msDelay(500);
-
-			}
 		}
 		else if(courseID == 2){
 			SectionRun[] section = sectionScenario.getScenario();
@@ -83,7 +58,7 @@ public class GamePartDriver {
 
 	}
 
-	private void createMissionScenario(List<Integer> route)
+/*	private void createMissionScenario(List<Integer> route)
 	{
 		//頂点をどのような順番で通るかにより、各値を求めてリストに格納
 
@@ -163,6 +138,6 @@ public class GamePartDriver {
 				currentID = route.get(i+1);
 			}
 		}
-
 	}
+*/
 }
