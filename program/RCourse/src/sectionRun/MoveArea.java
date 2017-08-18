@@ -33,7 +33,6 @@ public class MoveArea extends SectionRun {
 	private static final float LT_BRIGHT = 0.5f;//正規化前提
 	private float ltp,lti,ltd,ltb,lts;
 	private boolean useLT = false;
-	private boolean isRightEdge = false;//ラインの右側を走行しているか
 	enum traceEdge {RIGHT, LEFT, UNKNOWN}
 
 	private DistanceAngleController DAC;
@@ -171,7 +170,7 @@ public class MoveArea extends SectionRun {
 
 	public void turnHalf(){
 		useLT = false;
-		DAC.Turn(180, false);
+		DAC.turn(180, false);
 		stop();
 	}
 
@@ -179,7 +178,7 @@ public class MoveArea extends SectionRun {
 	public void straight(boolean Inverse){
 		if(Inverse){
 			useLT = false;
-			DAC.Turn(10, false);
+			DAC.turn(10, false);
 		}
 		// LTする->LT係数低くして中央の黒ラインを突っ切る->係数元に戻してLTする
 		useLT = true;
@@ -211,7 +210,7 @@ public class MoveArea extends SectionRun {
 	public void cornerToRight(boolean Inverse){
 		if(Inverse){
 			useLT = false;
-			DAC.Turn(10, false);
+			DAC.turn(10, false);
 		}
 		useLT = true;
 		detectRightAngle(true);
@@ -225,7 +224,7 @@ public class MoveArea extends SectionRun {
 	public void cornerToLeft(boolean Inverse){
 		if(Inverse){
 			useLT = false;
-			DAC.Turn(-10, false);
+			DAC.turn(-10, false);
 		}
 		useLT = true;
 		detectRightAngle(false);
@@ -240,7 +239,7 @@ public class MoveArea extends SectionRun {
 	public void centerToRight(boolean Inverse){
 		if(Inverse){
 			useLT = false;
-			DAC.Turn(10, false);
+			DAC.turn(10, false);
 		}
 		useLT = true;
 		detectRightAngle(true);
@@ -255,7 +254,7 @@ public class MoveArea extends SectionRun {
 	public void centerToLeft(boolean Inverse){
 		if(Inverse){
 			useLT = false;
-			DAC.Turn(-10, false);
+			DAC.turn(-10, false);
 		}
 		useLT = true;
 		detectRightAngle(false);
@@ -268,7 +267,7 @@ public class MoveArea extends SectionRun {
 
 	public void cornerToRail(){
 		useLT = false;
-		DAC.Turn(10, false);
+		DAC.turn(10, false);
 		useLT = true;
 		detectRightAngle(true);
 		dm.resetDistance();
@@ -282,17 +281,17 @@ public class MoveArea extends SectionRun {
 	public void centerToPrize(){
 		useLT = false;
 		stop();
-		DAC.Turn(-90, false);
+		DAC.turn(-90, false);
 		stop();
-		DAC.GoStraightAhead(PRIZE_DISTANCE, 40);
+		DAC.goStraightAhead(PRIZE_DISTANCE, 40);
 		stop();
 	}
 
 	private void prizeToRail(){
 		useLT = false;
-		DAC.GoStraightAhead(PRIZE_DISTANCE, 40);
+		DAC.goStraightAhead(PRIZE_DISTANCE, 40);
 		stop();
-		DAC.Turn(105, false);//大きめにしてLTで戻す
+		DAC.turn(105, false);//大きめにしてLTで戻す
 		stop();
 		dm.resetDistance();
 		ltp = LT_P;

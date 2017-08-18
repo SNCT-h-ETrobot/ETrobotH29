@@ -14,8 +14,8 @@ import driveControl.Linetracer;
  * レール前で静止している状態から、レール上を直進し、ライン復帰する
  * */
 public class PassRail extends SectionRun {
-	private static final float TARGET_DISTANCE = 50.0f;//レールを超えるために直進する距離
-	private static final float TARGET_DISTANCE_LT = 65.0f;//レール前からライン復帰後までの距離・最終的にこれだけ進む
+	private static final float TARGET_DISTANCE = 35.0f;//レールを超えるために直進する距離
+	private static final float TARGET_DISTANCE_LT = 10.0f;//レール前からライン復帰後までの距離・最終的にこれだけ進む
 	private static final float TARGET_SPEED = 40.0f;
 	private static final float TARGET_SPEED_HI = 80.0f;
 
@@ -38,11 +38,11 @@ public class PassRail extends SectionRun {
 	public void run() {
 		//直進
 		disMeasure.resetDistance();
-		DAC.GoStraightAhead(TARGET_DISTANCE, TARGET_SPEED_HI);
+		DAC.goStraightAhead(TARGET_DISTANCE, TARGET_SPEED_HI);
 
 		//少し右方向に進んでライン復帰準備
-		DAC.Turn(20, false);
-		DAC.GoStraightAhead(10, TARGET_SPEED);
+		DAC.turn(10, false);
+		DAC.goStraightAhead(5, TARGET_SPEED);
 
 		// 一定距離進むまでライントレースしてライン復帰
 		Timer timer = new Timer();

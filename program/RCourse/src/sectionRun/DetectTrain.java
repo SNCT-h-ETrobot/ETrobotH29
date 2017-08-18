@@ -13,12 +13,14 @@ public class DetectTrain extends SectionRun {
 	private int detectID;
 	private static boolean detectFar = false;
 
-	private static final float DISTANCE_NEAR = 5.0f;
-	private static final float DISTANCE_FAR = 40.0f; //2番目の検知の時に新幹線が奥にいるかの判定に使う
+	private static final float DISTANCE_NEAR = 0.10f;
+	private static final float DISTANCE_FAR = 0.50f; //2番目の検知の時に新幹線が奥にいるかの判定に使う
 	private static final int STOP_TIME_MS = 1000;
 
-	private static final float TRAIN_TIME_CYCLE = 10.0f;//一周する時間
-	private static final float TRAIN_TIME_DISTANCE = 0.45f;//新幹線が中央レーンから奥のレーンに移動するまでの時間。一周する時間を1とした割合で
+	private static final float TRAIN_TIME_CYCLE = 27.0f;//一周する時間
+	private static final float TRAIN_TIME_DIFFERENCE = 0.55f;//新幹線が中央レーンから奥のレーンに移動するまでの時間。一周する時間を1とした割合で
+	private static final float TRAIN_TIME_NONE = 0.05f;//
+
 
 	// 引数ををbooleanからintに変えました
 	//
@@ -30,13 +32,13 @@ public class DetectTrain extends SectionRun {
 	public void run() {
 		// 距離検知
 		if(detectID!=2){
-			float[] sample = new float[Hardware.gyro.sampleSize()];
+			float[] sample = new float[Hardware.sonar.sampleSize()];
 			// 新幹線がいることを検知
 			int counter = 0;
 			while(true){
-				LCD.drawString("ready to detect"+counter, 0, 1);
+				LCD.drawString("ready to detect:"+counter, 0, 1);
 				Delay.msDelay(4);
-				Hardware.gyro.fetchSample(sample, 0);
+				Hardware.sonar.fetchSample(sample, 0);
 				if(sample[0] < DISTANCE_NEAR){
 					if(++counter > 3){
 						detectFar = false;
@@ -50,13 +52,14 @@ public class DetectTrain extends SectionRun {
 					}
 				}
 				else counter = 0;
+				LCD.drawString("distance:"+sample[0], 0, 2);
 			}
 			counter = 0;
 			// 新幹線が通り過ぎたことを検知
 			while(true){
 				LCD.drawString("detected       "+counter, 0, 1);
 				Delay.msDelay(4);
-				Hardware.gyro.fetchSample(sample, 0);
+				Hardware.sonar.fetchSample(sample, 0);
 				if(!detectFar && sample[0] > DISTANCE_NEAR){
 					if(++counter > 3)break;
 				}
@@ -75,9 +78,11 @@ public class DetectTrain extends SectionRun {
 		else{
 			while(true){
 				//新幹線が奥のレールに近いほど1に近くなるつもり
-				float timeDiff = detectFar ? 0 : TRAIN_TIME_DISTANCE;
-				double a = Math.cos(((System.nanoTime()-passedTime)/TRAIN_TIME_CYCLE-timeDiff)*2*Math.PI);
-				if(0.5>a)break;
+				float timeDiff = detectFar ? TRAIN_TIME_NONE : TRAIN_TIME_DIFFERENCE;
+				double elapsedTime = (System.nanoTime()-passedTime)/Math.pow(10, 9);
+				double a = Math.cos((elapsedTime/TRAIN_TIME_CYCLE + timeDiff)*2*Math.PI);
+				LCD.drawString("cos:"+a, 0, 3);
+				//if(0.5>a)break;
 			}
 
 		}
