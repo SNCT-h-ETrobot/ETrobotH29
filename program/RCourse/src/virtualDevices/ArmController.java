@@ -11,9 +11,11 @@ public class ArmController {
 	//カラーセンサーで測定する角度。通常状態
 	private final int NORMAL_ANGLE = 25;
 	private final int DETECT_ANGLE = 95;
+	private final int HOLD_PRIZE_ANGLE = 110;
+	private final int PUT_PRIZE_ANGLE = 0;
 
 	private final float P_GAIN = 2.5F;		//比例定数
-	private final float MAX_ABS_PWM = 60.0F;//pwmの絶対値の最大
+	private final float MAX_ABS_PWM = 40.0F;//pwmの絶対値の最大
 
 	private static Timer timer;
 	private static Boolean isTask; //タスクがあるか
@@ -65,6 +67,38 @@ public class ArmController {
 
 			public void run(){
 				controlArm(DETECT_ANGLE);
+			}
+		};
+		timer.scheduleAtFixedRate(task, 0, 4);
+		isTask = true;
+	}
+	
+	public void controlArmHoldAngel(){
+		if(isTask){
+			timer.cancel();
+			timer = new Timer();
+		}
+		Delay.msDelay(4);
+		TimerTask task = new TimerTask(){
+
+			public void run(){
+				controlArm(HOLD_PRIZE_ANGLE);
+			}
+		};
+		timer.scheduleAtFixedRate(task, 0, 4);
+		isTask = true;
+	}
+	
+	public void controlArmPutAngel(){
+		if(isTask){
+			timer.cancel();
+			timer = new Timer();
+		}
+		Delay.msDelay(4);
+		TimerTask task = new TimerTask(){
+
+			public void run(){
+				controlArm(PUT_PRIZE_ANGLE);
 			}
 		};
 		timer.scheduleAtFixedRate(task, 0, 4);
