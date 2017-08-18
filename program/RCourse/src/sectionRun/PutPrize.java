@@ -19,6 +19,7 @@ public class PutPrize extends SectionRun {
 		dACtrl.goStraightAhead(10.0F, 40.0F);
 		armCtrl.controlArmPutAngel();
 		Delay.msDelay(800);
+		dACtrl.goStraightAhead(-10.0F, 40.0F);
 		dACtrl.turn(180.0F, false);
 
 	}

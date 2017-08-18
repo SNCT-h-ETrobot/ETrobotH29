@@ -11,7 +11,7 @@ public class ArmController {
 	//カラーセンサーで測定する角度。通常状態
 	private final int NORMAL_ANGLE = 25;
 	private final int DETECT_ANGLE = 95;
-	private final int HOLD_PRIZE_ANGLE = 75;
+	private final int HOLD_PRIZE_ANGLE = 110;
 	private final int PUT_PRIZE_ANGLE = 0;
 
 	private final float P_GAIN = 2.5F;		//比例定数
