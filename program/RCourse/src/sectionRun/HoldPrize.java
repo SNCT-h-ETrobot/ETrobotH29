@@ -3,6 +3,7 @@ package sectionRun;
 import driveControl.DistanceAngleController;
 import lejos.utility.Delay;
 import virtualDevices.ArmController;
+import virtualDevices.USDistanceMeasure;
 
 /**
  * 懸賞を持つ
@@ -12,17 +13,19 @@ public class HoldPrize extends SectionRun {
 
 	ArmController armCtrl = new ArmController();
 	DistanceAngleController dACtrl = new DistanceAngleController();
+	USDistanceMeasure uSDisMeasure = new USDistanceMeasure();
 	
 	@Override
 	public void run() {
 		// TODO 自動生成されたメソッド・スタブ
-		dACtrl.goStraightAhead(5.0F, 40);
+		
+		dACtrl.goStraightAhead(uSDisMeasure.getDistance() * 100.0F, 40);
 		armCtrl.controlArmHoldAngel();
 		Delay.msDelay(800);
 		//180°回転
 		dACtrl.turn(180.0F, false);
 		//前進
-		dACtrl.goStraightAhead(5.0F, 40);
+		dACtrl.goStraightAhead(10.0F, 40);
 
 	}
 
