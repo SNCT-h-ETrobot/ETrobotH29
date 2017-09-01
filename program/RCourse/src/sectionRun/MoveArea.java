@@ -23,8 +23,8 @@ public class MoveArea extends SectionRun {
 	private static final float PRIZE_DISTANCE = 25.0f;//中央から懸賞の目標地点までの距離
 	private static final float RAIL_DISTANCE = 10.0f;//レールに近い方の縦ラインからレールまで進む距離
 
-	private static final float TARGET_SPEED = 40.0f;
-	private static final float TARGET_SPEED_LO = 20.0f;
+	private static final float TARGET_SPEED = 15.0f;
+	private static final float TARGET_SPEED_LO = 10.0f;
 
 	private static final float LT_P = 50.0f;
 	private static final float LT_P_LO = 30.0f;

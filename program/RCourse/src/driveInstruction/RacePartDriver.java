@@ -36,7 +36,7 @@ public class RacePartDriver {
 			//GATE2前のヘアピンカーブにはいるまで649
 			sectionList.add(new SectionInfo(2,649.0F,70.0F,10.0F,5.0F,0.5F,100.0F));
 			//GATE2前の180°カーブを抜けてカーブを抜けるまで800
-			sectionList.add(new SectionInfo(3,800.0F,120.0F,10.0F,10.0F,0.5F,100.0F));
+			sectionList.add(new SectionInfo(3,800.0F,90.0F,30.0F,10.0F,0.5F,100.0F));
 			//ゴールまで1090だが、灰色検知のため余裕をもつ
 			sectionList.add(new SectionInfo(4,1030.0F,60.0F,5.0F,4.0F,0.5F,100.0F)); 
 		}

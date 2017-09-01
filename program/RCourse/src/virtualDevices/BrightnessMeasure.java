@@ -4,17 +4,24 @@ import Hardware.Hardware;
 
 public class BrightnessMeasure {
 	private float brightness;
-
+	private static float nowLocation = 0.0f;
+	
 	//輝度値基準値。本番環境で調整必要
 	private final float BLACK_BRIGHTNESS = 0.02F;
 	private final float WHITE_BRIGHTNESS = 0.50F;
-
+	private final float WOOD_BRIGHTNESS = 0.2F;
+	
 	//正規化後の最大・最小値
 	private final float BRIGHTNESS_MAX = 1.0F;
 	private final float BRIGHTNESS_MIN = 0.0F;
+	
+	public BrightnessMeasure()
+	{
+		if(nowLocation==0.0f)nowLocation = WHITE_BRIGHTNESS;
+	}
 
 	public float getNormalizedBrightness(){
-		float normalizedBrightness = (getBrightness()-BLACK_BRIGHTNESS)/(WHITE_BRIGHTNESS-BLACK_BRIGHTNESS);
+		float normalizedBrightness = (getBrightness()-BLACK_BRIGHTNESS)/(nowLocation-BLACK_BRIGHTNESS);
 
 		return Math.min(Math.max(normalizedBrightness, BRIGHTNESS_MIN),BRIGHTNESS_MAX);
 	}
@@ -39,5 +46,17 @@ public class BrightnessMeasure {
 		//brightness = sampleBright[0];
 		//return brightness;
 		return sampleBright[0];
+	}
+	
+	public void changeLocation()
+	{
+		if(nowLocation == WHITE_BRIGHTNESS)
+		{
+			nowLocation = WOOD_BRIGHTNESS;
+		}
+		else
+		{
+			nowLocation = WHITE_BRIGHTNESS;
+		}
 	}
 }

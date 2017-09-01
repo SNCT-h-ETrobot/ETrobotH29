@@ -17,14 +17,14 @@ import driveControl.Linetracer;
  * レース区間終了から、灰色を検知し、レール前まで進んで停止する
  * */
 public class DetectGray extends SectionRun {
-	private static final float TARGET_DISTANCE = 132.0f;//灰色終端からレール前までの距離
-	private static final float TARGET_SPEED = 40.0f;
-	private static final float TARGET_SPEED_HI = 60.0f;
+	private static final float TARGET_DISTANCE = 125.0f;//灰色終端からレール前までの距離
+	private static final float TARGET_SPEED = 60.0f;
+	private static final float TARGET_SPEED_HI = 70.0f;
 
-	private static final float LT_P = 150.0f;
-	private static final float LT_I = 10.0f;
-	private static final float LT_D = 0.0f;
-	private static final float LT_BRIGHT = 0.58f;//灰色より若干低い値
+	private static final float LT_P = 80.0f;
+	private static final float LT_I = 20.0f;
+	private static final float LT_D = 5.0f;
+	private static final float LT_BRIGHT = 0.62f;//灰色より若干低い値
 	private static final float LT_BRIGHT_2 = 0.5f;//灰色より若干低い値
 
 	private static final float GRAY_THRESHOLD = 0.4f;//一定期間でこれだけ変化したら判定

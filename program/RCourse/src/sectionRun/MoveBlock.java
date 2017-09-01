@@ -65,7 +65,7 @@ public class MoveBlock extends SectionRun {
 			dACtrl.turn(-180.0F, false);
 		}
 		dACtrl.goStraightAhead((COLOR_DETECTION_DISTANCE+SAME_COLOR_DISTANCE) * 0.4F, RUN_SPEED);
-		
+		dACtrl.turn(180.0F, false);
 	}
 	
 	//押し出し
@@ -80,7 +80,7 @@ public class MoveBlock extends SectionRun {
 		Delay.msDelay(500);
 		dACtrl.goStraightAhead(-SAME_COLOR_DISTANCE-COLOR_DETECTION_DISTANCE, RUN_SPEED);
 		//180°回転
-		dACtrl.turn(180.0F, false);
+		//dACtrl.turn(180.0F, false);
 	}
 
 }

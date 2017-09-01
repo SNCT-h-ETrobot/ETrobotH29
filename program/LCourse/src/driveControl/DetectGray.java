@@ -21,11 +21,12 @@ public class DetectGray{
 	private static final float TARGET_SPEED = 60.0f;
 	private static final float TARGET_SPEED_HI = 70.0f;
 
-	private static final float LT_P = -20.0f;
+	private static final float LT_P = -10.0f;
 	private static final float LT_I = -5.0f;
 	private static final float LT_D = -5.0f;
 	private static final float LT_BRIGHT = 0.58f;//灰色より若干低い値
-	private static final float LT_BRIGHT_2 = 0.5f;//灰色より若干低い値
+	private static final float LT_BRIGHT_2 = 0.35f;//灰色より若干低い値
+	private static final float LT_BRIGHT_3 = 0.5f;//灰色より若干低い値
 
 	private static final float GRAY_THRESHOLD = 0.4f;//一定期間でこれだけ変化したら判定
 	private static final int GRAY_QUEUE = 40;
@@ -102,25 +103,27 @@ public class DetectGray{
 		}
 		//検知後少し走行することで、左側へ逸れないようにする
 		dm.resetDistance();
-		while(dm.getDistance() < 15.0f )
+		while(dm.getDistance() < 10.0f )
 		{
 			Delay.msDelay(4);
 		}
+		
 		//右側トレースへの切り替え
 		dm.resetDistance();
 		targetBright = LT_BRIGHT_2;
 		speed = TARGET_SPEED_HI;
-		ltP = 60;
-		ltI = 10;
-		ltD = 5;
+		ltP = 60.0F;
+		ltI = 5.0F;
+		ltD = 5.0F;
 		while(dm.getDistance() < 10.0F){
 			Delay.msDelay(4);
 		}
 		//カーブを曲がり切れる値
 		dm.resetDistance();
-		ltP = 250;
-		ltI = 100;
-		ltD = 10;
+		targetBright = LT_BRIGHT_3;
+		ltP = 150.0F;
+		ltI = 100.0F;
+		ltD = 5.0F;
 		while(dm.getDistance() < TARGET_DISTANCE){
 			Delay.msDelay(4);
 		}

@@ -2,6 +2,7 @@ package sectionRun;
 
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import virtualDevices.BrightnessMeasure;
 import Hardware.Hardware;
 
 /**
@@ -13,7 +14,7 @@ public class DetectTrain extends SectionRun {
 	private int detectID;
 	private static boolean detectFar = false;
 
-	private static final float DISTANCE_NEAR = 0.10f;
+	private static final float DISTANCE_NEAR = 0.20f;
 	private static final float DISTANCE_FAR = 0.50f; //2番目の検知の時に新幹線が奥にいるかの判定に使う
 	private static final int STOP_TIME_MS = 1000;
 
@@ -21,6 +22,7 @@ public class DetectTrain extends SectionRun {
 	private static final float TRAIN_TIME_DIFFERENCE = 0.55f;//新幹線が中央レーンから奥のレーンに移動するまでの時間。一周する時間を1とした割合で
 	private static final float TRAIN_TIME_NONE = 0.05f;//
 
+	BrightnessMeasure bright = new BrightnessMeasure();
 
 	// 引数ををbooleanからintに変えました
 	//
@@ -71,6 +73,8 @@ public class DetectTrain extends SectionRun {
 			passedTime = System.nanoTime();
 			// ちょっと待つ
 			Delay.msDelay(STOP_TIME_MS);
+			if(detectID!=1) bright.changeLocation();
+				
 		}
 
 

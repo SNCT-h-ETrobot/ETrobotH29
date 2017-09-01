@@ -29,16 +29,16 @@ public class GamePartDriver {
 
 	private SectionRunScenario sectionScenario;
 
-	public GamePartDriver(int courceID)
+	public GamePartDriver(int courseID)
 	{
 		this.courseID = courseID;
 		dACtrl = new DistanceAngleController();
 		//Lコース
-		if(courceID == 1)
+		if(courseID == 1)
 		{
 		}
 		//Rコース
-		else if(courceID == 2)
+		else if(courseID == 2)
 		{
 			sectionScenario = new SectionRunScenario();
 		}
@@ -48,9 +48,11 @@ public class GamePartDriver {
 	public void driveGamePart()
 	{
 		if(courseID ==1){
+
 		}
 		else if(courseID == 2){
 			SectionRun[] section = sectionScenario.getScenario();
+			
 			for(int i = 0; i < section.length; i++){
 				section[i].run();
 			}
