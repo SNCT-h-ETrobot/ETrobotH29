@@ -60,6 +60,11 @@ public class DetectGray extends SectionRun {
 		for (float i : bright) {
 			i = 0;
 		}
+		ltP = LT_P;
+		ltI = LT_I;
+		ltD = LT_D;
+		targetBright = LT_BRIGHT;
+		speed = TARGET_SPEED;
 		Timer timer = new Timer();
 		TimerTask timerTask = new TimerTask(){
 			public void run(){
@@ -79,11 +84,6 @@ public class DetectGray extends SectionRun {
 		}
 		dm.resetDistance();
 		long time = System.nanoTime();
-		ltP = LT_P;
-		ltI = LT_I;
-		ltD = LT_D;
-		targetBright = LT_BRIGHT;
-		speed = TARGET_SPEED;
 		while(true){
 			LCD.drawString("distance:"+dm.getDistance(), 0, 1);
 			bright[a] = bm.getNormalizedBrightness();
