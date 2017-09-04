@@ -5,16 +5,16 @@ import Hardware.Hardware;
 public class BrightnessMeasure {
 	private float brightness;
 	private static float nowLocation = 0.0f;
-	
+
 	//輝度値基準値。本番環境で調整必要
 	private final float BLACK_BRIGHTNESS = 0.02F;
-	private final float WHITE_BRIGHTNESS = 0.50F;
-	private final float WOOD_BRIGHTNESS = 0.2F;
-	
+	private final float WHITE_BRIGHTNESS = 0.55F;
+	private final float WOOD_BRIGHTNESS = 0.49F;
+
 	//正規化後の最大・最小値
 	private final float BRIGHTNESS_MAX = 1.0F;
 	private final float BRIGHTNESS_MIN = 0.0F;
-	
+
 	public BrightnessMeasure()
 	{
 		if(nowLocation==0.0f)nowLocation = WHITE_BRIGHTNESS;
@@ -47,7 +47,7 @@ public class BrightnessMeasure {
 		//return brightness;
 		return sampleBright[0];
 	}
-	
+
 	public void changeLocation()
 	{
 		if(nowLocation == WHITE_BRIGHTNESS)

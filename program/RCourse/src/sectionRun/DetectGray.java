@@ -3,11 +3,11 @@ package sectionRun;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import Hardware.Hardware;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import virtualDevices.BrightnessMeasure;
 import virtualDevices.DistanceMeasure;
+import Hardware.Hardware;
 import driveControl.DistanceAngleController;
 import driveControl.Linetracer;
 //import ev3Viewer.LogSender;
@@ -25,6 +25,9 @@ public class DetectGray extends SectionRun {
 	private static final float LT_I = 20.0f;
 	private static final float LT_D = 5.0f;
 	private static final float LT_BRIGHT = 0.62f;//灰色より若干低い値
+	private static final float LT_P_2 = 120.0f;
+	private static final float LT_I_2 = 30.0f;
+	private static final float LT_D_2 = 5.0f;
 	private static final float LT_BRIGHT_2 = 0.5f;//灰色より若干低い値
 
 	private static final float GRAY_THRESHOLD = 0.4f;//一定期間でこれだけ変化したら判定
@@ -38,6 +41,9 @@ public class DetectGray extends SectionRun {
 	private BrightnessMeasure bm;
 
 	private float[] bright;
+	private float ltP;
+	private float ltI;
+	private float ltD;
 	private float targetBright;
 	private float speed;
 
@@ -57,7 +63,7 @@ public class DetectGray extends SectionRun {
 		Timer timer = new Timer();
 		TimerTask timerTask = new TimerTask(){
 			public void run(){
-				lt.linetrace(LT_P, LT_I, LT_D, targetBright, speed);
+				lt.linetrace(ltP, ltI, ltD, targetBright, speed);
 			}
 		};
 
@@ -73,6 +79,9 @@ public class DetectGray extends SectionRun {
 		}
 		dm.resetDistance();
 		long time = System.nanoTime();
+		ltP = LT_P;
+		ltI = LT_I;
+		ltD = LT_D;
 		targetBright = LT_BRIGHT;
 		speed = TARGET_SPEED;
 		while(true){
@@ -96,6 +105,9 @@ public class DetectGray extends SectionRun {
 			Delay.msDelay(4);
 		}
 		dm.resetDistance();
+		ltP = LT_P_2;
+		ltI = LT_I_2;
+		ltD = LT_D_2;
 		targetBright = LT_BRIGHT_2;
 		speed = TARGET_SPEED_HI;
 		while(dm.getDistance() < TARGET_DISTANCE){

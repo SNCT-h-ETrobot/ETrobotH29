@@ -3,9 +3,9 @@ package sectionRun;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import Hardware.Hardware;
 import lejos.utility.Delay;
 import virtualDevices.DistanceMeasure;
+import Hardware.Hardware;
 import driveControl.DistanceAngleController;
 import driveControl.Linetracer;
 
@@ -15,13 +15,13 @@ import driveControl.Linetracer;
  * */
 public class PassRail extends SectionRun {
 	private static final float TARGET_DISTANCE = 40.0f;//レールを超えるために直進する距離
-	private static final float TARGET_DISTANCE_LT = 20.0f;//レール前からライン復帰後までの距離
-	private static final float TARGET_SPEED = 10.0f;
+	private static final float TARGET_DISTANCE_LT = 65.0f;//レール前からライン復帰後までの距離
+	private static final float TARGET_SPEED = 40.0f;
 	private static final float TARGET_SPEED_HI = 80.0f;
 
-	private static final float LT_P = 50.0f;
-	private static final float LT_I = 0.0f;
-	private static final float LT_D = 0.0f;
+	private static final float LT_P = 150.0f;
+	private static final float LT_I = 20.0f;
+	private static final float LT_D = 5.0f;
 	private static final float LT_BRIGHT = 0.5f;//正規化前提
 
 	private DistanceAngleController DAC;
@@ -41,8 +41,8 @@ public class PassRail extends SectionRun {
 		DAC.goStraightAhead(TARGET_DISTANCE, TARGET_SPEED_HI);
 
 		//少し右方向に進んでライン復帰準備
-		DAC.turn(10, false);
-		DAC.goStraightAhead(3, TARGET_SPEED);
+		//DAC.turn(5, false);
+		//DAC.goStraightAhead(3, TARGET_SPEED);
 
 		// 一定距離進むまでライントレースしてライン復帰
 		Timer timer = new Timer();

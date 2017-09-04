@@ -1,7 +1,6 @@
 package sectionRun;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,7 +8,6 @@ import lejos.utility.Delay;
 import virtualDevices.BrightnessMeasure;
 import virtualDevices.DistanceMeasure;
 import virtualDevices.MotorAngleMeasure;
-import Hardware.Hardware;
 import driveControl.DistanceAngleController;
 import driveControl.Linetracer;
 import driveControl.WheelController;
@@ -23,13 +21,13 @@ public class MoveArea extends SectionRun {
 	private static final float PRIZE_DISTANCE = 25.0f;//中央から懸賞の目標地点までの距離
 	private static final float RAIL_DISTANCE = 10.0f;//レールに近い方の縦ラインからレールまで進む距離
 
-	private static final float TARGET_SPEED = 15.0f;
-	private static final float TARGET_SPEED_LO = 10.0f;
+	private static final float TARGET_SPEED = 40.0f;
+	private static final float TARGET_SPEED_LO = 35.0f;
 
-	private static final float LT_P = 50.0f;
-	private static final float LT_P_LO = 30.0f;
-	private static final float LT_I = 0.0f;
-	private static final float LT_D = 0.0f;
+	private static final float LT_P = 150.0f;
+	private static final float LT_P_LO = 60.0f;
+	private static final float LT_I = 20.0f;
+	private static final float LT_D = 5.0f;
 	private static final float LT_BRIGHT = 0.5f;//正規化前提
 	private float ltp,lti,ltd,ltb,lts;
 	private boolean useLT = false;
@@ -309,9 +307,9 @@ public class MoveArea extends SectionRun {
 	private void detectRightAngle(boolean isRight){
 		useLT = true;
 		dm.resetDistance();
-		if(isRight)ltp=LT_P;
-		else ltp = -LT_P;
-		lti = LT_I;
+		if(isRight)ltp=300;
+		else ltp = -300;
+		lti = 100;
 		ltd = LT_D;
 		ltb = LT_BRIGHT;
 		lts = TARGET_SPEED;

@@ -3,13 +3,11 @@ package driveControl;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import Hardware.Hardware;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import virtualDevices.BrightnessMeasure;
 import virtualDevices.DistanceMeasure;
-import driveControl.DistanceAngleController;
-import driveControl.Linetracer;
+import Hardware.Hardware;
 //import ev3Viewer.LogSender;
 
 /**
@@ -17,12 +15,12 @@ import driveControl.Linetracer;
  * レース区間終了から、灰色を検知し、レール前まで進んで停止する
  * */
 public class DetectGray{
-	private static final float TARGET_DISTANCE = 117.0f;//灰色終端からレール前までの距離
+	private static final float TARGET_DISTANCE = 112.0f;//灰色終端からレール前までの距離
 	private static final float TARGET_SPEED = 60.0f;
 	private static final float TARGET_SPEED_HI = 70.0f;
 
-	private static final float LT_P = -10.0f;
-	private static final float LT_I = -5.0f;
+	private static final float LT_P = -80.0f;
+	private static final float LT_I = -10.0f;
 	private static final float LT_D = -5.0f;
 	private static final float LT_BRIGHT = 0.58f;//灰色より若干低い値
 	private static final float LT_BRIGHT_2 = 0.35f;//灰色より若干低い値
@@ -121,8 +119,8 @@ public class DetectGray{
 		//カーブを曲がり切れる値
 		dm.resetDistance();
 		targetBright = LT_BRIGHT_3;
-		ltP = 150.0F;
-		ltI = 100.0F;
+		ltP = 100.0F;
+		ltI = 60.0F;
 		ltD = 5.0F;
 		while(dm.getDistance() < TARGET_DISTANCE){
 			Delay.msDelay(4);
