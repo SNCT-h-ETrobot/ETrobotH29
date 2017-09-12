@@ -27,11 +27,13 @@ public class PassRail extends SectionRun {
 	private DistanceAngleController DAC;
 	private DistanceMeasure disMeasure;
 	private Linetracer lt;
+	private int passID;
 
-	public PassRail() {
+	public PassRail(int ID) {
 		DAC = new DistanceAngleController();
 		disMeasure = new DistanceMeasure();
 		lt = new Linetracer();
+		passID = ID;
 	}
 
 	@Override
@@ -45,6 +47,7 @@ public class PassRail extends SectionRun {
 		//DAC.goStraightAhead(3, TARGET_SPEED);
 
 		// 一定距離進むまでライントレースしてライン復帰
+		if(passID != 2){
 		Timer timer = new Timer();
 		TimerTask timerTask = new TimerTask(){
 			public void run(){
@@ -58,7 +61,8 @@ public class PassRail extends SectionRun {
 			Delay.msDelay(4);
 		}
 		timer.cancel();
-
+		}
+		
 		for (int i = 0; i < 10; i++) {
 			Hardware.motorPortL.controlMotor(0, 1);
 			Hardware.motorPortR.controlMotor(0, 1);

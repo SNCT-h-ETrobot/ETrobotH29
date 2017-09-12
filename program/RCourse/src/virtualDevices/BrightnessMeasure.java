@@ -7,9 +7,10 @@ public class BrightnessMeasure {
 	private static float nowLocation = 0.0f;
 
 	//輝度値基準値。本番環境で調整必要
-	private final float BLACK_BRIGHTNESS = 0.02F;
-	private final float WHITE_BRIGHTNESS = 0.55F;
-	private final float WOOD_BRIGHTNESS = 0.49F;
+	// 試走会3時:黒0.02, 白0.55, 板0.49
+	private final float BLACK_BRIGHTNESS = 0.05F;
+	private final float WHITE_BRIGHTNESS = 0.68F;
+	private final float WOOD_BRIGHTNESS = 0.33F;
 
 	//正規化後の最大・最小値
 	private final float BRIGHTNESS_MAX = 1.0F;

@@ -86,7 +86,7 @@ public class DetectTrain extends SectionRun {
 				double elapsedTime = (System.nanoTime()-passedTime)/Math.pow(10, 9);
 				double a = Math.cos((elapsedTime/TRAIN_TIME_CYCLE + timeDiff)*2*Math.PI);
 				LCD.drawString("cos:"+a, 0, 3);
-				//if(0.5>a)break;
+				if(0.5>a)break;
 			}
 
 		}

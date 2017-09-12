@@ -18,7 +18,7 @@ public class HoldPrize extends SectionRun {
 	@Override
 	public void run() {
 		// TODO 自動生成されたメソッド・スタブ
-		
+		armCtrl.controlArmPutAngel();
 		dACtrl.goStraightAhead(uSDisMeasure.getDistance() * 100.0F, 40);
 		armCtrl.controlArmHoldAngel();
 		Delay.msDelay(800);

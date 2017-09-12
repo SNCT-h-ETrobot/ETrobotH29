@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
+import virtualDevices.ArmController;
 import virtualDevices.BrightnessMeasure;
 import virtualDevices.DistanceMeasure;
 import Hardware.Hardware;
@@ -21,16 +22,16 @@ public class DetectGray extends SectionRun {
 	private static final float TARGET_SPEED = 60.0f;
 	private static final float TARGET_SPEED_HI = 70.0f;
 
-	private static final float LT_P = 80.0f;
-	private static final float LT_I = 20.0f;
+	private static final float LT_P = 120.0f;
+	private static final float LT_I = 10.0f;
 	private static final float LT_D = 5.0f;
-	private static final float LT_BRIGHT = 0.62f;//灰色より若干低い値
+	private static final float LT_BRIGHT = 0.58f;//0.62f;//灰色より若干低い値
 	private static final float LT_P_2 = 120.0f;
 	private static final float LT_I_2 = 30.0f;
 	private static final float LT_D_2 = 5.0f;
-	private static final float LT_BRIGHT_2 = 0.5f;//灰色より若干低い値
+	private static final float LT_BRIGHT_2 = 0.5f;//
 
-	private static final float GRAY_THRESHOLD = 0.4f;//一定期間でこれだけ変化したら判定
+	private static final float GRAY_THRESHOLD = 0.3f;//一定期間でこれだけ変化したら判定
 	private static final int GRAY_QUEUE = 40;
 
 	//0.02 0.28 0.50
@@ -39,6 +40,7 @@ public class DetectGray extends SectionRun {
 	private DistanceMeasure dm;
 	private Linetracer lt;
 	private BrightnessMeasure bm;
+	private ArmController arm;
 
 	private float[] bright;
 	private float ltP;
@@ -53,6 +55,7 @@ public class DetectGray extends SectionRun {
 		lt = new Linetracer();
 		bm = new BrightnessMeasure();
 		bright = new float[GRAY_QUEUE];
+		arm = new ArmController();
 	}
 
 	@Override
@@ -65,6 +68,7 @@ public class DetectGray extends SectionRun {
 		ltD = LT_D;
 		targetBright = LT_BRIGHT;
 		speed = TARGET_SPEED;
+		arm.controlArmNormalAngel();
 		Timer timer = new Timer();
 		TimerTask timerTask = new TimerTask(){
 			public void run(){

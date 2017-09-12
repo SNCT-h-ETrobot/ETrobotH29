@@ -3,6 +3,7 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
+import lejos.utility.Delay;
 import virtualDevices.MotorAngleMeasure;
 
 public class DistanceAngleController {
@@ -117,26 +118,30 @@ public class DistanceAngleController {
 		float angle;	//平均回転角度
 		float distance;	//走行距離
 		float preDistance = 0.0F;
-		int n =0;
+		int n = 0;
 		do{
 			angleL = motorAngleMeasure.getMotorAngle()[0];
 			angleR = motorAngleMeasure.getMotorAngle()[1];
 			angle = (angleL+angleR)/2.0F;
 			distance = (angle/360)*TIRE_CIRCUMFERENCE;
 			//LCD.drawString("dist:"+distance+",target:"+targetDistance, 0, 5);
-			if(n == 5000){
-				if(distance == preDistance){
+			if(distance == preDistance){
+				if(n == 50){
 					break;
 				}
+			}else{
 				preDistance = distance;
 				n = 0;
 			}
 			n++;
+			Delay.msDelay(4);
 		}
 		while(Math.abs(distance) <= Math.abs(targetDistance));
 
 		timerEnd = true;
+		Delay.msDelay(4);
 		timer.cancel();
+		wheelCtrl.controlWheelsDirect(0, 0);
 	}
 
 	//第一引数で動かす角度、第二引数でブロックを持っているかどうか（持っているときはtrue）
@@ -147,7 +152,7 @@ public class DistanceAngleController {
 		targetTurnAngle = targetAngle;
 		motorAngleMeasure.resetMotorAngle();
 		timerEnd = false;
-	
+
 		Timer timer = new Timer();
 		TimerTask task = new TimerTask(){
 
@@ -163,56 +168,56 @@ public class DistanceAngleController {
 			float pwmL;	//左輪pwm
 			float pwmR;	//右輪pwm
 
-	
+
 			public void run(){
-	
+
 				//両輪に対して角度でPID制御する
 				angleL = motorAngleMeasure.getMotorAngle()[0];
 				angleR = motorAngleMeasure.getMotorAngle()[1];
-	
+
 				if(targetTurnAngle > 0)//個体差による微調整
 				{
 					turnAngleL = angleL*222.0F/360.0F;	//ホイール140度くらいで90度機体が旋回するらしい
-	
+
 					turnAngleR = angleR*222.0F/360.0F;
-					
+
 					currentDiffL = (float)targetTurnAngle - turnAngleL;	//指定旋回角度を目標
 					currentDiffR = (-1.0F)*(float)targetTurnAngle - turnAngleR;	//指定旋回角度の逆を目標(Rは応答が悪い?)
 					//旋回角度ベースで制御
 					pwmL = P_GAIN_A*currentDiffL
 							+ I_GAIN_A*(currentDiffL-preDiffL)*DELTA_T
 							- D_GAIN_A*((currentDiffL + preDiffL) / 2.0F)*DELTA_T + 20;
-		
+
 					//上限設定
 					if(pwmL > targetSpeed + 20){
 						pwmL = targetSpeed + 20;
 					}
-		
+
 					if(pwmL < -targetSpeed){
 						pwmL = -targetSpeed;
 					}
-		
+
 					//右輪も旋回角度ベースで制御
 					pwmR = P_GAIN_AS*currentDiffR
 							+ I_GAIN_AS*(currentDiffR-preDiffR)*DELTA_T
 							- D_GAIN_AS*((currentDiffR + preDiffR) / 2.0F)*DELTA_T;
-		
+
 					//上限設定
 					if(pwmR > targetSpeed){
 						pwmR = targetSpeed;
 					}
-		
+
 					if(pwmR < -targetSpeed){
 						pwmR = -targetSpeed;
 					}
-		
+
 				}
 				else
 				{
-					turnAngleL = angleL*216.0F/360.0F;	
-					
+					turnAngleL = angleL*216.0F/360.0F;
+
 					turnAngleR = angleR*216.0F/360.0F;
-					
+
 					currentDiffL = (float)targetTurnAngle - turnAngleL;	//指定旋回角度を目標
 					currentDiffR = (-1.0F)*(float)targetTurnAngle - turnAngleR;	//指定旋回角度の逆を目標(Rは応答が悪い?)
 
@@ -220,40 +225,40 @@ public class DistanceAngleController {
 					pwmL = P_GAIN_A*currentDiffL
 							+ I_GAIN_A*(currentDiffL-preDiffL)*DELTA_T
 							- D_GAIN_A*((currentDiffL + preDiffL) / 2.0F)*DELTA_T;
-		
+
 					//上限設定
 					if(pwmL > targetSpeed){
 						pwmL = targetSpeed;
 					}
-		
+
 					if(pwmL < -targetSpeed){
 						pwmL = -targetSpeed;
 					}
-		
+
 					//右輪も旋回角度ベースで制御
 					pwmR = P_GAIN_AS*currentDiffR
 							+ I_GAIN_AS*(currentDiffR-preDiffR)*DELTA_T
 							- D_GAIN_AS*((currentDiffR + preDiffR) / 2.0F)*DELTA_T + 10;
-		
+
 					//上限設定
 					if(pwmR > targetSpeed + 10){
 						pwmR = targetSpeed + 10;
 					}
-		
+
 					if(pwmR < -targetSpeed){
 						pwmR = -targetSpeed;
 					}
-		
+
 				}
-	
+
 
 				//LCD.drawString("PL:"+(P_GAIN_A*currentDiffL)+" "+angleL+" "+angleR, 0, 2);
 				//LCD.drawString("PR:"+(P_GAIN_AS*currentDiffR)+" "+angleL+" "+angleR, 0, 3);
-	
+
 				//更新
 				preDiffL = currentDiffL;
 				preDiffR = currentDiffR;
-					if(timerEnd){
+				if(timerEnd){
 					wheelCtrl.controlWheelsDirect(0, 0);
 				}
 				else{
@@ -261,11 +266,11 @@ public class DistanceAngleController {
 				}
 
 			}
-	
+
 		};
-	
+
 		timer.scheduleAtFixedRate(task, 0, 4);
-	
+
 		float angleL;	//左回転角度
 		//float angleR;	//右回転角度
 		float turnAngle; //旋回した角度
@@ -274,31 +279,29 @@ public class DistanceAngleController {
 		do{
 			angleL = motorAngleMeasure.getMotorAngle()[1];
 			//angleR = motorAngleMeasure.getMotorAngle()[1];
-	
+
 			turnAngle = angleL*222.0F/360.0F;	//ホイール140度くらいで90度機体が旋回するらしい
 			//LCD.drawString("turnL:"+turnAngle, 0, 5);
 			//LCD.drawString("turnR:"+angleR*230.0F/360.0F, 0, 6);
-	
-			if(n == 5000){
-				if(turnAngle == preAngle){
+			if(turnAngle == preAngle){
+				if(n == 50){
 					break;
 				}
+			}else{
 				preAngle = turnAngle;
 				n = 0;
 			}
 			n++;
-	
+			Delay.msDelay(4);
 		}
 		while(Math.abs(turnAngle) <= Math.abs(targetTurnAngle));
-	
+
 		timerEnd = true;
+		Delay.msDelay(4);
 		timer.cancel();
 		wheelCtrl.controlWheelsDirect(0, 0);
-	
-
-				
 	}
-	
+
 	public void TurningControl(float targetDistance , float speed , final boolean right)
 	{
 		targetSpeed = speed;
