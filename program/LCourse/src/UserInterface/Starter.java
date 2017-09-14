@@ -45,6 +45,7 @@ public class Starter {
 		disMeasure.resetDistance();
 		angMeasure.resetMotorAngle();
 		armCtrl.resetArm();
+		
 		LCD.drawString("Connect Ready", 0, 0);
 		BlockArrangeInfo.makeConnection();
 		LCD.drawString("Connect OK   ", 0, 0);
@@ -52,8 +53,10 @@ public class Starter {
 		int code = com.readCode();
 		BlockArrangeInfo.setBlockPlace(code);
 		routeDriver.driveRoute();
+		
 	}
 	public void touchStart(){
+		
 		float[] sampleTouch = new float[Hardware.touch.sampleSize()];
 		LCD.drawString("Touch Ready", 0, 0);
 		while(true){
@@ -63,6 +66,7 @@ public class Starter {
 			}
 		}
 		LCD.drawString("Start      ", 0, 0);
+		
 
 		controller.drive();
 	}
