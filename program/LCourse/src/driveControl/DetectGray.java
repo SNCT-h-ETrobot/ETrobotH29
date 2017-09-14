@@ -1,37 +1,32 @@
-package sectionRun;
+package driveControl;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
-import virtualDevices.ArmController;
 import virtualDevices.BrightnessMeasure;
 import virtualDevices.DistanceMeasure;
 import Hardware.Hardware;
-import driveControl.DistanceAngleController;
-import driveControl.Linetracer;
 //import ev3Viewer.LogSender;
 
 /**
  * 灰色検知する
  * レース区間終了から、灰色を検知し、レール前まで進んで停止する
  * */
-public class DetectGray extends SectionRun {
-	private static final float TARGET_DISTANCE = 125.0f;//灰色終端からレール前までの距離
+public class DetectGray{
+	private static final float TARGET_DISTANCE = 112.0f;//灰色終端からレール前までの距離
 	private static final float TARGET_SPEED = 60.0f;
 	private static final float TARGET_SPEED_HI = 70.0f;
 
-	private static final float LT_P = 120.0f;
-	private static final float LT_I = 10.0f;
-	private static final float LT_D = 5.0f;
-	private static final float LT_BRIGHT = 0.58f;//0.62f;//灰色より若干低い値
-	private static final float LT_P_2 = 120.0f;
-	private static final float LT_I_2 = 30.0f;
-	private static final float LT_D_2 = 5.0f;
-	private static final float LT_BRIGHT_2 = 0.5f;//
+	private static final float LT_P = -80.0f;
+	private static final float LT_I = -10.0f;
+	private static final float LT_D = -5.0f;
+	private static final float LT_BRIGHT = 0.58f;//灰色より若干低い値
+	private static final float LT_BRIGHT_2 = 0.35f;//灰色より若干低い値
+	private static final float LT_BRIGHT_3 = 0.5f;//灰色より若干低い値
 
-	private static final float GRAY_THRESHOLD = 0.3f;//一定期間でこれだけ変化したら判定
+	private static final float GRAY_THRESHOLD = 0.4f;//一定期間でこれだけ変化したら判定
 	private static final int GRAY_QUEUE = 40;
 
 	//0.02 0.28 0.50
@@ -40,14 +35,13 @@ public class DetectGray extends SectionRun {
 	private DistanceMeasure dm;
 	private Linetracer lt;
 	private BrightnessMeasure bm;
-	private ArmController arm;
 
 	private float[] bright;
+	private float targetBright;
+	private float speed;
 	private float ltP;
 	private float ltI;
 	private float ltD;
-	private float targetBright;
-	private float speed;
 
 	public DetectGray() {
 		DAC = new DistanceAngleController();
@@ -55,20 +49,15 @@ public class DetectGray extends SectionRun {
 		lt = new Linetracer();
 		bm = new BrightnessMeasure();
 		bright = new float[GRAY_QUEUE];
-		arm = new ArmController();
+		ltP = LT_P;
+		ltI = LT_I;
+		ltD = LT_D;
 	}
 
-	@Override
 	public void run() {
 		for (float i : bright) {
 			i = 0;
 		}
-		ltP = LT_P;
-		ltI = LT_I;
-		ltD = LT_D;
-		targetBright = LT_BRIGHT;
-		speed = TARGET_SPEED;
-		arm.controlArmNormalAngel();
 		Timer timer = new Timer();
 		TimerTask timerTask = new TimerTask(){
 			public void run(){
@@ -88,6 +77,8 @@ public class DetectGray extends SectionRun {
 		}
 		dm.resetDistance();
 		long time = System.nanoTime();
+		targetBright = LT_BRIGHT;
+		speed = TARGET_SPEED;
 		while(true){
 			LCD.drawString("distance:"+dm.getDistance(), 0, 1);
 			bright[a] = bm.getNormalizedBrightness();
@@ -108,15 +99,33 @@ public class DetectGray extends SectionRun {
 			a = (a+1)%GRAY_QUEUE;
 			Delay.msDelay(4);
 		}
+		//検知後少し走行することで、左側へ逸れないようにする
 		dm.resetDistance();
-		ltP = LT_P_2;
-		ltI = LT_I_2;
-		ltD = LT_D_2;
+		while(dm.getDistance() < 10.0f )
+		{
+			Delay.msDelay(4);
+		}
+		
+		//右側トレースへの切り替え
+		dm.resetDistance();
 		targetBright = LT_BRIGHT_2;
 		speed = TARGET_SPEED_HI;
+		ltP = 60.0F;
+		ltI = 5.0F;
+		ltD = 5.0F;
+		while(dm.getDistance() < 10.0F){
+			Delay.msDelay(4);
+		}
+		//カーブを曲がり切れる値
+		dm.resetDistance();
+		targetBright = LT_BRIGHT_3;
+		ltP = 100.0F;
+		ltI = 60.0F;
+		ltD = 5.0F;
 		while(dm.getDistance() < TARGET_DISTANCE){
 			Delay.msDelay(4);
 		}
+		
 		timer.cancel();
 
 		for (int i = 0; i < 10; i++) {

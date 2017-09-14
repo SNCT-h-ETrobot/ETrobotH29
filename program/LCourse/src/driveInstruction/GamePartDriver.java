@@ -30,7 +30,7 @@ public class GamePartDriver {
 	private final float I_GAIN = 10.0F;	//I係数
 	private final float D_GAIN = 5.0F;	//D係数
 
-	private final float TARGET_BRIGHTNESS = 0.35F;//要調整もっと高いかも
+	private final float TARGET_BRIGHTNESS = 0.5F;//要調整もっと高いかも
 	
 	private float blockMoveCorrection = 0.0F;
 	private final float LINETRACE_ANGLE_CONNECTION = 7.0F;
@@ -176,7 +176,7 @@ public class GamePartDriver {
 				//ブロックを置く処理
 				if(blockhold)
 				{
-					missionScenario.add(new DriveInfo(0.000F,false,-10.000F,40,false) );
+					missionScenario.add(new DriveInfo(0.000F,false,-10.000F,60,false) );
 					correctedAngle = currentAngle;
 					correctedDistance = -10.000F;
 				}
@@ -207,7 +207,7 @@ public class GamePartDriver {
 				}
 				//System.out.println("i:" +i+ " "+ currentID + "->" + route.get(i+1) + " angle:"+angle);
 				//とりあえずspeedは40　後で距離に応じて変えたりするようにする
-				missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),40 ,path.isLine()));
+				missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,path.isLine()));
 
 
 				currentAngle = path.getAngle();
@@ -235,7 +235,7 @@ public class GamePartDriver {
 					}
 					currentAngle = correctedAngle;
 					//とりあえずspeedは40　後で距離に応じて変えたりするようにする
-					missionScenario.add(new DriveInfo(angle,false,-correctedDistance,50,false) );
+					missionScenario.add(new DriveInfo(angle,false,-correctedDistance,60,false) );
 					correctedDistance = 0.000F;
 				}
 				currentID = route.get(i+1);
