@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import virtualDevices.ArmController;
+import virtualDevices.BrightnessMeasure;
 import virtualDevices.DistanceMeasure;
 import virtualDevices.HSVColorDetector;
 import Information.BlockArrangeInfo;
@@ -42,6 +43,14 @@ public class GamePartDriver {
 	
 	private HSVColorDetector colorDetect = new HSVColorDetector();
 	private WheelController whcon = new WheelController();
+	
+	private BrightnessMeasure briMeasure;
+	private float kp;
+	private float ki;
+	private float kd;
+	private float targetForward;
+	private boolean isLinetrace;
+	private final float LINE_TO_GARAGE_DISTANCE = 65.0F;
 
 	public GamePartDriver(int courceID)
 	{
@@ -241,6 +250,8 @@ public class GamePartDriver {
 				blockMoveCorrection = 0.0F;
 			}
 		}
+		
+		parking();
 
 	}
 
@@ -397,5 +408,55 @@ public class GamePartDriver {
 			}
 		}
 
+	}
+	private void parking(){
+		//15度方向を向く（縦列駐車前の線に垂直）
+		if(currentAngle != 15.000F){//仮想頂点から来たとき
+			//青頂点から来たとき
+			if(currentAngle == 105.000F){
+				dACtrl.turn(-90.000F, false);
+			}
+			//緑頂点から来たとき
+			else if(currentAngle == 285.000F){
+				dACtrl.turn(90.000F, false);
+			}
+		}
+		//ライントレース部（isLinetraceによって実行したりしなかったりする）
+		Timer timer = new Timer();
+		TimerTask timerTask = new TimerTask(){
+			public void run(){
+				if(isLinetrace)linetracer.linetrace(kp, ki, kd, TARGET_BRIGHTNESS, targetForward);
+			}
+		};
+
+		//線を検知するまで進む
+		isLinetrace = true;
+		kp = 0.0F;
+		ki = 0.0F;
+		kd = 0.0F;
+		targetForward  = 40.0F;
+		int blackCount = 0;
+		timer.scheduleAtFixedRate(timerTask, 0, 4);
+
+		Delay.msDelay(1000);//１秒たってから黒線検知を始める
+
+		while(blackCount < 1){
+			if(briMeasure.getNormalizedBrightness() < 0.35F){
+				blackCount++;
+			}
+			//黒線に達したらライントレースを切る
+		}
+		Delay.msDelay(250);
+		isLinetrace = false;
+		distMeasure.resetDistance();
+
+		//ガレージのほうを向く
+		dACtrl.turn(-65.0F, false);
+
+		//ガレージに入る
+		dACtrl.goStraightAhead(LINE_TO_GARAGE_DISTANCE, 50.0F);
+
+		//方向転換する
+		dACtrl.turn(40.0F, false);
 	}
 }
