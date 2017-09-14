@@ -2,17 +2,21 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import virtualDevices.ArmController;
 import virtualDevices.DistanceMeasure;
+import virtualDevices.HSVColorDetector;
 import Information.BlockArrangeInfo;
 import Information.DriveInfo;
 import Information.Path;
 import Information.RouteDriver;
 import driveControl.DistanceAngleController;
 import driveControl.Linetracer;
+import driveControl.WheelController;
 
 public class GamePartDriver {
 
@@ -26,15 +30,18 @@ public class GamePartDriver {
 	private DistanceAngleController dACtrl;
 	private RouteDriver routeDriver;
 
-	private final float P_GAIN = 50.0F;	//P係数
+	private final float P_GAIN = 100.0F;	//P係数
 	private final float I_GAIN = 10.0F;	//I係数
 	private final float D_GAIN = 5.0F;	//D係数
 
 	private final float TARGET_BRIGHTNESS = 0.5F;//要調整もっと高いかも
 	
 	private float blockMoveCorrection = 0.0F;
-	private final float LINETRACE_ANGLE_CONNECTION = 7.0F;
+	private final float LINETRACE_ANGLE_CONNECTION = 6.0F;
 	private final float BLOCK_MOVE_DISTANCE = 5.0F;
+	
+	private HSVColorDetector colorDetect = new HSVColorDetector();
+	private WheelController whcon = new WheelController();
 
 	public GamePartDriver(int courceID)
 	{
@@ -48,7 +55,7 @@ public class GamePartDriver {
 		//Lコース
 		if(courceID == 1)
 		{
-			//ブロック並べに突入するときの進行方向は右上方向なので315度
+			//ブロック並べに突入するときの進行方向は右上方向なので300度
 			currentAngle = 300.000F;
 			currentID = 90;
 		}
@@ -62,14 +69,37 @@ public class GamePartDriver {
 
 	public void driveGamePart()
 	{
+		arm.controlArmNormalAngel();
 		createMissionScenario(routeDriver.getRoute());
 
 		LCD.drawString("Size:" + missionScenario.size(), 0, 0);
 		Delay.msDelay(3000);
-
-		float distance;
-		float speed;
-		arm.controlArmNormalAngel();
+		//緑色検知
+		int cnt = 0;
+		while(true)
+		{
+			linetracer.linetrace(P_GAIN + 100.0F, I_GAIN + 20.0F, D_GAIN, TARGET_BRIGHTNESS, 50);
+			Delay.msDelay(4);
+			if(colorDetect.getUnderColorID() == 3)
+			{
+				cnt++;
+			}
+			else
+			{
+				cnt = 0;
+			}
+			if(cnt >= 5)
+			{
+				break;
+			}
+			Delay.msDelay(2);
+		}
+		whcon.controlWheelsDirect(0, 0);
+		
+		
+		float distance = 0;
+		float speed = 0;
+		//dACtrl.turn(20.0F,false);
 		for(int i=0;i<missionScenario.size();i++)
 		{
 
@@ -80,37 +110,52 @@ public class GamePartDriver {
 			{
 				if(missionScenario.get(i).getTurnAngle() == 180.0F || missionScenario.get(i).getTurnAngle() == -180.0F)
 				{
+					
 					//r=12.6cm,a=65°
-					dACtrl.TurningControl((float) (2.0F * Math.PI * 12.6F * 65.0F / 360.0F), 60, false);
-					dACtrl.TurningControl((float) (2.0F * Math.PI * 12.6F * ((65.0F*2.0F + 180.0F) / 360.0F)), 60, true);
-					dACtrl.TurningControl((float) (2.0F * Math.PI * 12.6F * 65.0F / 360.0F), 60, false);
+					dACtrl.TurningControl((float) (2.0F * Math.PI * 12.6F * 65.0F / 360.0F), 80, false);
+					dACtrl.TurningControl((float) (2.0F * Math.PI * 12.6F * ((65.0F*2.0F + 180.0F) / 360.0F)), 80, true);
+					if(missionScenario.get(i).getLinetrace()){//次がライントレースの時に右側よりにする 
+						dACtrl.TurningControl((float) (2.0F * Math.PI * 12.6F * 65.0F / 360.0F), 80, false);
+					}
+					else
+					{
+						dACtrl.TurningControl((float) (2.0F * Math.PI * 12.6F * 65.0F / 360.0F), 80, false);
+					}
+					blockMoveCorrection += 5.0F;
 				}
 				else if(missionScenario.get(i).getTurnAngle() == 0.000F)
 				{
 					if(missionScenario.get(i).getLinetrace()){//次がライントレースの時に右側よりにする 
-						dACtrl.turn(LINETRACE_ANGLE_CONNECTION + 3.0F,true);
+						dACtrl.turn(LINETRACE_ANGLE_CONNECTION,true);
 					}
 				}
 				else
 				{
-					if(missionScenario.get(i).getLinetrace()){//次がライントレースの時に右側よりにする
-						//右回りの時は少し強め 左回りの時は少し弱め
-						float theta = missionScenario.get(i).getTurnAngle()/2.0F + LINETRACE_ANGLE_CONNECTION / 2.0F;
-						dACtrl.turn(theta,missionScenario.get(i).getHoldBlock());
-						//少しだけ直進
-						dACtrl.goStraightAhead(BLOCK_MOVE_DISTANCE, 60.000F);
-						dACtrl.turn(theta,missionScenario.get(i).getHoldBlock());
-						
-						blockMoveCorrection = (float) ((BLOCK_MOVE_DISTANCE/2.0F) / Math.cos(theta * Math.PI / 180.0F));
+					if(missionScenario.get(i).getTurnAngle() >= 60.000F || missionScenario.get(i).getTurnAngle() <= -60.000F)
+					{
+						if(missionScenario.get(i).getLinetrace()){//次がライントレースの時に右側よりにする
+							//右回りの時は少し強め 左回りの時は少し弱め
+							float theta = missionScenario.get(i).getTurnAngle()/2.0F + (LINETRACE_ANGLE_CONNECTION) / 2.0F;
+							dACtrl.turn(theta,missionScenario.get(i).getHoldBlock());
+							//少しだけ直進
+							dACtrl.goStraightAhead(BLOCK_MOVE_DISTANCE, 60.000F);
+							dACtrl.turn(theta,missionScenario.get(i).getHoldBlock());
+							
+							blockMoveCorrection = (float) ((BLOCK_MOVE_DISTANCE/2.0F) / Math.cos(theta * Math.PI / 180.0F));
+						}
+						else
+						{
+							float theta = missionScenario.get(i).getTurnAngle()/2.0F;
+							dACtrl.turn(theta,missionScenario.get(i).getHoldBlock());
+							//少しだけ直進
+							dACtrl.goStraightAhead(BLOCK_MOVE_DISTANCE, 60.000F);
+							dACtrl.turn(theta,missionScenario.get(i).getHoldBlock());
+							blockMoveCorrection = (float) ((BLOCK_MOVE_DISTANCE/2.0F) / Math.cos(theta * Math.PI / 180.0F));
+						}
 					}
 					else
 					{
-						float theta = missionScenario.get(i).getTurnAngle()/2.0F;
-						dACtrl.turn(theta,missionScenario.get(i).getHoldBlock());
-						//少しだけ直進
-						dACtrl.goStraightAhead(BLOCK_MOVE_DISTANCE, 60.000F);
-						dACtrl.turn(theta,missionScenario.get(i).getHoldBlock());
-						blockMoveCorrection = (float) ((BLOCK_MOVE_DISTANCE/2.0F) / Math.cos(theta * Math.PI / 180.0F));
+						dACtrl.turn(missionScenario.get(i).getTurnAngle(),missionScenario.get(i).getHoldBlock());
 					}
 				
 					
@@ -129,6 +174,8 @@ public class GamePartDriver {
 				}
 			}
 			
+			if(i<missionScenario.size() - 1)
+			{
 			if(missionScenario.get(i+1).getTurnAngle() == 0.0F && missionScenario.get(i+1).getDistance() > 0.0F && missionScenario.get(i+1).getDistance() > 0.0F){
 				//直線の時はいちいち止まらずつなげる
 				distance = missionScenario.get(i).getDistance()+missionScenario.get(i+1).getDistance();
@@ -139,22 +186,59 @@ public class GamePartDriver {
 				distance = missionScenario.get(i).getDistance();
 				speed = missionScenario.get(i).getSpeed();
 			}
-
+			}
 			if(missionScenario.get(i).getLinetrace()){
-				dACtrl.goStraightAhead(distance/4.0F,speed);
-				//1/4～3/4の区間の間だけライントレース
-				distMeasure.resetDistance();
-				while(distMeasure.getDistance()<distance/2.0F - blockMoveCorrection){//ブロックの分微調整
-					linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, speed);
-					Delay.msDelay(4);
+				if(distance >= 0.0f)
+				{
+					//dACtrl.goStraightAhead((distance - blockMoveCorrection)/8.0F,speed);
+					dACtrl.goStraightAhead((distance - blockMoveCorrection + 1.0F)/8.0f,speed);
+					//1/8～6/8の区間の間だけライントレース
+					distMeasure.resetDistance();
+					//後で直す
+					/*
+					while(distMeasure.getDistance()<(distance - blockMoveCorrection)/8.0F*6.0F){//ブロックの分微調整
+						linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, speed);
+						Delay.msDelay(4);
+					}
+					*/
+					Timer timer = new Timer();
+					final float DISTANCE = distance;
+					final float SPEED = speed;
+					TimerTask timerTask = new TimerTask(){
+						
+						public void run(){
+							if(distMeasure.getDistance()<(DISTANCE - blockMoveCorrection + 1.0F)/8.0f*5.0f)
+							{
+								linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, SPEED);
+							}
+						}
+					};
+
+					timer.scheduleAtFixedRate(timerTask, 0, 4);
+
+					while(true)
+					{
+						if(distMeasure.getDistance()>=(distance - blockMoveCorrection + 1.0F)/8.0f*5.0f)
+						{
+							linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, 0);
+							timer.cancel();
+							break;
+						}
+					}
+					dACtrl.goStraightAhead((distance - blockMoveCorrection + 1.0F)/4.0f,speed);
+					blockMoveCorrection = 0.0F;
 				}
-				dACtrl.goStraightAhead(distance/4.0F,speed);
-				blockMoveCorrection = 0.0F;
+				else
+				{
+					dACtrl.goStraightAhead((distance - blockMoveCorrection),speed);
+					blockMoveCorrection = 0.0F;
+				}
 			}
 
 			else{
 				//LCD.drawString("distance:"+missionScenario.get(i).getDistance(), 0, 2);
-				dACtrl.goStraightAhead(distance,speed);
+				dACtrl.goStraightAhead(distance - blockMoveCorrection,speed);
+				blockMoveCorrection = 0.0F;
 			}
 		}
 
@@ -167,18 +251,57 @@ public class GamePartDriver {
 		float correctedAngle = 0;
 		float correctedDistance = 0;
 		boolean blockhold = false;
+		boolean lineflag = true;
+		int[] blockList = BlockArrangeInfo.getBlockPlaceIDList();
 
 		for(int i=1;i<route.size();i+=2)
 		{
+			if(i == 1)
+			{
+				for(int j =0;j<blockList.length;j++)
+				{
+					if(blockList[j] == 90)
+					{
+						blockhold = true;
+						break;
+					}
+					
+				}
+				missionScenario.add(new DriveInfo(0.000F,false,8.000F,60,false) );
+			}
+
+			if(currentAngle >= 360.0F)
+			{
+				currentAngle -= 360.0F;
+			}
+			else if(currentAngle <= -360.0F)
+			{
+				currentAngle += 360.0F;
+			}
+			
 			//目的地に到着
 			if(route.get(i).equals(route.get(i-1)))
 			{
 				//ブロックを置く処理
 				if(blockhold)
 				{
-					missionScenario.add(new DriveInfo(0.000F,false,-10.000F,60,false) );
-					correctedAngle = currentAngle;
-					correctedDistance = -10.000F;
+					if(route.get(i-2).equals(route.get(i+1)))
+					{
+						Path path = (Path)BlockArrangeInfo.getPointObject(route.get(i+1));
+						missionScenario.add(new DriveInfo(0.000F,false,-path.getDistance()+8.0F,60,false) );
+						currentID = route.get(i+2);
+						i += 1;
+						
+						blockhold = !blockhold;
+						continue;
+					}
+					else
+					{
+						missionScenario.add(new DriveInfo(0.000F,false,-15.000F,60,false) );
+						correctedAngle = currentAngle;
+						lineflag = false;
+						correctedDistance += -15.000F-8.0F;
+					}
 				}
 				i--;
 				blockhold = !blockhold;
@@ -206,10 +329,40 @@ public class GamePartDriver {
 
 				}
 				//System.out.println("i:" +i+ " "+ currentID + "->" + route.get(i+1) + " angle:"+angle);
-				//とりあえずspeedは40　後で距離に応じて変えたりするようにする
-				missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,path.isLine()));
-
-
+				if(i<route.size()-3)
+				{
+					if(route.get(i+1).equals(route.get(i+2)) && blockhold)
+					{
+						missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance() - 6.0F),60 ,path.isLine()));
+					}
+					else
+					{
+						if(lineflag)
+						{
+							missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,path.isLine()));
+						}
+						else
+						{
+							missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,false));
+							lineflag = true;
+						}
+					}
+				}
+				else
+				{
+					/*if(correctedDistance != 0.000F)
+					{
+						if(route.get(i-3).equals(route.get(i)))
+						{
+							missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance() + correctedDistance),60 ,path.isLine()));
+							correctedDistance = 0.0F;
+						}
+					}
+					else
+					{*/
+						missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,path.isLine()));
+					//}
+				}
 				currentAngle = path.getAngle();
 				if(currentID > route.get(i+1))
 				{
@@ -217,6 +370,7 @@ public class GamePartDriver {
 				}
 
 				//ズレを考慮したものにする
+				
 				if(correctedDistance != 0.000F)
 				{
 					angle = correctedAngle - currentAngle;
@@ -238,6 +392,7 @@ public class GamePartDriver {
 					missionScenario.add(new DriveInfo(angle,false,-correctedDistance,60,false) );
 					correctedDistance = 0.000F;
 				}
+				
 				currentID = route.get(i+1);
 			}
 		}

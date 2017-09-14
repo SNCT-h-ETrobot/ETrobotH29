@@ -89,4 +89,63 @@ public class HSVColorDetector {
 			return 0; //黒
 		}
 	}
+	public int getUnderColorID(){
+		
+
+		float[] sampleRGB = new float[Hardware.RGBMode.sampleSize()];
+
+		Hardware.RGBMode.fetchSample(sampleRGB, 0);
+
+		float r = sampleRGB[0];
+		float g = sampleRGB[1];
+		float b = sampleRGB[2];
+
+		float max = Math.max(r, Math.max(g, b));
+		float min = Math.min(r, Math.min(g, b));
+
+		float h = max - min;
+		if(h > 0.0F){
+			if(max == r){
+				h = (g-b)/h;
+				if(h < 0.0F){
+					h += 6.0F;
+				}
+			}
+			else if(max == g){
+				h = 2.0F + (b-r)/h;
+			}
+			else{
+				h = 4.0F + (r-g)/h;
+			}
+		}
+		h /= 6.0F;
+
+		float s = (max -min);
+		if(max != 0.0F){
+			s /= max;
+		}
+
+		float v = max;
+
+		float[] hsv = new float[3];
+		hsv[0] = h;
+		hsv[1] = s;
+		hsv[2] = v;
+
+		if(hsv[0] < RED_HUE){
+			return 1;//赤
+		}
+		else if(hsv[0] < YELLOW_HUE){
+			return 2; //黄
+		}
+		else if(hsv[0] < GREEN_HUE){
+			return 3; //緑
+		}
+		else if(hsv[0] < BLUE_HUE){
+			return 4; //青
+		}
+		else{
+			return 0; //黒
+		}
+	}
 }
