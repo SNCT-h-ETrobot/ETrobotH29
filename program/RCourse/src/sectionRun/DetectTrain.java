@@ -14,8 +14,8 @@ public class DetectTrain extends SectionRun {
 	private int detectID;
 	private static boolean detectFar = false;
 
-	private static final float DISTANCE_NEAR = 0.20f;
-	private static final float DISTANCE_FAR = 0.50f; //2番目の検知の時に新幹線が奥にいるかの判定に使う
+	private static final float DISTANCE_NEAR = 0.30f;
+	private static final float DISTANCE_FAR = 0.90f; //2番目の検知の時に新幹線が奥にいるかの判定に使う
 	private static final int STOP_TIME_MS = 1000;
 
 	private static final float TRAIN_TIME_CYCLE = 27.0f;//一周する時間
@@ -39,16 +39,16 @@ public class DetectTrain extends SectionRun {
 			int counter = 0;
 			while(true){
 				LCD.drawString("ready to detect:"+counter, 0, 1);
-				Delay.msDelay(4);
+				//Delay.msDelay(4);
 				Hardware.sonar.fetchSample(sample, 0);
 				if(sample[0] < DISTANCE_NEAR){
-					if(++counter > 3){
+					if(++counter > 1){
 						detectFar = false;
 						break;
 					}
 				}
-				else if(detectID==1 && sample[0] < DISTANCE_FAR && ++counter > 3){
-					if(++counter > 3){
+				else if(detectID==1 && sample[0] < DISTANCE_FAR){
+					if(++counter > 1){
 						detectFar = true;
 						break;
 					}

@@ -20,8 +20,8 @@ import driveControl.WheelController;
 public class MoveArea extends SectionRun {
 	private static final float BLOCK_DISTANCE = 10.0f;//中央からブロックの目標地点までの距離
 	private static final float BLOCK_PASS_DISTANCE = 30.0f;//中央からブロックの目標地点までの距離
-	private static final float CENTER_DISTANCE = 15.0f;//ブロックから中央までの距離
-	private static final float PRIZE_DISTANCE = 25.0f;//中央から懸賞の目標地点までの距離
+	private static final float CENTER_DISTANCE = 14.0f;//ブロックから中央までの距離
+	private static final float PRIZE_DISTANCE = 20.0f;//中央から懸賞の目標地点までの距離
 	private static final float RAIL_DISTANCE = 13.0f;//レールに近い方の縦ラインからレールまで進む距離
 	private static final float RAIL_CENTER_DISTANCE = 12.0f;//中央からレールまで進む距離
 

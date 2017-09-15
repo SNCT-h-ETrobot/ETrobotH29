@@ -15,12 +15,12 @@ import Hardware.Hardware;
  * レース区間終了から、灰色を検知し、レール前まで進んで停止する
  * */
 public class DetectGray{
-	private static final float TARGET_DISTANCE = 112.0f;//灰色終端からレール前までの距離
+	private static final float TARGET_DISTANCE = 107.0f;//灰色終端からレール前までの距離
 	private static final float TARGET_SPEED = 60.0f;
 	private static final float TARGET_SPEED_HI = 70.0f;
 
-	private static final float LT_P = -80.0f;
-	private static final float LT_I = -10.0f;
+	private static final float LT_P = -10.0f;
+	private static final float LT_I = -5.0f;
 	private static final float LT_D = -5.0f;
 	private static final float LT_BRIGHT = 0.58f;//灰色より若干低い値
 	private static final float LT_BRIGHT_2 = 0.35f;//灰色より若干低い値

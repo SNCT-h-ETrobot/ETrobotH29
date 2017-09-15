@@ -8,7 +8,7 @@ public class RouteDriver {
 
 	private static List<Integer> routeList = new ArrayList<Integer>();// ルート計算の結果
 	private final float DEGRESS_MULT = 0;// 角度を距離に直すときの倍率
-	private static final float[] COST_MULT = {0.2f,1.0f,1.0f,1.0f,1.0f};//コストに補正をかける，小さいほど動かす対象に選ばれやすい・黒、赤、緑、青、黄の順
+	private static final float[] COST_MULT = {0.01f,1.0f,1.0f,1.0f,1.0f};//コストに補正をかける，小さいほど動かす対象に選ばれやすい・黒、赤、緑、青、黄の順
 
 	public void driveRoute(){
 		//右と左のルートとそれぞれのルートのコスト

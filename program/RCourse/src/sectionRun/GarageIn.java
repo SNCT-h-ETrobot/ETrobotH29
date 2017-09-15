@@ -67,7 +67,7 @@ public class GarageIn extends SectionRun {
 		isLinetrace = false;
 
 		//ラインのほうを向く
-		dACtrl.turn(90.0F, false);
+		dACtrl.turn(-90.0F, false);
 
 		//角まで進む
 		distMeasure.resetDistance();

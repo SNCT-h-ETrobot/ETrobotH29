@@ -15,7 +15,9 @@ import driveControl.Linetracer;
  * */
 public class PassRail extends SectionRun {
 	private static final float TARGET_DISTANCE = 40.0f;//レールを超えるために直進する距離
-	private static final float TARGET_DISTANCE_LT = 65.0f;//レール前からライン復帰後までの距離
+	private static final float TARGET_DISTANCE_LT = 63.0f;//レール前からライン復帰後までの距離
+	private static final float TARGET_DISTANCE_LAST = 56.0f;//最後のレールを超えるために直進する距離
+	
 	private static final float TARGET_SPEED = 40.0f;
 	private static final float TARGET_SPEED_HI = 80.0f;
 
@@ -40,7 +42,8 @@ public class PassRail extends SectionRun {
 	public void run() {
 		//直進
 		disMeasure.resetDistance();
-		DAC.goStraightAhead(TARGET_DISTANCE, TARGET_SPEED_HI);
+		float distance = (passID == 2) ? TARGET_DISTANCE_LAST : TARGET_DISTANCE;
+		DAC.goStraightAhead(distance, TARGET_SPEED_HI);
 
 		//少し右方向に進んでライン復帰準備
 		//DAC.turn(5, false);
@@ -48,19 +51,19 @@ public class PassRail extends SectionRun {
 
 		// 一定距離進むまでライントレースしてライン復帰
 		if(passID != 2){
-		Timer timer = new Timer();
-		TimerTask timerTask = new TimerTask(){
-			public void run(){
-				lt.linetrace(LT_P, LT_I, LT_D, LT_BRIGHT, TARGET_SPEED);
+			Timer timer = new Timer();
+			TimerTask timerTask = new TimerTask(){
+				public void run(){
+					lt.linetrace(LT_P, LT_I, LT_D, LT_BRIGHT, TARGET_SPEED);
+				}
+			};
+
+			timer.scheduleAtFixedRate(timerTask, 0, 4);
+
+			while(disMeasure.getDistance() < TARGET_DISTANCE_LT){
+				Delay.msDelay(4);
 			}
-		};
-
-		timer.scheduleAtFixedRate(timerTask, 0, 4);
-
-		while(disMeasure.getDistance() < TARGET_DISTANCE_LT){
-			Delay.msDelay(4);
-		}
-		timer.cancel();
+			timer.cancel();
 		}
 		
 		for (int i = 0; i < 10; i++) {

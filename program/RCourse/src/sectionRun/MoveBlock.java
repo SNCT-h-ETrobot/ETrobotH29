@@ -87,13 +87,13 @@ public class MoveBlock extends SectionRun {
 	private void PushOutDifferenceColor()
 	{
 		//前進
-		dACtrl.goStraightAhead((COLOR_DETECTION_DISTANCE+SAME_COLOR_DISTANCE)*0.8f, RUN_SPEED);
+		dACtrl.goStraightAhead((COLOR_DETECTION_DISTANCE+SAME_COLOR_DISTANCE)*1.0f, RUN_SPEED);
 		//押し出し
 		armCtrl.controlArmDetectAngel();
-		Delay.msDelay(200);
+		Delay.msDelay(300);
 		armCtrl.controlArmNormalAngel();
-		Delay.msDelay(200);
-		dACtrl.goStraightAhead((-SAME_COLOR_DISTANCE-COLOR_DETECTION_DISTANCE)*0.3F, RUN_SPEED);
+		Delay.msDelay(300);
+		dACtrl.goStraightAhead((-SAME_COLOR_DISTANCE-COLOR_DETECTION_DISTANCE)*0.5F, RUN_SPEED);
 		//180°回転
 		turnHalf(false);
 	}
