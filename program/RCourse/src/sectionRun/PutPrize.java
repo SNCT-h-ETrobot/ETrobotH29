@@ -16,7 +16,7 @@ public class PutPrize extends SectionRun {
 	public void run() {
 		// TODO 自動生成されたメソッド・スタブ
 		dACtrl.turn(90.0F, false);
-		dACtrl.goStraightAhead(10.0F, 40.0F);
+		dACtrl.goStraightAhead(7.0F, 40.0F);
 		armCtrl.controlArmPutAngel();
 		Delay.msDelay(800);
 		dACtrl.goStraightAhead(-15.0F, 40.0F);

@@ -22,11 +22,11 @@ public class MoveArea extends SectionRun {
 	private static final float BLOCK_PASS_DISTANCE = 30.0f;//中央からブロックの目標地点までの距離
 	private static final float CENTER_DISTANCE = 14.0f;//ブロックから中央までの距離
 	private static final float PRIZE_DISTANCE = 20.0f;//中央から懸賞の目標地点までの距離
-	private static final float RAIL_DISTANCE = 13.0f;//レールに近い方の縦ラインからレールまで進む距離
+	private static final float RAIL_DISTANCE = 16.0f;//レールに近い方の縦ラインからレールまで進む距離
 	private static final float RAIL_CENTER_DISTANCE = 12.0f;//中央からレールまで進む距離
 
-	private static final float TARGET_SPEED = 60.0f;
-	private static final float TARGET_SPEED_LO = 40.0f;
+	private static final float TARGET_SPEED = 70.0f;
+	private static final float TARGET_SPEED_LO = 45.0f;
 
 	private static final float LT_P = 120.0f;
 	private static final float LT_I = 30.0f;
@@ -298,7 +298,7 @@ public class MoveArea extends SectionRun {
 		detectRightAngle(false, true);
 		useLT = false;
 		dm.resetDistance();
-		dac.goStraightAhead(-15, 40);//後退してライントレース距離を確保
+		dac.goStraightAhead(-15, 60);//後退してライントレース距離を確保
 		//dac.turn(-10, false);
 
 		useLT = true;
@@ -362,7 +362,7 @@ public class MoveArea extends SectionRun {
 
 	private void prizeToRail(){
 		useLT = false;
-		dac.goStraightAhead(PRIZE_DISTANCE, 40);
+		dac.goStraightAhead(PRIZE_DISTANCE, 60);
 		stop();
 		dac.turn(90, false);
 		stop();

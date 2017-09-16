@@ -20,7 +20,7 @@ import driveControl.Linetracer;
 public class DetectGray extends SectionRun {
 	private static final float TARGET_DISTANCE = 127.0f;//灰色終端からレール前までの距離
 	private static final float TARGET_SPEED = 60.0f;
-	private static final float TARGET_SPEED_HI = 70.0f;
+	private static final float TARGET_SPEED_HI = 80.0f;
 
 	private static final float LT_P = 120.0f;
 	private static final float LT_I = 10.0f;

@@ -34,21 +34,22 @@ public class DetectTrain extends SectionRun {
 	public void run() {
 		// 距離検知
 		if(detectID!=2){
-			float[] sample = new float[Hardware.sonar.sampleSize()];
+			float[] sample = new float[Hardware.distanceMode.sampleSize()];
 			// 新幹線がいることを検知
+			Hardware.distanceMode.fetchSample(sample, 0);
 			int counter = 0;
 			while(true){
 				LCD.drawString("ready to detect:"+counter, 0, 1);
 				//Delay.msDelay(4);
-				Hardware.sonar.fetchSample(sample, 0);
+				Hardware.distanceMode.fetchSample(sample, 0);
 				if(sample[0] < DISTANCE_NEAR){
-					if(++counter > 1){
+					if(++counter > 0){
 						detectFar = false;
 						break;
 					}
 				}
 				else if(detectID==1 && sample[0] < DISTANCE_FAR){
-					if(++counter > 1){
+					if(++counter > 0){
 						detectFar = true;
 						break;
 					}
@@ -61,7 +62,7 @@ public class DetectTrain extends SectionRun {
 			while(true){
 				LCD.drawString("detected       "+counter, 0, 1);
 				Delay.msDelay(4);
-				Hardware.sonar.fetchSample(sample, 0);
+				Hardware.distanceMode.fetchSample(sample, 0);
 				if(!detectFar && sample[0] > DISTANCE_NEAR){
 					if(++counter > 3)break;
 				}

@@ -43,27 +43,28 @@ public class GarageIn extends SectionRun {
 		};
 
 		//線を検知するまで進む
-		isLinetrace = true;
 		kp = 0.0F;
 		ki = 0.0F;
 		kd = 0.0F;
-		targetForward  = 0.0F;
+		targetForward  = 40.0F;
 		int blackCount = 0;
 		timer.scheduleAtFixedRate(timerTask, 0, 4);
-		Delay.msDelay(1000);
-		if(briMeasure.getNormalizedBrightness() > 0.35F){
-			//もし最初から黒線の上にいたら進まない
+		Delay.msDelay(100);
+		for(int i=0;i<10;i++){
+			//ローパスで狂うので空実行
+			briMeasure.getNormalizedBrightness();
 		}
-		else{
-			targetForward = 30.0F;
-		}
+		isLinetrace = true;
 		while(blackCount < 1){
 			if(briMeasure.getNormalizedBrightness() < 0.35F){
 				blackCount++;
 			}
 			//黒線に達したらライントレースを切る
 		}
-		Delay.msDelay(20);
+		distMeasure.resetDistance();
+		while(distMeasure.getDistance()< 4.0F){
+			//切る前に位置わせのため4cmオーバーランする
+		}
 		isLinetrace = false;
 
 		//ラインのほうを向く
@@ -76,7 +77,7 @@ public class GarageIn extends SectionRun {
 		kd = KD;
 		targetForward = 40.0F;
 		isLinetrace = true;
-		while(distMeasure.getDistance() < 38.0F){
+		while(distMeasure.getDistance() < 36.0F){
 			LCD.clear();
 			LCD.drawString("distance:"+distMeasure.getDistance(), 0, 0);
 			Delay.msDelay(4);

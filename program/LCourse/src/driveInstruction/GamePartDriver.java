@@ -23,6 +23,7 @@ public class GamePartDriver {
 	private float currentAngle;
 	private int currentID;
 	private ArrayList<DriveInfo> missionScenario;
+	private boolean isLinetrace;
 
 	private ArmController arm;
 	private Linetracer linetracer;
@@ -76,25 +77,27 @@ public class GamePartDriver {
 		Delay.msDelay(3000);
 		//緑色検知
 		int cnt = 0;
+		Timer timerGreen = new Timer();
+		TimerTask greenTask = new TimerTask(){
+			public void run(){
+				if(isLinetrace)linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, 50,colorDetect.getNormalizedBrightness());
+			}
+		};
+		isLinetrace = true;
+		timerGreen.scheduleAtFixedRate(greenTask, 0, 4);
 		while(true)
 		{
-			linetracer.linetrace(P_GAIN + 100.0F, I_GAIN + 20.0F, D_GAIN, TARGET_BRIGHTNESS, 50);
-			Delay.msDelay(4);
 			if(colorDetect.getUnderColorID() == 3)
-			{
-				cnt++;
-			}
-			else
-			{
-				cnt = 0;
-			}
-			if(cnt >= 5)
 			{
 				break;
 			}
-			Delay.msDelay(2);
+
+			//Delay.msDelay(2);
 		}
+		isLinetrace = false;
+		timerGreen.cancel();
 		whcon.controlWheelsDirect(0, 0);
+		Delay.msDelay(200);
 		
 		
 		float distance = 0;

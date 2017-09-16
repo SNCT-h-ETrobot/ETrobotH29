@@ -4,6 +4,15 @@ import lejos.utility.Delay;
 import Hardware.Hardware;
 
 public class HSVColorDetector {
+	private float brightness;
+
+	//輝度値基準値。本番環境で調整必要
+	private final float BLACK_BRIGHTNESS = 0.05F;
+	private final float WHITE_BRIGHTNESS = 0.68F;
+
+	//正規化後の最大・最小値
+	private final float BRIGHTNESS_MAX = 1.0F;
+	private final float BRIGHTNESS_MIN = 0.0F;
 
 	//定数は要調整
 	//private final float BLACK_BRIGHTNESS = 0.05F;
@@ -11,6 +20,12 @@ public class HSVColorDetector {
 	private final float GREEN_HUE = 0.45F;
 	private final float BLUE_HUE = 0.65F;
 	private final float YELLOW_HUE = 0.2F;
+	
+	private final float UNDER_RED_HUE = 0.02F;
+	private final float UNDER_YELLOW_HUE = 0.135F;
+	private final float UNDER_BLACK_WHITE_HUE = 0.28F;
+	private final float UNDER_GREEN_HUE = 0.35F;
+	private final float UNDER_BLUE_HUE = 0.6F;
 
 	private ArmController arm;
 
@@ -132,20 +147,41 @@ public class HSVColorDetector {
 		hsv[1] = s;
 		hsv[2] = v;
 
-		if(hsv[0] < RED_HUE){
+		if(hsv[0] < UNDER_RED_HUE){
 			return 1;//赤
 		}
-		else if(hsv[0] < YELLOW_HUE){
+		else if(hsv[0] < UNDER_YELLOW_HUE){
 			return 2; //黄
 		}
-		else if(hsv[0] < GREEN_HUE){
+		else if(hsv[0] < UNDER_BLACK_WHITE_HUE){
+			return 0; //黒
+		}
+		else if(hsv[0] < UNDER_GREEN_HUE){
 			return 3; //緑
 		}
-		else if(hsv[0] < BLUE_HUE){
+		else if(hsv[0] < UNDER_BLUE_HUE){
 			return 4; //青
 		}
 		else{
-			return 0; //黒
+			return -1;
 		}
 	}
+	
+	public float getNormalizedBrightness(){
+		float normalizedBrightness = (getBrightness()-BLACK_BRIGHTNESS)/(WHITE_BRIGHTNESS-BLACK_BRIGHTNESS);
+
+		return Math.min(Math.max(normalizedBrightness, BRIGHTNESS_MIN),BRIGHTNESS_MAX);
+	}
+
+	public float getBrightness(){
+		float[] sampleBright = new float[Hardware.RGBMode.sampleSize()];
+		float a = 0.8F;//大きくすると遅れるが滑らかになる
+
+		Hardware.RGBMode.fetchSample(sampleBright, 0);
+		//出力値 = a*ひとつ前の出力値 + (1-a)*センサ値
+		//ひとつ前の出力値はbrightnessとなっている筈
+		brightness = a*brightness + (1-a)*sampleBright[0];
+		return brightness;
+	}
+
 }

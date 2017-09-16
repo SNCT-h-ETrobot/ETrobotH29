@@ -20,6 +20,7 @@ public class PassRail extends SectionRun {
 	
 	private static final float TARGET_SPEED = 40.0f;
 	private static final float TARGET_SPEED_HI = 80.0f;
+	private static final float TARGET_SPEED_LAST = 60.0f;
 
 	private static final float LT_P = 150.0f;
 	private static final float LT_I = 20.0f;
@@ -42,9 +43,8 @@ public class PassRail extends SectionRun {
 	public void run() {
 		//直進
 		disMeasure.resetDistance();
-		float distance = (passID == 2) ? TARGET_DISTANCE_LAST : TARGET_DISTANCE;
-		DAC.goStraightAhead(distance, TARGET_SPEED_HI);
-
+		if(passID != 2) DAC.goStraightAhead(TARGET_DISTANCE, TARGET_SPEED_HI);
+		else  DAC.goStraightAhead(TARGET_DISTANCE_LAST, TARGET_SPEED_LAST);
 		//少し右方向に進んでライン復帰準備
 		//DAC.turn(5, false);
 		//DAC.goStraightAhead(3, TARGET_SPEED);
