@@ -64,10 +64,10 @@ public class DetectTrain extends SectionRun {
 				Delay.msDelay(4);
 				Hardware.distanceMode.fetchSample(sample, 0);
 				if(!detectFar && sample[0] > DISTANCE_NEAR){
-					if(++counter > 3)break;
+					if(++counter > 1)break;
 				}
 				else if(detectFar && sample[0] > DISTANCE_FAR){
-					if(++counter > 3)break;
+					if(++counter > 1)break;
 				}
 				else counter = 0;
 			}

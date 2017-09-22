@@ -21,10 +21,11 @@ public class HSVColorDetector {
 
 	public float[] detectHSVColor(){
 		arm.controlArmDetectAngel();
-		Delay.msDelay(800);//アームが動くのを待つ
+		Delay.msDelay(500);//アームが動くのを待つ
 
 		float[] sampleRGB = new float[Hardware.RGBMode.sampleSize()];
 
+		Hardware.RGBMode.fetchSample(sampleRGB, 0);
 		Hardware.RGBMode.fetchSample(sampleRGB, 0);
 
 		float r = sampleRGB[0];
@@ -65,7 +66,7 @@ public class HSVColorDetector {
 
 		//アームは戻す
 		arm.controlArmNormalAngel();
-		Delay.msDelay(800);
+		Delay.msDelay(300);
 
 		return hsv;
 	}

@@ -34,4 +34,11 @@ public class Linetracer {
 
 		wheelCtrl.controlWheels(turn,target_forward);
 	}
+	 
+	 public void reset(){
+		currentDiff = 0.0F;
+		preDiff = 0.0F;
+		integral = 0.0f;
+	}
+
 }

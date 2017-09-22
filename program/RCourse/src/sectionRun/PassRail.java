@@ -14,11 +14,12 @@ import driveControl.Linetracer;
  * レール前で静止している状態から、レール上を直進し、ライン復帰する
  * */
 public class PassRail extends SectionRun {
-	private static final float TARGET_DISTANCE = 40.0f;//レールを超えるために直進する距離
-	private static final float TARGET_DISTANCE_LT = 63.0f;//レール前からライン復帰後までの距離
+	private static final float TARGET_DISTANCE_FIRST = 40.0f;//レールを超えるために直進する距離
+	private static final float TARGET_DISTANCE_SECOND = 35.0f;//レールを超えるために直進する距離
+	private static final float TARGET_DISTANCE_LT = 10.0f;//直進してからライン復帰後までの距離
 	private static final float TARGET_DISTANCE_LAST = 56.0f;//最後のレールを超えるために直進する距離
-	
-	private static final float TARGET_SPEED = 40.0f;
+
+	private static final float TARGET_SPEED = 50.0f;
 	private static final float TARGET_SPEED_HI = 80.0f;
 	private static final float TARGET_SPEED_LAST = 60.0f;
 
@@ -41,14 +42,20 @@ public class PassRail extends SectionRun {
 
 	@Override
 	public void run() {
+		if(passID != 2)DAC.turn(2, false);
 		//直進
 		disMeasure.resetDistance();
-		if(passID != 2) DAC.goStraightAhead(TARGET_DISTANCE, TARGET_SPEED_HI);
-		else  DAC.goStraightAhead(TARGET_DISTANCE_LAST, TARGET_SPEED_LAST);
+		if(passID == 0)
+			DAC.goStraightAhead(TARGET_DISTANCE_FIRST, TARGET_SPEED_HI);
+		else if(passID == 1)
+			DAC.goStraightAhead(TARGET_DISTANCE_SECOND, TARGET_SPEED_HI);
+		else
+			DAC.goStraightAhead(TARGET_DISTANCE_LAST, TARGET_SPEED_LAST);
 		//少し右方向に進んでライン復帰準備
-		//DAC.turn(5, false);
+		//DAC.turn(2, false);
 		//DAC.goStraightAhead(3, TARGET_SPEED);
 
+		disMeasure.resetDistance();
 		// 一定距離進むまでライントレースしてライン復帰
 		if(passID != 2){
 			Timer timer = new Timer();
@@ -65,7 +72,7 @@ public class PassRail extends SectionRun {
 			}
 			timer.cancel();
 		}
-		
+
 		for (int i = 0; i < 10; i++) {
 			Hardware.motorPortL.controlMotor(0, 1);
 			Hardware.motorPortR.controlMotor(0, 1);

@@ -26,7 +26,7 @@ public class DetectGray extends SectionRun {
 	private static final float LT_I = 10.0f;
 	private static final float LT_D = 5.0f;
 	private static final float LT_BRIGHT = 0.58f;//0.62f;//灰色より若干低い値
-	private static final float LT_P_2 = 120.0f;
+	private static final float LT_P_2 = 80.0f;
 	private static final float LT_I_2 = 30.0f;
 	private static final float LT_D_2 = 5.0f;
 	private static final float LT_BRIGHT_2 = 0.5f;//
@@ -115,6 +115,7 @@ public class DetectGray extends SectionRun {
 		targetBright = LT_BRIGHT_2;
 		speed = TARGET_SPEED_HI;
 		while(dm.getDistance() < TARGET_DISTANCE){
+			if(dm.getDistance() > TARGET_DISTANCE-10)speed = TARGET_SPEED;
 			Delay.msDelay(4);
 		}
 		timer.cancel();

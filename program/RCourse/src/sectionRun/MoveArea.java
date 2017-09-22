@@ -19,21 +19,21 @@ import driveControl.WheelController;
  * */
 public class MoveArea extends SectionRun {
 	private static final float BLOCK_DISTANCE = 10.0f;//中央からブロックの目標地点までの距離
-	private static final float BLOCK_PASS_DISTANCE = 30.0f;//中央からブロックの目標地点までの距離
+	private static final float BLOCK_PASS_DISTANCE = 28.0f;//中央からブロックの目標地点までの距離
 	private static final float CENTER_DISTANCE = 14.0f;//ブロックから中央までの距離
 	private static final float PRIZE_DISTANCE = 20.0f;//中央から懸賞の目標地点までの距離
-	private static final float RAIL_DISTANCE = 16.0f;//レールに近い方の縦ラインからレールまで進む距離
+	private static final float RAIL_DISTANCE = 30.0f;//レールに近い方の縦ラインからレールまで進む距離
 	private static final float RAIL_CENTER_DISTANCE = 12.0f;//中央からレールまで進む距離
 
 	private static final float TARGET_SPEED = 70.0f;
 	private static final float TARGET_SPEED_LO = 45.0f;
 
-	private static final float LT_P = 120.0f;
+	private static final float LT_P = 160.0f;
 	private static final float LT_I = 30.0f;
 	private static final float LT_D = 10.0f;
 	private static final float LT_P_LO = 60.0f;
-	private static final float LT_P_RIGHT = 160.0f;
-	private static final float LT_I_RIGHT = 10.0f;
+	private static final float LT_P_RIGHT = 120.0f;
+	private static final float LT_I_RIGHT = 5.0f;
 	private static final float LT_D_RIGHT = 5.0f;
 
 	private static final float LT_BRIGHT = 0.5f;//正規化前提
@@ -78,33 +78,48 @@ public class MoveArea extends SectionRun {
 
 		switch(areaID){
 		case 1:
-			actionList.add(actionType.TURN_HALF);
-			actionList.add(actionType.CENTER_TO_LEFT);
+			actionList.add(actionType.CENTER_TO_RIGHT);
 			break;
 		case 2:
-			//actionList.add(actionType.TURN_HALF);
 			actionList.add(actionType.STRAIGHT);
 			break;
 		case 3:
-			//actionList.add(actionType.TURN_HALF);
-			actionList.add(actionType.CORNER_TO_LEFT);
-			actionList.add(actionType.CENTER_TO_LEFT);
+			actionList.add(actionType.CORNER_TO_RIGHT);
+			actionList.add(actionType.CENTER_TO_RIGHT);
 			break;
 		case 4:
-			//actionList.add(actionType.TURN_HALF);
 			actionList.add(actionType.STRAIGHT);
 			break;
 		case 5:
-			//actionList.add(actionType.TURN_HALF);
 			actionList.add(actionType.CORNER_TO_RAIL);
 			break;
 		case 6:
-			//actionList.add(actionType.TURN_HALF);
-			//actionList.add(actionType.CORNER_TO_LEFT);
 			actionList.add(actionType.CORNER_TO_PRIZE);
 			break;
 		case 7:
 			actionList.add(actionType.PRIZE_TO_RAIL);
+/*		case 1:
+			actionList.add(actionType.TURN_HALF);
+			actionList.add(actionType.CENTER_TO_LEFT);
+			break;
+		case 2:
+			actionList.add(actionType.STRAIGHT);
+			break;
+		case 3:
+			actionList.add(actionType.CORNER_TO_LEFT);
+			actionList.add(actionType.CENTER_TO_LEFT);
+			break;
+		case 4:
+			actionList.add(actionType.STRAIGHT);
+			break;
+		case 5:
+			actionList.add(actionType.CORNER_TO_RAIL);
+			break;
+		case 6:
+			actionList.add(actionType.CORNER_TO_PRIZE);
+			break;
+		case 7:
+			actionList.add(actionType.PRIZE_TO_RAIL);*/
 		}
 	}
 
@@ -122,7 +137,7 @@ public class MoveArea extends SectionRun {
 
 		timer.scheduleAtFixedRate(timerTask, 0, 4);
 
-		traceEdge edge = traceEdge.UNKNOWN;
+		traceEdge edge = traceEdge.RIGHT;
 		for(int i = 0; i < actionList.size();i++){
 			//区間の距離と走行した距離を比較
 			switch(actionList.get(i)){
@@ -131,8 +146,8 @@ public class MoveArea extends SectionRun {
 				edge = traceEdge.UNKNOWN;
 				break;
 			case STRAIGHT:
-				straight(!(edge == traceEdge.RIGHT));
-				edge = traceEdge.RIGHT;
+				straight(!(edge == traceEdge.LEFT));
+				edge = traceEdge.LEFT;
 				break;
 			case CORNER_TO_RIGHT:
 				cornerToRight(!(edge == traceEdge.RIGHT));
@@ -190,29 +205,29 @@ public class MoveArea extends SectionRun {
 	public void straight(boolean Inverse){
 		if(Inverse){
 			useLT = false;
-			dac.turn(10, false);
+			dac.turn(-3, false);
 		}
 		// LTする->LT係数低くして中央の黒ラインを突っ切る->係数元に戻してLTする
 		useLT = true;
 		dm.resetDistance();
-		ltp = LT_P;
-		lti = LT_I;
-		ltd = LT_D;
+		ltp = -LT_P;
+		lti = -LT_I;
+		ltd = -LT_D;
 		ltb = LT_BRIGHT;
 		lts = TARGET_SPEED_LO;
 		while(dm.getDistance() < BLOCK_PASS_DISTANCE*0.3){
 			Delay.msDelay(4);
 		}
-		ltp = LT_P_LO;
+		ltp = -LT_P_LO;
 		lti = 0;
 		ltd = 0;
 		lts = TARGET_SPEED;
 		while(dm.getDistance() < BLOCK_PASS_DISTANCE*0.7){
 			Delay.msDelay(4);
 		}
-		ltp = LT_P;
-		lti = LT_I;
-		ltd = LT_D;
+		ltp = -LT_P;
+		lti = -LT_I;
+		ltd = -LT_D;
 		lts = TARGET_SPEED_LO;
 		while(dm.getDistance() < BLOCK_PASS_DISTANCE){
 			Delay.msDelay(4);
@@ -222,7 +237,7 @@ public class MoveArea extends SectionRun {
 	public void cornerToRight(boolean Inverse){
 		if(Inverse){
 			useLT = false;
-			dac.turn(10, false);
+			dac.turn(3, false);
 		}
 		useLT = true;
 		detectRightAngle(true);
@@ -239,7 +254,7 @@ public class MoveArea extends SectionRun {
 	public void cornerToLeft(boolean Inverse){
 		if(Inverse){
 			useLT = false;
-			dac.turn(-10, false);
+			dac.turn(-3, false);
 		}
 		useLT = true;
 		detectRightAngle(false);
@@ -255,17 +270,17 @@ public class MoveArea extends SectionRun {
 	}
 
 	public void centerToRight(boolean Inverse){
-		if(Inverse){
+		/*if(Inverse){
 			useLT = false;
-			dac.turn(10, false);
-		}
+			dac.turn(3, false);
+		}*/
 		useLT = true;
 		detectRightAngle(true);
 		dm.resetDistance();
 		ltp = LT_P;
 		lti = LT_I;
 		ltd = LT_D;
-		lts = TARGET_SPEED;
+		lts = TARGET_SPEED_LO;
 		while(dm.getDistance() < BLOCK_DISTANCE){
 			Delay.msDelay(4);
 		}
@@ -273,17 +288,17 @@ public class MoveArea extends SectionRun {
 	}
 
 	public void centerToLeft(boolean Inverse){
-		if(Inverse){
+		/*if(Inverse){
 			useLT = false;
-			dac.turn(-10, false);
-		}
+			dac.turn(-3, false);
+		}*/
 		useLT = true;
 		detectRightAngle(false);
 		dm.resetDistance();
 		ltp = -LT_P;
 		lti = -LT_I;
 		ltd = -LT_D;
-		lts = TARGET_SPEED;
+		lts = TARGET_SPEED_LO;
 		while(dm.getDistance() < BLOCK_DISTANCE){
 			Delay.msDelay(4);
 		}
@@ -291,14 +306,14 @@ public class MoveArea extends SectionRun {
 	}
 
 	public void cornerToRail(){
-		//useLT = false;
-		//dac.turn(40, false);
+		useLT = false;
+		dac.turn(3, false);
 		//detectBlackLine(false);
 		useLT = true;
-		detectRightAngle(false, true);
-		useLT = false;
-		dm.resetDistance();
-		dac.goStraightAhead(-15, 60);//後退してライントレース距離を確保
+		detectRightAngle(true);
+		//useLT = false;
+		//dm.resetDistance();
+		//dac.goStraightAhead(-15, 60);//後退してライントレース距離を確保
 		//dac.turn(-10, false);
 
 		useLT = true;
@@ -308,7 +323,7 @@ public class MoveArea extends SectionRun {
 		ltd = LT_D;
 		ltb = LT_BRIGHT;
 		lts = TARGET_SPEED_LO;
-		while(dm.getDistance() < RAIL_DISTANCE/2){
+		while(dm.getDistance() < RAIL_DISTANCE*0.7){
 			Delay.msDelay(4);
 		}/*
 		ltp = LT_P_LO;
@@ -340,13 +355,13 @@ public class MoveArea extends SectionRun {
 	//
 	public void cornerToPrize(){
 		useLT = false;
-		dac.turn(-10, false);
+		dac.turn(3, false);
 		useLT = true;
-		detectRightAngle(false);
+		detectRightAngle(true);
 		dm.resetDistance();
-		ltp = -LT_P;
-		lti = -LT_I;
-		ltd = -LT_D;
+		ltp = LT_P;
+		lti = LT_I;
+		ltd = LT_D;
 		lts = TARGET_SPEED_LO;
 		while(dm.getDistance() < CENTER_DISTANCE){
 			Delay.msDelay(4);
@@ -354,7 +369,7 @@ public class MoveArea extends SectionRun {
 
 		useLT = false;
 		stop();
-		dac.turn(-90, false);
+		dac.turn(90, false);
 		stop();
 		//dac.goStraightAhead(PRIZE_DISTANCE, 40);
 		//stop();
@@ -424,7 +439,7 @@ public class MoveArea extends SectionRun {
 		while(true){
 			if(bm.getNormalizedBrightness() < BLACK_THRESHOLD)++blackCount;
 			else blackCount = 0;
-			if(30 < blackCount)break;
+			if(20 < blackCount)break;
 			Delay.msDelay(4);
 		}
 		/*過去仕様
@@ -445,7 +460,7 @@ public class MoveArea extends SectionRun {
 			else dac.turn(RIGHT_TURN_ANGLE_INVERSE, false);
 		}
 		else{
-			dac.goStraightAhead(4, 40);
+			dac.goStraightAhead(2, 40);
 			stop();
 			if(isTraceRight)dac.turn(RIGHT_TURN_ANGLE, false);
 			else dac.turn(-RIGHT_TURN_ANGLE, false);
