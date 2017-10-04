@@ -170,9 +170,18 @@ public class DistanceAngleController {
 			float preDiffR = 0; //以前の左輪角度差分
 			float pwmL;	//左輪pwm
 			float pwmR;	//右輪pwm
+			int powerCnt = 0;
 	
 			public void run(){
 	
+				if(powerCnt <= 10)
+				{
+					targetSpeed = 75;
+				}
+				else
+				{
+					targetSpeed = 55;
+				}
 				//両輪に対して角度でPID制御する
 				angleL = motorAngleMeasure.getMotorAngle()[0];
 				angleR = motorAngleMeasure.getMotorAngle()[1];
@@ -267,6 +276,7 @@ public class DistanceAngleController {
 				else{
 					wheelCtrl.controlWheelsDirect((int)pwmL, (int)pwmR);
 				}
+				powerCnt++;
 			}
 	
 		};
@@ -299,8 +309,10 @@ public class DistanceAngleController {
 		while(Math.abs(turnAngle) <= Math.abs(targetTurnAngle));
 	
 		timerEnd = true;
+		Delay.msDelay(12);
 		timer.cancel();
 		int i = 0;
+		/*
 		while(i < 1000)
 		{
 			wheelCtrl.controlWheelsDirect(0, 0);
@@ -308,6 +320,7 @@ public class DistanceAngleController {
 		}
 		LCD.drawString("" + motorAngleMeasure.getMotorAngle()[0], 0, 0);
 		LCD.drawString("" + motorAngleMeasure.getMotorAngle()[1], 1, 1);
+		*/
 	}
 	
 	public void TurningControl(float targetDistance , float speed , final boolean right)
