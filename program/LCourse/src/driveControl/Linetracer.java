@@ -34,4 +34,16 @@ public class Linetracer {
 
 		wheelCtrl.controlWheels(turn,target_forward);
 	}
+	 
+	 public void linetrace(float kp,float ki,float kd,float target_brightness,float target_forward,float brightness){
+			preDiff = currentDiff;
+			currentDiff = brightness - target_brightness;
+			integral += ((currentDiff + preDiff) / 2.0F)*DELTA_T;
+
+			float turn = kp * currentDiff;
+			turn += ki * integral;
+			turn += kd * (currentDiff - preDiff)/DELTA_T;
+
+			wheelCtrl.controlWheels(turn,target_forward);
+		}
 }

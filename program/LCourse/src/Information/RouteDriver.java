@@ -8,18 +8,19 @@ public class RouteDriver {
 
 	private static List<Integer> routeList = new ArrayList<Integer>();// ルート計算の結果
 	private final float DEGRESS_MULT = 0;// 角度を距離に直すときの倍率
+	private static final float[] COST_MULT = {0.01f,1.0f,1.0f,1.0f,1.0f};//コストに補正をかける，小さいほど動かす対象に選ばれやすい・黒、赤、緑、青、黄の順
 
 	public void driveRoute(){
 		//右と左のルートとそれぞれのルートのコスト
 		List<Integer> tempList = new ArrayList<Integer>();
 		List<Integer> tempList2 = new ArrayList<Integer>();
-		int routeCost = 0,routeCost2 = 0;
-
+		float routeCost = 0,routeCost2 = 0;
+		int[][] blackPlaceJudge = new int[][]{ {52,74,81,128,132,121},{0,0,0,0,0,0} };
 
 		for (int i = 0; i < 2; i++) {
 			int blockCarryTarget[];// ブロックを置く目標位置  黒、赤、緑、青、黄の順
-			if(i == 0) blockCarryTarget = new int[]{151, 0, 90, 4,44};// 左
-			else       blockCarryTarget = new int[]{151,60,119,12, 8};// 右
+			if(i == 0) blockCarryTarget = new int[]{52, 0, 90, 4,44};// 左
+			else       blockCarryTarget = new int[]{52,60,119,12, 8};// 右
 
 			int robotPlace = 90; // 走行体の位置 初期値は走行区間から続く緑のブロック置き場
 			//一回ごとにリストとコストをリセット
@@ -27,6 +28,27 @@ public class RouteDriver {
 			routeCost = 0;
 
 			int[] blockPlace = BlockArrangeInfo.getBlockPlaceIDList();// ブロックの置いてある位置
+			
+			//黒ブロックの目標位置をブロックが無いところにする
+			for(int j = 0; j < 6; j++)
+			{
+				for(int k = 0; k < blockPlace.length;k++)
+				{
+					if(blackPlaceJudge[0][j] == blockPlace[k])
+					{
+						blackPlaceJudge[1][j]++;
+						break;
+					}
+					
+				}
+				if(blackPlaceJudge[1][j] == 0)
+				{
+					blockCarryTarget[0] = blackPlaceJudge[0][j];
+					break;
+				}
+			}
+			
+			
 			for (int j = 0; j < 5; j++) {
 				// 移動先が開いているブロックの色を調べる
 				boolean[] canCarry = new boolean[5];
@@ -46,7 +68,7 @@ public class RouteDriver {
 				// 動かせないときの処理
 				if(canNotCarryAll){
 					// 経路探索して最小コストを探索
-					int lowestCost = Integer.MAX_VALUE;
+					float lowestCost = Float.MAX_VALUE;
 					List<Integer> lowestRoute = null;
 					int lowestColor = 0;
 					for (int k = 0; k < 5; k++) {
@@ -55,13 +77,18 @@ public class RouteDriver {
 						//同一地点をターゲットとすることがないように
 						if(robotPlace != blockPlace[k]){
 							List<Integer> tempRoute = aStar(robotPlace, blockPlace[k], blockPlace, false);
-							int tempCost = calcCost(tempRoute);
+							float tempCost = calcCost(tempRoute);
 							if(lowestCost > tempCost){
 								lowestCost = tempCost;
 								lowestRoute = tempRoute;
 								lowestColor = k;
 							}
 						}
+					}
+					// エラー落ち回避用
+					if(lowestRoute == null){
+						lowestRoute = new ArrayList<Integer>();
+						lowestRoute.add(robotPlace);
 					}
 					tempList.addAll(lowestRoute);
 					routeCost += lowestCost;
@@ -80,7 +107,7 @@ public class RouteDriver {
 													  : 52;
 
 					List<Integer> tempRoute = aStar(place, blockTempTarget, blockPlace, true);
-					int tempCost = calcCost(tempRoute);
+					float tempCost = calcCost(tempRoute);
 					tempList.addAll(tempRoute);
 					routeCost += tempCost;
 
@@ -102,7 +129,7 @@ public class RouteDriver {
 				}
 
 				// 経路探索して最小コストを探索
-				int lowestCost = Integer.MAX_VALUE;
+				float lowestCost = Float.MAX_VALUE;
 				List<Integer> lowestRoute = null;
 				int lowestColor = 0;
 				for (int k = 0; k < 5; k++) {
@@ -111,13 +138,18 @@ public class RouteDriver {
 					//同一地点をターゲットとすることがないように
 					if(robotPlace != blockPlace[k]){
 						List<Integer> tempRoute = aStar(robotPlace, blockPlace[k],blockPlace, false);
-						int tempCost = calcCost(tempRoute);
+						float tempCost = calcCost(tempRoute) * COST_MULT[k];
 						if(lowestCost > tempCost){
 							lowestCost = tempCost;
 							lowestRoute = tempRoute;
 							lowestColor = k;
 						}
 					}
+				}
+				// エラー落ち回避用
+				if(lowestRoute == null){
+					lowestRoute = new ArrayList<Integer>();
+					lowestRoute.add(robotPlace);
 				}
 				tempList.addAll(lowestRoute);
 				routeCost += lowestCost;
@@ -126,7 +158,7 @@ public class RouteDriver {
 				//同一地点をターゲットとすることがないように
 				if(blockPlace[lowestColor] != blockCarryTarget[lowestColor]){
 					List<Integer> tempRoute = aStar(blockPlace[lowestColor], blockCarryTarget[lowestColor],blockPlace, true);
-					int tempCost = calcCost(tempRoute);
+					float tempCost = calcCost(tempRoute);
 					tempList.addAll(tempRoute);
 					routeCost += tempCost;
 				}
@@ -137,7 +169,7 @@ public class RouteDriver {
 
 			// 脱出地点に向かう
 			List<Integer> tempRoute = aStar(robotPlace, 65, blockPlace, true);
-			int tempCost = calcCost(tempRoute);
+			float tempCost = calcCost(tempRoute);
 			tempList.addAll(tempRoute);
 			routeCost += tempCost;
 
@@ -299,8 +331,8 @@ public class RouteDriver {
 	}
 
 	// ルートのリストを渡すとコストが返ってくるメソッド
-	private int calcCost(List<Integer> route){
-		int cost = 0;
+	private float calcCost(List<Integer> route){
+		float cost = 0;
 		int[] array = new int[route.size()];
 		List<Path> tempPathList;
 		float preAngle = 0.0F;

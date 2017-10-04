@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import lejos.hardware.lcd.LCD;
+import lejos.utility.Delay;
 import virtualDevices.MotorAngleMeasure;
 
 public class DistanceAngleController {
@@ -138,6 +139,12 @@ public class DistanceAngleController {
 
 		timerEnd = true;
 		timer.cancel();
+		int i = 0;
+		while(i < 1000)
+		{
+			wheelCtrl.controlWheelsDirect(0, 0);
+			i++;
+		}
 	}
 
 	//第一引数で動かす角度、第二引数でブロックを持っているかどうか（持っているときはtrue）
@@ -293,11 +300,14 @@ public class DistanceAngleController {
 	
 		timerEnd = true;
 		timer.cancel();
-		wheelCtrl.controlWheelsDirect(0, 0);
+		int i = 0;
+		while(i < 1000)
+		{
+			wheelCtrl.controlWheelsDirect(0, 0);
+			i++;
+		}
 		LCD.drawString("" + motorAngleMeasure.getMotorAngle()[0], 0, 0);
 		LCD.drawString("" + motorAngleMeasure.getMotorAngle()[1], 1, 1);
-
-				
 	}
 	
 	public void TurningControl(float targetDistance , float speed , final boolean right)

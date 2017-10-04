@@ -8,7 +8,6 @@ import java.util.TimerTask;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import virtualDevices.ArmController;
-import virtualDevices.BrightnessMeasure;
 import virtualDevices.DistanceMeasure;
 import virtualDevices.HSVColorDetector;
 import Information.BlockArrangeInfo;
@@ -24,6 +23,7 @@ public class GamePartDriver {
 	private float currentAngle;
 	private int currentID;
 	private ArrayList<DriveInfo> missionScenario;
+	private boolean isLinetrace;
 
 	private ArmController arm;
 	private Linetracer linetracer;
@@ -31,7 +31,7 @@ public class GamePartDriver {
 	private DistanceAngleController dACtrl;
 	private RouteDriver routeDriver;
 
-	private final float P_GAIN = 100.0F;	//P係数
+	private final float P_GAIN = 150.0F;	//P係数
 	private final float I_GAIN = 10.0F;	//I係数
 	private final float D_GAIN = 5.0F;	//D係数
 
@@ -43,14 +43,6 @@ public class GamePartDriver {
 	
 	private HSVColorDetector colorDetect = new HSVColorDetector();
 	private WheelController whcon = new WheelController();
-	
-	private BrightnessMeasure briMeasure;
-	private float kp;
-	private float ki;
-	private float kd;
-	private float targetForward;
-	private boolean isLinetrace;
-	private final float LINE_TO_GARAGE_DISTANCE = 65.0F;
 
 	public GamePartDriver(int courceID)
 	{
@@ -84,27 +76,29 @@ public class GamePartDriver {
 		LCD.drawString("Size:" + missionScenario.size(), 0, 0);
 		Delay.msDelay(3000);
 		//緑色検知
-		int cnt = 0;
+		Timer timerGreen = new Timer();
+		TimerTask greenTask = new TimerTask(){
+			public void run(){
+				if(isLinetrace)linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, 50,colorDetect.getNormalizedBrightness());
+			}
+		};
+		isLinetrace = true;
+		timerGreen.scheduleAtFixedRate(greenTask, 0, 4);
 		while(true)
 		{
-			linetracer.linetrace(P_GAIN + 100.0F, I_GAIN + 20.0F, D_GAIN, TARGET_BRIGHTNESS, 50);
-			Delay.msDelay(4);
 			if(colorDetect.getUnderColorID() == 3)
-			{
-				cnt++;
-			}
-			else
-			{
-				cnt = 0;
-			}
-			if(cnt >= 5)
 			{
 				break;
 			}
-			Delay.msDelay(2);
+
+			//Delay.msDelay(2);
 		}
+		isLinetrace = false;
+		timerGreen.cancel();
 		whcon.controlWheelsDirect(0, 0);
+		Delay.msDelay(200);
 		
+		dACtrl.goStraightAhead(8.0F, 50);
 		
 		float distance = 0;
 		float speed = 0;
@@ -132,12 +126,12 @@ public class GamePartDriver {
 					}
 					blockMoveCorrection += 5.0F;
 				}
-				else if(missionScenario.get(i).getTurnAngle() == 0.000F)
+				/*else if(missionScenario.get(i).getTurnAngle() == 0.000F)
 				{
 					if(missionScenario.get(i).getLinetrace()){//次がライントレースの時に右側よりにする 
 						dACtrl.turn(LINETRACE_ANGLE_CONNECTION,true);
 					}
-				}
+				}*/
 				else
 				{
 					if(missionScenario.get(i).getTurnAngle() >= 60.000F || missionScenario.get(i).getTurnAngle() <= -60.000F)
@@ -200,7 +194,7 @@ public class GamePartDriver {
 				if(distance >= 0.0f)
 				{
 					//dACtrl.goStraightAhead((distance - blockMoveCorrection)/8.0F,speed);
-					dACtrl.goStraightAhead((distance - blockMoveCorrection + 1.0F)/8.0f,speed);
+					dACtrl.goStraightAhead((distance - blockMoveCorrection)/8.0f,speed);
 					//1/8～6/8の区間の間だけライントレース
 					distMeasure.resetDistance();
 					//後で直す
@@ -216,7 +210,7 @@ public class GamePartDriver {
 					TimerTask timerTask = new TimerTask(){
 						
 						public void run(){
-							if(distMeasure.getDistance()<(DISTANCE - blockMoveCorrection + 1.0F)/8.0f*5.0f)
+							if(distMeasure.getDistance()<(DISTANCE - blockMoveCorrection)/8.0f*5.0f)
 							{
 								linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, SPEED);
 							}
@@ -227,14 +221,14 @@ public class GamePartDriver {
 
 					while(true)
 					{
-						if(distMeasure.getDistance()>=(distance - blockMoveCorrection + 1.0F)/8.0f*5.0f)
+						if(distMeasure.getDistance()>=(distance - blockMoveCorrection)/8.0f*5.0f)
 						{
 							linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, 0);
 							timer.cancel();
 							break;
 						}
 					}
-					dACtrl.goStraightAhead((distance - blockMoveCorrection + 1.0F)/4.0f,speed);
+					dACtrl.goStraightAhead((distance - blockMoveCorrection)/4.0f,speed);
 					blockMoveCorrection = 0.0F;
 				}
 				else
@@ -249,9 +243,9 @@ public class GamePartDriver {
 				dACtrl.goStraightAhead(distance - blockMoveCorrection,speed);
 				blockMoveCorrection = 0.0F;
 			}
+			
+			
 		}
-		
-		parking();
 
 	}
 
@@ -278,7 +272,7 @@ public class GamePartDriver {
 					}
 					
 				}
-				missionScenario.add(new DriveInfo(0.000F,false,8.000F,60,false) );
+				//missionScenario.add(new DriveInfo(0.000F,false,10.000F,60,false) );
 			}
 
 			if(currentAngle >= 360.0F)
@@ -408,55 +402,5 @@ public class GamePartDriver {
 			}
 		}
 
-	}
-	private void parking(){
-		//15度方向を向く（縦列駐車前の線に垂直）
-		if(currentAngle != 15.000F){//仮想頂点から来たとき
-			//青頂点から来たとき
-			if(currentAngle == 105.000F){
-				dACtrl.turn(-90.000F, false);
-			}
-			//緑頂点から来たとき
-			else if(currentAngle == 285.000F){
-				dACtrl.turn(90.000F, false);
-			}
-		}
-		//ライントレース部（isLinetraceによって実行したりしなかったりする）
-		Timer timer = new Timer();
-		TimerTask timerTask = new TimerTask(){
-			public void run(){
-				if(isLinetrace)linetracer.linetrace(kp, ki, kd, TARGET_BRIGHTNESS, targetForward);
-			}
-		};
-
-		//線を検知するまで進む
-		isLinetrace = true;
-		kp = 0.0F;
-		ki = 0.0F;
-		kd = 0.0F;
-		targetForward  = 40.0F;
-		int blackCount = 0;
-		timer.scheduleAtFixedRate(timerTask, 0, 4);
-
-		Delay.msDelay(1000);//１秒たってから黒線検知を始める
-
-		while(blackCount < 1){
-			if(briMeasure.getNormalizedBrightness() < 0.35F){
-				blackCount++;
-			}
-			//黒線に達したらライントレースを切る
-		}
-		Delay.msDelay(250);
-		isLinetrace = false;
-		distMeasure.resetDistance();
-
-		//ガレージのほうを向く
-		dACtrl.turn(-65.0F, false);
-
-		//ガレージに入る
-		dACtrl.goStraightAhead(LINE_TO_GARAGE_DISTANCE, 50.0F);
-
-		//方向転換する
-		dACtrl.turn(40.0F, false);
 	}
 }
