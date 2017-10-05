@@ -34,24 +34,16 @@ public class RacePartDriver {
 
 		//コースIDによってLとRどちらを走行するか決定する
 		if(courseID == 1){	//Lコース
-			/*
-			sectionList.add(new SectionInfo(0,260.0F,-150.0F,-100.0F,-10.0F,0.5F,100.0F));
-			sectionList.add(new SectionInfo(1,380.0F,-60.0F,-60.0F,-5.0F,0.5F,100.0F));
-			sectionList.add(new SectionInfo(2,658.0F,-150.0F,-100.0F,-10.0F,0.5F,100.0F));
-			sectionList.add(new SectionInfo(3,750.0F,-60.0F,-60.0F,-5.0F,0.5F,100.0F));
-			sectionList.add(new SectionInfo(4,1062.0F,-150.0F,-100.0F,-10.0F,0.5F,100.0F)); 
-			*/
-			
-			//最初のカーブまで260cm
+			//最初のカーブまで250cm
 			sectionList.add(new SectionInfo(0,250.0F,-50.0F,-10.0F,-5.0F,0.5F,100.0F));
 			//GATE1まで380
-			sectionList.add(new SectionInfo(1,380.0F,-100.0F,-30.0F,-6.0F,0.5F,80.0F));
-			//GATE2まで658
-			sectionList.add(new SectionInfo(2,508.0F,-80.0F,-30.0F,-5.0F,0.5F,80.0F));
+			sectionList.add(new SectionInfo(1,380.0F,-80.0F,-10.0F,-5.0F,0.5F,100.0F));
+			//GATE2まで508?
+			sectionList.add(new SectionInfo(2,508.0F,-70.0F,-30.0F,-5.0F,0.5F,100.0F));
 			//GATE2の急激なカーブに入る所が750
 			sectionList.add(new SectionInfo(3,750.0F,-80.0F,-30.0F,-5.0F,0.5F,100.0F));
 			//GATE2の急激なカーブを抜ける所が900
-			sectionList.add(new SectionInfo(4,900.0F,-100.0F,-80.0F,-5.0F,0.5F,80.0F));
+			sectionList.add(new SectionInfo(4,900.0F,-100.0F,-50.0F,-5.0F,0.5F,100.0F));
 			//ゴールが1067なので、灰色検知のために余裕を持つ
 			sectionList.add(new SectionInfo(5,1022.0F,-60.0F,-10.0F,-5.0F,0.5F,100.0F));
 			//速度を落として安定走行させる
@@ -88,7 +80,7 @@ public class RacePartDriver {
 			public void run(){
 				presumeCurrentSection();
 				if(currentSectionID != -1){
-					tracer.linetrace(sectionList.get(currentSectionID).getKp(),
+					tracer.linetraceFast(sectionList.get(currentSectionID).getKp(),
 							sectionList.get(currentSectionID).getKi(),
 							sectionList.get(currentSectionID).getKd(),
 							sectionList.get(currentSectionID).getTargetBrightness(),

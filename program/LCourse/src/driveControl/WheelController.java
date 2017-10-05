@@ -25,6 +25,26 @@ public class WheelController {
 
 		controlWheelsDirect(powerL,powerR);
 	}
+	
+	public void controlWheelsFast(float turn,float forward){
+		//レース部のみ
+		int powerL;
+		int powerR;
+		if(turn >= 0){
+			powerL = (int)((100-turn*1.3)/100 * forward);
+		}
+		else{
+			powerL = (int)forward;
+		}
+		if(turn <= 0){
+			powerR = (int)((100+turn*1.3)/100 * forward);
+		}
+		else{
+			powerR = (int)forward;
+		}
+
+		controlWheelsDirect(powerL,powerR);
+	}
 
 	public void controlWheelsDirect(int powerL,int powerR){
 

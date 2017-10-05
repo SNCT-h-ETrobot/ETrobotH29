@@ -32,13 +32,13 @@ public class RacePartDriver {
 			//最初のカーブまで260
 			sectionList.add(new SectionInfo(0,260.0F,60.0F,5.0F,4.0F,0.5F,100.0F));
 			//GATE1まで492
-			sectionList.add(new SectionInfo(1,492.0F,100.0F,10.0F,5.0F,0.5F,100.0F));
+			sectionList.add(new SectionInfo(1,492.0F,85.0F,10.0F,5.0F,0.5F,100.0F));
 			//GATE2前のヘアピンカーブにはいるまで649
 			sectionList.add(new SectionInfo(2,649.0F,70.0F,10.0F,5.0F,0.5F,100.0F));
-			//GATE2前の180°カーブを抜けてカーブを抜けるまで800
-			sectionList.add(new SectionInfo(3,800.0F,90.0F,30.0F,10.0F,0.5F,90.0F));
+			//GATE2前の180°カーブを抜けてカーブを抜けるまで790
+			sectionList.add(new SectionInfo(3,790.0F,85.0F,50.0F,10.0F,0.5F,100.0F));
 			//ゴールまで1090だが、灰色検知のため余裕をもつ
-			sectionList.add(new SectionInfo(4,1045.0F,60.0F,5.0F,4.0F,0.5F,100.0F)); 
+			sectionList.add(new SectionInfo(4,1045.0F,60.0F,5.0F,4.0F,0.5F,100.0F));
 		}
 
 		armCtrl = new ArmController();
@@ -55,7 +55,7 @@ public class RacePartDriver {
 			public void run(){
 				presumeCurrentSection();
 				if(currentSectionID != -1){
-					tracer.linetrace(sectionList.get(currentSectionID).getKp(),
+					tracer.linetraceFast(sectionList.get(currentSectionID).getKp(),
 							sectionList.get(currentSectionID).getKi(),
 							sectionList.get(currentSectionID).getKd(),
 							sectionList.get(currentSectionID).getTargetBrightness(),
