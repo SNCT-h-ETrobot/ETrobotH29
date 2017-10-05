@@ -15,6 +15,7 @@ public class BlockArrangeInfo {
 	static private int[] blockPlaceIDList = new int[5];
 	static private Map<Integer,Map<Vertex,Path>> connectionList = new HashMap<Integer,Map<Vertex,Path>>();
 	static private List<Object> pointList = new ArrayList<Object>();
+	static private List<BlockPlace> blockPlaceList = new ArrayList<BlockPlace>();
 
 	static public BlockPlace b000 = new BlockPlace(0,0.000F,0.000F,1);
 	static public BlockPlace b004 = new BlockPlace(4,77.942F,0.000F,3);
@@ -576,6 +577,22 @@ public class BlockArrangeInfo {
 		pointList.add(p149);
 		pointList.add(p150);
 		pointList.add(v151);
+		
+		blockPlaceList.add(b000);
+		blockPlaceList.add(b004);
+		blockPlaceList.add(b008);
+		blockPlaceList.add(b012);
+		blockPlaceList.add(b044);
+		blockPlaceList.add(b052);
+		blockPlaceList.add(b060);
+		blockPlaceList.add(b074);
+		blockPlaceList.add(b081);
+		blockPlaceList.add(b090);
+		blockPlaceList.add(b119);
+		blockPlaceList.add(b121);
+		blockPlaceList.add(b128);
+		blockPlaceList.add(b132);
+		blockPlaceList.add(b139);
 	}
 
 	public static void setBlockPlace(int code){
@@ -804,6 +821,10 @@ public class BlockArrangeInfo {
 	public static Map<Integer, Map<Vertex, Path>> getConnectionList() {
 		return connectionList;
 	}
-
+	
+	public static List<BlockPlace> getBlockPlaceList()
+	{
+		return blockPlaceList;
+	}
 	//setConnectionListはバグの元になりそうなので作らない
 }

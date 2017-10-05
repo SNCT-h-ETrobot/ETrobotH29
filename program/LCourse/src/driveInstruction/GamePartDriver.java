@@ -31,7 +31,7 @@ public class GamePartDriver {
 	private DistanceAngleController dACtrl;
 	private RouteDriver routeDriver;
 
-	private final float P_GAIN = 150.0F;	//P係数
+	private final float P_GAIN = 250.0F;	//P係数
 	private final float I_GAIN = 10.0F;	//I係数
 	private final float D_GAIN = 5.0F;	//D係数
 
@@ -39,7 +39,7 @@ public class GamePartDriver {
 	
 	private float blockMoveCorrection = 0.0F;
 	private final float LINETRACE_ANGLE_CONNECTION = 6.0F;
-	private final float BLOCK_MOVE_DISTANCE = 5.0F;
+	private final float BLOCK_MOVE_DISTANCE = 2.0F;
 	
 	private HSVColorDetector colorDetect = new HSVColorDetector();
 	private WheelController whcon = new WheelController();
@@ -79,14 +79,18 @@ public class GamePartDriver {
 		Timer timerGreen = new Timer();
 		TimerTask greenTask = new TimerTask(){
 			public void run(){
-				if(isLinetrace)linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, 50,colorDetect.getNormalizedBrightness());
+				if(isLinetrace)
+				{
+					linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, 50,colorDetect.getNormalizedBrightness());
+				}
 			}
 		};
 		isLinetrace = true;
 		timerGreen.scheduleAtFixedRate(greenTask, 0, 4);
 		while(true)
 		{
-			if(colorDetect.getUnderColorID() == 3)
+			
+			if(colorDetect.getUnderColorID() == 2)
 			{
 				break;
 			}
@@ -95,11 +99,10 @@ public class GamePartDriver {
 		}
 		isLinetrace = false;
 		timerGreen.cancel();
-		whcon.controlWheelsDirect(0, 0);
+		linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, 0);
 		Delay.msDelay(200);
 		
 		dACtrl.goStraightAhead(8.0F, 50);
-		
 		float distance = 0;
 		float speed = 0;
 		//dACtrl.turn(20.0F,false);
@@ -131,14 +134,23 @@ public class GamePartDriver {
 					if(missionScenario.get(i).getLinetrace()){//次がライントレースの時に右側よりにする 
 						dACtrl.turn(LINETRACE_ANGLE_CONNECTION,true);
 					}
-				}*/
+				}
+				*/
 				else
 				{
 					if(missionScenario.get(i).getTurnAngle() >= 60.000F || missionScenario.get(i).getTurnAngle() <= -60.000F)
 					{
 						if(missionScenario.get(i).getLinetrace()){//次がライントレースの時に右側よりにする
 							//右回りの時は少し強め 左回りの時は少し弱め
-							float theta = missionScenario.get(i).getTurnAngle()/2.0F + (LINETRACE_ANGLE_CONNECTION) / 2.0F;
+							float theta;
+							if(missionScenario.get(i).getTurnAngle() >= 90.000F || missionScenario.get(i).getTurnAngle() <= -90.000F)
+							{
+								theta = missionScenario.get(i).getTurnAngle()/2.0F + (LINETRACE_ANGLE_CONNECTION);
+							}
+							else
+							{
+								theta = missionScenario.get(i).getTurnAngle()/2.0F + (LINETRACE_ANGLE_CONNECTION) / 2.0F;
+							}
 							dACtrl.turn(theta,missionScenario.get(i).getHoldBlock());
 							//少しだけ直進
 							dACtrl.goStraightAhead(BLOCK_MOVE_DISTANCE, 60.000F);
@@ -179,7 +191,7 @@ public class GamePartDriver {
 			
 			if(i<missionScenario.size() - 1)
 			{
-			if(missionScenario.get(i+1).getTurnAngle() == 0.0F && missionScenario.get(i+1).getDistance() > 0.0F && missionScenario.get(i+1).getDistance() > 0.0F){
+			if(missionScenario.get(i+1).getTurnAngle() == 0.0F && missionScenario.get(i+1).getDistance() > 0.0F && missionScenario.get(i+1).getDistance() > 0.0F && missionScenario.get(i).getColorID() == 0){
 				//直線の時はいちいち止まらずつなげる
 				distance = missionScenario.get(i).getDistance()+missionScenario.get(i+1).getDistance();
 				speed = missionScenario.get(i+1).getSpeed();
@@ -190,6 +202,7 @@ public class GamePartDriver {
 				speed = missionScenario.get(i).getSpeed();
 			}
 			}
+
 			if(missionScenario.get(i).getLinetrace()){
 				if(distance >= 0.0f)
 				{
@@ -204,6 +217,33 @@ public class GamePartDriver {
 						Delay.msDelay(4);
 					}
 					*/
+					if(missionScenario.get(i).getColorID() != 0)
+					{
+						Timer timerColor = new Timer();
+						TimerTask colorTask = new TimerTask(){
+							public void run(){
+								if(isLinetrace)linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, 50,colorDetect.getNormalizedBrightness());
+							}
+						};
+						isLinetrace = true;
+						timerColor.scheduleAtFixedRate(colorTask, 0, 4);
+						while(true)
+						{
+							if(colorDetect.getUnderColorID() == missionScenario.get(i).getColorID() || distMeasure.getDistance()>=(distance - blockMoveCorrection)/8.0f*7.0f)
+							{
+								break;
+							}
+
+							//Delay.msDelay(2);
+						}
+						isLinetrace = false;
+						timerColor.cancel();
+						linetracer.linetrace(P_GAIN, I_GAIN, D_GAIN, TARGET_BRIGHTNESS, 0);
+						Delay.msDelay(200);
+						//dACtrl.goStraightAhead(8.0F,speed);
+					}
+					else
+					{
 					Timer timer = new Timer();
 					final float DISTANCE = distance;
 					final float SPEED = speed;
@@ -228,7 +268,10 @@ public class GamePartDriver {
 							break;
 						}
 					}
-					dACtrl.goStraightAhead((distance - blockMoveCorrection)/4.0f,speed);
+					
+					
+						dACtrl.goStraightAhead((distance - blockMoveCorrection)/4.0f,speed);
+					}
 					blockMoveCorrection = 0.0F;
 				}
 				else
@@ -243,8 +286,7 @@ public class GamePartDriver {
 				dACtrl.goStraightAhead(distance - blockMoveCorrection,speed);
 				blockMoveCorrection = 0.0F;
 			}
-			
-			
+			//Delay.msDelay(2000);
 		}
 
 	}
@@ -272,7 +314,7 @@ public class GamePartDriver {
 					}
 					
 				}
-				//missionScenario.add(new DriveInfo(0.000F,false,10.000F,60,false) );
+				//missionScenario.add(new DriveInfo(0.000F,false,8.000F,60,false,0) );
 			}
 
 			if(currentAngle >= 360.0F)
@@ -293,7 +335,7 @@ public class GamePartDriver {
 					if(route.get(i-2).equals(route.get(i+1)))
 					{
 						Path path = (Path)BlockArrangeInfo.getPointObject(route.get(i+1));
-						missionScenario.add(new DriveInfo(0.000F,false,-path.getDistance()+8.0F,60,false) );
+						missionScenario.add(new DriveInfo(0.000F,false,-path.getDistance()+8.0F,60,false,0) );
 						currentID = route.get(i+2);
 						i += 1;
 						
@@ -302,7 +344,7 @@ public class GamePartDriver {
 					}
 					else
 					{
-						missionScenario.add(new DriveInfo(0.000F,false,-15.000F,60,false) );
+						missionScenario.add(new DriveInfo(0.000F,false,-15.000F,60,false,0) );
 						correctedAngle = currentAngle;
 						lineflag = false;
 						correctedDistance += -15.000F-8.0F;
@@ -336,22 +378,38 @@ public class GamePartDriver {
 				//System.out.println("i:" +i+ " "+ currentID + "->" + route.get(i+1) + " angle:"+angle);
 				if(i<route.size()-3)
 				{
-					if(route.get(i+1).equals(route.get(i+2)) && blockhold)
+					if(lineflag)
 					{
-						missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance() - 6.0F),60 ,path.isLine()));
+						
+						for(int j = 0;j<BlockArrangeInfo.getBlockPlaceList().size();j++)
+						{
+							if(route.get(i+1).equals(BlockArrangeInfo.getBlockPlaceList().get(j).getPointID()))
+							{
+								if(route.get(i+1).equals(route.get(i+2)) && blockhold)
+								{
+									missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance() - 6.0F),60 ,path.isLine(),BlockArrangeInfo.getBlockPlaceList().get(j).getColorID()));
+									break;
+								}
+								else
+								{
+									missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,path.isLine(),BlockArrangeInfo.getBlockPlaceList().get(j).getColorID()));
+									missionScenario.add(new DriveInfo(0.0001F,false,7.0F,60,false,0));
+									break;
+								}
+							}
+							if(j == BlockArrangeInfo.getBlockPlaceList().size() - 1)
+							{
+								missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,path.isLine(),0));
+							}
+						}
+						
 					}
 					else
 					{
-						if(lineflag)
-						{
-							missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,path.isLine()));
-						}
-						else
-						{
-							missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,false));
-							lineflag = true;
-						}
+						missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,false,0));
+						lineflag = true;
 					}
+				
 				}
 				else
 				{
@@ -365,7 +423,7 @@ public class GamePartDriver {
 					}
 					else
 					{*/
-						missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,path.isLine()));
+						missionScenario.add(new DriveInfo(angle,blockhold,(path.getDistance()),60 ,path.isLine(),0));
 					//}
 				}
 				currentAngle = path.getAngle();
@@ -394,7 +452,7 @@ public class GamePartDriver {
 					}
 					currentAngle = correctedAngle;
 					//とりあえずspeedは40　後で距離に応じて変えたりするようにする
-					missionScenario.add(new DriveInfo(angle,false,-correctedDistance,60,false) );
+					missionScenario.add(new DriveInfo(angle,false,-correctedDistance,60,false,0) );
 					correctedDistance = 0.000F;
 				}
 				

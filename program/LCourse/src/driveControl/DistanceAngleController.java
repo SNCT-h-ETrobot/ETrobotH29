@@ -43,7 +43,7 @@ public class DistanceAngleController {
 	//第一引数で移動距離、第二引数で速度
 	public void goStraightAhead(float targetDistance , float speed)
 	{
-		targetSpeed = speed;
+		final float nSpeed = speed;
 		motorAngleMeasure.resetMotorAngle();
 
 		timerEnd = false;
@@ -64,8 +64,18 @@ public class DistanceAngleController {
 			float preDiffS = 0; //以前の速度差分
 			float pwmL;	//左輪pwm
 			float pwmR;	//右輪pwm
+			int powerCnt = 0;
 
 			public void run(){
+				
+				if(powerCnt <= 10)
+				{
+					targetSpeed = nSpeed + 20;
+				}
+				else
+				{
+					targetSpeed = nSpeed;
+				}
 				angleL = motorAngleMeasure.getMotorAngle()[0];
 				angleR = motorAngleMeasure.getMotorAngle()[1];
 				angle = (float)(angleL+angleR)/2.0F;
@@ -109,6 +119,7 @@ public class DistanceAngleController {
 				else{
 					wheelCtrl.controlWheelsDirect((int)pwmL, (int)pwmR);
 				}
+				powerCnt++;
 			}
 		};
 
@@ -138,13 +149,16 @@ public class DistanceAngleController {
 		while(Math.abs(distance) <= Math.abs(targetDistance));
 
 		timerEnd = true;
+		Delay.msDelay(400);
 		timer.cancel();
-		int i = 0;
+		
+		/*int i = 0;
 		while(i < 1000)
 		{
 			wheelCtrl.controlWheelsDirect(0, 0);
 			i++;
 		}
+		*/
 	}
 
 	//第一引数で動かす角度、第二引数でブロックを持っているかどうか（持っているときはtrue）
@@ -176,7 +190,7 @@ public class DistanceAngleController {
 	
 				if(powerCnt <= 10)
 				{
-					targetSpeed = 75;
+					targetSpeed = 85;
 				}
 				else
 				{
@@ -309,10 +323,11 @@ public class DistanceAngleController {
 		while(Math.abs(turnAngle) <= Math.abs(targetTurnAngle));
 	
 		timerEnd = true;
-		Delay.msDelay(12);
+		Delay.msDelay(400);
 		timer.cancel();
-		int i = 0;
 		/*
+		int i = 0;
+		
 		while(i < 1000)
 		{
 			wheelCtrl.controlWheelsDirect(0, 0);

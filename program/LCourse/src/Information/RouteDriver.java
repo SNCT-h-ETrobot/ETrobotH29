@@ -8,7 +8,7 @@ public class RouteDriver {
 
 	private static List<Integer> routeList = new ArrayList<Integer>();// ルート計算の結果
 	private final float DEGRESS_MULT = 0;// 角度を距離に直すときの倍率
-	private static final float[] COST_MULT = {0.01f,1.0f,1.0f,1.0f,1.0f};//コストに補正をかける，小さいほど動かす対象に選ばれやすい・黒、赤、緑、青、黄の順
+	private static final float[] COST_MULT = {0.001f,1.0f,1.0f,1.0f,1.0f};//コストに補正をかける，小さいほど動かす対象に選ばれやすい・黒、赤、緑、青、黄の順
 
 	public void driveRoute(){
 		//右と左のルートとそれぞれのルートのコスト
@@ -272,10 +272,17 @@ public class RouteDriver {
 
 			for(int i = 0;i<tempVertexList.size();i++){
 				float[] coordinates = tempVertexList.get(i).getCoordinates();
+				
+				double fdmult;
+				if(BlockArrangeInfo.getConnectionPath(selectID,tempVertexList.get(i).getPointID()).isLine())
+					fdmult = 1.0;
+				else
+					fdmult = 10.0;
+				
 				//f'=g+cost+h
 				//半ば簡易的。calcCostとは結果が違う
 				double fd = (f[selectID] - hn)
-						+BlockArrangeInfo.getConnectionPath(selectID,tempVertexList.get(i).getPointID()).getDistance()
+						+BlockArrangeInfo.getConnectionPath(selectID,tempVertexList.get(i).getPointID()).getDistance() * fdmult
 						+Math.sqrt(Math.pow(coordinates[0]-coordinateTarget[0],2.0F)+Math.pow(coordinates[1]-coordinateTarget[1],2.0F));
 
 				//オープンされている
@@ -363,9 +370,11 @@ public class RouteDriver {
 						cost += tempPathList.get(j).getDistance()
 								+Math.abs(preAngle - nextAngle)*DEGRESS_MULT;
 					}
+
 					preAngle = nextAngle;
 				}
 			}
+
 		}
 
 		return cost;
