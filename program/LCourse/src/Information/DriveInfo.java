@@ -7,14 +7,16 @@ public class DriveInfo {
 	private float distance;
 	private int speed;
 	private boolean linetrace;
+	private int colorID;
 
-	public DriveInfo(float turnAngle, boolean holdBlock, float distance, int speed,boolean linetrace)
+	public DriveInfo(float turnAngle, boolean holdBlock, float distance, int speed,boolean linetrace,int colorID)
 	{
 		this.turnAngle = turnAngle;
 		this.holdBlock = holdBlock;
 		this.distance = distance;
 		this.speed = speed;
 		this.linetrace = linetrace;
+		this.colorID = colorID;
 	}
 
 	public float getTurnAngle()
@@ -40,6 +42,11 @@ public class DriveInfo {
 	public boolean getLinetrace()
 	{
 		return linetrace;
+	}
+	
+	public int getColorID()
+	{
+		return colorID;
 	}
 
 }

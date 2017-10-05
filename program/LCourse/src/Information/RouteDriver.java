@@ -8,19 +8,19 @@ public class RouteDriver {
 
 	private static List<Integer> routeList = new ArrayList<Integer>();// ルート計算の結果
 	private final float DEGRESS_MULT = 0;// 角度を距離に直すときの倍率
-	private static final float[] COST_MULT = {0.01f,1.0f,1.0f,1.0f,1.0f};//コストに補正をかける，小さいほど動かす対象に選ばれやすい・黒、赤、緑、青、黄の順
+	private static final float[] COST_MULT = {0.001f,1.0f,1.0f,1.0f,1.0f};//コストに補正をかける，小さいほど動かす対象に選ばれやすい・黒、赤、緑、青、黄の順
 
 	public void driveRoute(){
 		//右と左のルートとそれぞれのルートのコスト
 		List<Integer> tempList = new ArrayList<Integer>();
 		List<Integer> tempList2 = new ArrayList<Integer>();
 		float routeCost = 0,routeCost2 = 0;
-
+		int[][] blackPlaceJudge = new int[][]{ {52,74,81,128,132,121},{0,0,0,0,0,0} };
 
 		for (int i = 0; i < 2; i++) {
 			int blockCarryTarget[];// ブロックを置く目標位置  黒、赤、緑、青、黄の順
-			if(i == 0) blockCarryTarget = new int[]{151, 0, 90, 4,44};// 左
-			else       blockCarryTarget = new int[]{151,60,119,12, 8};// 右
+			if(i == 0) blockCarryTarget = new int[]{52, 0, 90, 4,44};// 左
+			else       blockCarryTarget = new int[]{52,60,119,12, 8};// 右
 
 			int robotPlace = 90; // 走行体の位置 初期値は走行区間から続く緑のブロック置き場
 			//一回ごとにリストとコストをリセット
@@ -28,6 +28,27 @@ public class RouteDriver {
 			routeCost = 0;
 
 			int[] blockPlace = BlockArrangeInfo.getBlockPlaceIDList();// ブロックの置いてある位置
+			
+			//黒ブロックの目標位置をブロックが無いところにする
+			for(int j = 0; j < 6; j++)
+			{
+				for(int k = 0; k < blockPlace.length;k++)
+				{
+					if(blackPlaceJudge[0][j] == blockPlace[k])
+					{
+						blackPlaceJudge[1][j]++;
+						break;
+					}
+					
+				}
+				if(blackPlaceJudge[1][j] == 0)
+				{
+					blockCarryTarget[0] = blackPlaceJudge[0][j];
+					break;
+				}
+			}
+			
+			
 			for (int j = 0; j < 5; j++) {
 				// 移動先が開いているブロックの色を調べる
 				boolean[] canCarry = new boolean[5];
@@ -251,10 +272,17 @@ public class RouteDriver {
 
 			for(int i = 0;i<tempVertexList.size();i++){
 				float[] coordinates = tempVertexList.get(i).getCoordinates();
+				
+				double fdmult;
+				if(BlockArrangeInfo.getConnectionPath(selectID,tempVertexList.get(i).getPointID()).isLine())
+					fdmult = 1.0;
+				else
+					fdmult = 10.0;
+				
 				//f'=g+cost+h
 				//半ば簡易的。calcCostとは結果が違う
 				double fd = (f[selectID] - hn)
-						+BlockArrangeInfo.getConnectionPath(selectID,tempVertexList.get(i).getPointID()).getDistance()
+						+BlockArrangeInfo.getConnectionPath(selectID,tempVertexList.get(i).getPointID()).getDistance() * fdmult
 						+Math.sqrt(Math.pow(coordinates[0]-coordinateTarget[0],2.0F)+Math.pow(coordinates[1]-coordinateTarget[1],2.0F));
 
 				//オープンされている
@@ -342,9 +370,11 @@ public class RouteDriver {
 						cost += tempPathList.get(j).getDistance()
 								+Math.abs(preAngle - nextAngle)*DEGRESS_MULT;
 					}
+
 					preAngle = nextAngle;
 				}
 			}
+
 		}
 
 		return cost;

@@ -1,5 +1,6 @@
 package virtualDevices;
 
+import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import Hardware.Hardware;
 
@@ -22,7 +23,7 @@ public class HSVColorDetector {
 	private final float YELLOW_HUE = 0.2F;
 	
 	private final float UNDER_RED_HUE = 0.02F;
-	private final float UNDER_YELLOW_HUE = 0.135F;
+	private final float UNDER_YELLOW_HUE = 0.125F;
 	private final float UNDER_BLACK_WHITE_HUE = 0.28F;
 	private final float UNDER_GREEN_HUE = 0.35F;
 	private final float UNDER_BLUE_HUE = 0.6F;
@@ -146,24 +147,31 @@ public class HSVColorDetector {
 		hsv[0] = h;
 		hsv[1] = s;
 		hsv[2] = v;
-
-		if(hsv[0] < UNDER_RED_HUE){
-			return 1;//赤
+		//LCD.drawString(""+hsv[1], 1, 1);
+		if(hsv[1] > 0.31F)
+		{
+			if(hsv[0] < UNDER_RED_HUE){
+				return 1;//赤
+			}
+			else if(hsv[0] < UNDER_YELLOW_HUE){
+				return 4; //黄
+			}
+			else if(hsv[0] < UNDER_BLACK_WHITE_HUE){
+				return 0; //黒
+			}
+			else if(hsv[0] < UNDER_GREEN_HUE){
+				return 2; //緑
+			}
+			else if(hsv[0] < UNDER_BLUE_HUE){
+				return 3; //青
+			}
+			else{
+				return -1;
+			}
 		}
-		else if(hsv[0] < UNDER_YELLOW_HUE){
-			return 2; //黄
-		}
-		else if(hsv[0] < UNDER_BLACK_WHITE_HUE){
-			return 0; //黒
-		}
-		else if(hsv[0] < UNDER_GREEN_HUE){
-			return 3; //緑
-		}
-		else if(hsv[0] < UNDER_BLUE_HUE){
-			return 4; //青
-		}
-		else{
-			return -1;
+		else
+		{
+			return 0;
 		}
 	}
 	
@@ -176,11 +184,13 @@ public class HSVColorDetector {
 	public float getBrightness(){
 		float[] sampleBright = new float[Hardware.RGBMode.sampleSize()];
 		float a = 0.8F;//大きくすると遅れるが滑らかになる
-
+		
 		Hardware.RGBMode.fetchSample(sampleBright, 0);
+		float cBrightness = ((sampleBright[0] * 0.299F + sampleBright[1] * 0.587F + sampleBright[2] * 0.114F) * 4.0F); 
 		//出力値 = a*ひとつ前の出力値 + (1-a)*センサ値
 		//ひとつ前の出力値はbrightnessとなっている筈
-		brightness = a*brightness + (1-a)*sampleBright[0];
+		//brightness = a*brightness + (1-a)*sampleBright[0];
+		brightness = a*brightness + (1-a)*cBrightness;
 		return brightness;
 	}
 
