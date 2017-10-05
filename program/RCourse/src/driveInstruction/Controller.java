@@ -1,7 +1,5 @@
 ﻿package driveInstruction;
 
-import lejos.hardware.lcd.LCD;
-
 public class Controller {	//クラス名は再考が必要
 
 	static RacePartDriver RPDriver;
@@ -21,7 +19,7 @@ public class Controller {	//クラス名は再考が必要
 	}
 
 	public void drive(){
-		//RPDriver.driveRacePart();
+		RPDriver.driveRacePart();
 		//以後ゲー区間
 		GPDriver.driveGamePart();
 	}

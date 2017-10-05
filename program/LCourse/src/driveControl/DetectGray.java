@@ -101,7 +101,7 @@ public class DetectGray{
 			log.addLog("newer", newer, nowtime);
 			log.addLog("older", older, nowtime);
 			log.addLog("distance", newer - older, nowtime);*/
-			if(dm.getDistance() > 25.0f && newer - older > GRAY_THRESHOLD)
+			if(dm.getDistance() > 15.0f && newer - older > GRAY_THRESHOLD)
 				break;
 			a = (a+1)%GRAY_QUEUE;
 			Delay.msDelay(4);

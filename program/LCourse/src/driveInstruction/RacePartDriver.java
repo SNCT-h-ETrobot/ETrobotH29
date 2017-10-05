@@ -17,16 +17,16 @@ public class RacePartDriver {
 	private Linetracer tracer;
 
 	//private Communicator com;
-	
+
 	private ArrayList<SectionInfo> sectionList;
 	private int currentSectionID;
 	private DetectGray detectGray = new DetectGray();
-	
-	
-	
+
+
+
 	//private WheelController whcon = new WheelController();
-	
-	
+
+
 
 	public RacePartDriver(int courseID){
 		//区間情報はリストで管理する
@@ -35,31 +35,31 @@ public class RacePartDriver {
 		//コースIDによってLとRどちらを走行するか決定する
 		if(courseID == 1){	//Lコース
 			//最初のカーブまで250cm
-			sectionList.add(new SectionInfo(0,250.0F,-50.0F,-10.0F,-5.0F,0.5F,100.0F));
+			sectionList.add(new SectionInfo(0,250.0F,-40.0F,-10.0F,-5.0F,0.5F,100.0F));
 			//GATE1まで380
 			sectionList.add(new SectionInfo(1,380.0F,-80.0F,-10.0F,-5.0F,0.5F,100.0F));
 			//GATE2まで508?
-			sectionList.add(new SectionInfo(2,508.0F,-70.0F,-30.0F,-5.0F,0.5F,100.0F));
+			sectionList.add(new SectionInfo(2,528.0F,-50.0F,-20.0F,-5.0F,0.5F,100.0F));
 			//GATE2の急激なカーブに入る所が750
-			sectionList.add(new SectionInfo(3,750.0F,-80.0F,-30.0F,-5.0F,0.5F,100.0F));
+			sectionList.add(new SectionInfo(3,750.0F,-70.0F,-20.0F,-5.0F,0.5F,100.0F));
 			//GATE2の急激なカーブを抜ける所が900
-			sectionList.add(new SectionInfo(4,900.0F,-100.0F,-50.0F,-5.0F,0.5F,100.0F));
+			sectionList.add(new SectionInfo(4,900.0F,-90.0F,-20.0F,-5.0F,0.5F,100.0F));
 			//ゴールが1067なので、灰色検知のために余裕を持つ
-			sectionList.add(new SectionInfo(5,1022.0F,-60.0F,-10.0F,-5.0F,0.5F,100.0F));
+			sectionList.add(new SectionInfo(5,1022.0F,-50.0F,-10.0F,-5.0F,0.5F,100.0F));
 			//速度を落として安定走行させる
 			sectionList.add(new SectionInfo(6,1032.0F,-100.0F,-20.0F,-5.0F,0.5F,60.0F));
-			
+
 			//sectionList.add(new SectionInfo(0,100.0F,-100.0F,-20.0F,-5.0F,0.5F,60.0F));
 
-			
-			
+
+
 		}
 		else if(courseID == 2){	//Rコース
 			sectionList.add(new SectionInfo(0,260.0F,-150.0F,-100.0F,-10.0F,0.5F,100.0F));
 			sectionList.add(new SectionInfo(1,492.0F,-60.0F,-60.0F,-5.0F,0.5F,100.0F));
 			sectionList.add(new SectionInfo(2,649.0F,-150.0F,-100.0F,-10.0F,0.5F,100.0F));
 			sectionList.add(new SectionInfo(3,740.0F,-60.0F,-60.0F,-5.0F,0.5F,100.0F));
-			sectionList.add(new SectionInfo(4,1092.0F,-150.0F,-100.0F,-10.0F,0.5F,100.0F)); 
+			sectionList.add(new SectionInfo(4,1092.0F,-150.0F,-100.0F,-10.0F,0.5F,100.0F));
 			//sectionList.add(new SectionInfo(0,1092.0F,-150.0F,-100.0F,-10.0F,0.5F,100.0F));
 		}
 
@@ -72,11 +72,11 @@ public class RacePartDriver {
 		//com = new Communicator();
 		//LCD.drawString("Connect Ready", 0, 0);
 		//com.establishConnection();
-		
+
 		Timer timer = new Timer();
-		
+
 		TimerTask timerTask = new TimerTask(){
-			
+
 			public void run(){
 				presumeCurrentSection();
 				if(currentSectionID != -1){
@@ -86,7 +86,7 @@ public class RacePartDriver {
 							sectionList.get(currentSectionID).getTargetBrightness(),
 							sectionList.get(currentSectionID).getTargetForward());
 				}
-				
+
 			}
 		};
 
@@ -95,15 +95,15 @@ public class RacePartDriver {
 		//com.readCode();
 		//LCD.drawString("dist:"+disMeasure.getDistance(), 0, 0);
 		armCtrl.controlArmNormalAngel();
-		
+
 		while(currentSectionID != -1)
 		{
-			
+
 		}
 		timer.cancel();
 		detectGray.run();
 	}
-	
+
 
 	private void presumeCurrentSection(){
 		float distance = disMeasure.getDistance();
@@ -120,6 +120,6 @@ public class RacePartDriver {
 				currentSectionID = -1;
 			}
 		}
-		
+
 	}
 }
