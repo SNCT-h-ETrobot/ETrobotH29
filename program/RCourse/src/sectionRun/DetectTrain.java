@@ -18,7 +18,7 @@ public class DetectTrain extends SectionRun {
 	private static final float DISTANCE_FAR = 0.90f; //2番目の検知の時に新幹線が奥にいるかの判定に使う
 	private static final int STOP_TIME_MS = 1000;
 
-	private static final float TRAIN_TIME_CYCLE = 27.0f;//一周する時間
+	private static final float TRAIN_TIME_CYCLE = 19.5f;//一周する時間
 	private static final float TRAIN_TIME_DIFFERENCE = 0.55f;//新幹線が中央レーンから奥のレーンに移動するまでの時間。一周する時間を1とした割合で
 	private static final float TRAIN_TIME_NONE = 0.05f;//
 
@@ -74,8 +74,9 @@ public class DetectTrain extends SectionRun {
 			passedTime = System.nanoTime();
 			// ちょっと待つ
 			Delay.msDelay(STOP_TIME_MS);
-			if(detectID!=1) bright.changeLocation();
-				
+			if(detectID==0) bright.changeLocation(false);
+			else if(detectID==2) bright.changeLocation(true);
+
 		}
 
 

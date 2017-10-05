@@ -115,7 +115,7 @@ public class DetectGray extends SectionRun {
 		targetBright = LT_BRIGHT_2;
 		speed = TARGET_SPEED_HI;
 		while(dm.getDistance() < TARGET_DISTANCE){
-			if(dm.getDistance() > TARGET_DISTANCE-10)speed = TARGET_SPEED;
+			if(dm.getDistance() > TARGET_DISTANCE-15)speed = TARGET_SPEED;
 			Delay.msDelay(4);
 		}
 		timer.cancel();

@@ -72,7 +72,7 @@ public class MoveBlock extends SectionRun {
 			//dACtrl.goStraightAhead((-SAME_COLOR_DISTANCE-COLOR_DETECTION_DISTANCE)*0.3F, RUN_SPEED);
 			dACtrl.turn(-135.0F*a, false);
 			armCtrl.controlArmNormalAngel();
-			Delay.msDelay(200);
+			Delay.msDelay(100);
 		}
 		else{
 			//回転式寄り切り

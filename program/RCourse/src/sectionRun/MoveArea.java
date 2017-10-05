@@ -19,14 +19,16 @@ import driveControl.WheelController;
  * */
 public class MoveArea extends SectionRun {
 	private static final float BLOCK_DISTANCE = 10.0f;//中央からブロックの目標地点までの距離
-	private static final float BLOCK_PASS_DISTANCE = 28.0f;//中央からブロックの目標地点までの距離
+	private static final float BLOCK_PASS_DISTANCE = 27.0f;//中央からブロックの目標地点までの距離
 	private static final float CENTER_DISTANCE = 14.0f;//ブロックから中央までの距離
 	private static final float PRIZE_DISTANCE = 20.0f;//中央から懸賞の目標地点までの距離
 	private static final float RAIL_DISTANCE = 30.0f;//レールに近い方の縦ラインからレールまで進む距離
 	private static final float RAIL_CENTER_DISTANCE = 12.0f;//中央からレールまで進む距離
+	private static final float TO_PRIZE_DISTANCE = 14.0f;
 
-	private static final float TARGET_SPEED = 70.0f;
-	private static final float TARGET_SPEED_LO = 45.0f;
+	private static final float TARGET_SPEED_HI = 70.0f;
+	private static final float TARGET_SPEED = 45.0f;
+	private static final float TARGET_SPEED_LO = 40.0f;
 
 	private static final float LT_P = 160.0f;
 	private static final float LT_I = 30.0f;
@@ -214,21 +216,21 @@ public class MoveArea extends SectionRun {
 		lti = -LT_I;
 		ltd = -LT_D;
 		ltb = LT_BRIGHT;
-		lts = TARGET_SPEED_LO;
+		lts = TARGET_SPEED;
 		while(dm.getDistance() < BLOCK_PASS_DISTANCE*0.3){
 			Delay.msDelay(4);
 		}
 		ltp = -LT_P_LO;
 		lti = 0;
 		ltd = 0;
-		lts = TARGET_SPEED;
-		while(dm.getDistance() < BLOCK_PASS_DISTANCE*0.7){
+		lts = TARGET_SPEED_HI;
+		while(dm.getDistance() < BLOCK_PASS_DISTANCE*0.8){
 			Delay.msDelay(4);
 		}
 		ltp = -LT_P;
 		lti = -LT_I;
 		ltd = -LT_D;
-		lts = TARGET_SPEED_LO;
+		lts = TARGET_SPEED;
 		while(dm.getDistance() < BLOCK_PASS_DISTANCE){
 			Delay.msDelay(4);
 		}
@@ -245,7 +247,7 @@ public class MoveArea extends SectionRun {
 		ltp = LT_P;
 		lti = LT_I;
 		ltd = LT_D;
-		lts = TARGET_SPEED;
+		lts = TARGET_SPEED_HI;
 		while(dm.getDistance() < CENTER_DISTANCE){
 			Delay.msDelay(4);
 		}
@@ -262,7 +264,7 @@ public class MoveArea extends SectionRun {
 		ltp = -LT_P;
 		lti = -LT_I;
 		ltd = -LT_D;
-		lts = TARGET_SPEED;
+		lts = TARGET_SPEED_HI;
 		while(dm.getDistance() < CENTER_DISTANCE){
 			Delay.msDelay(4);
 		}
@@ -280,7 +282,7 @@ public class MoveArea extends SectionRun {
 		ltp = LT_P;
 		lti = LT_I;
 		ltd = LT_D;
-		lts = TARGET_SPEED_LO;
+		lts = TARGET_SPEED;
 		while(dm.getDistance() < BLOCK_DISTANCE){
 			Delay.msDelay(4);
 		}
@@ -298,7 +300,7 @@ public class MoveArea extends SectionRun {
 		ltp = -LT_P;
 		lti = -LT_I;
 		ltd = -LT_D;
-		lts = TARGET_SPEED_LO;
+		lts = TARGET_SPEED;
 		while(dm.getDistance() < BLOCK_DISTANCE){
 			Delay.msDelay(4);
 		}
@@ -322,8 +324,9 @@ public class MoveArea extends SectionRun {
 		lti = LT_I;
 		ltd = LT_D;
 		ltb = LT_BRIGHT;
-		lts = TARGET_SPEED_LO;
+		lts = TARGET_SPEED_HI;
 		while(dm.getDistance() < RAIL_DISTANCE*0.7){
+			if(dm.getDistance() > RAIL_DISTANCE*0.4)lts = TARGET_SPEED;
 			Delay.msDelay(4);
 		}/*
 		ltp = LT_P_LO;
@@ -336,7 +339,7 @@ public class MoveArea extends SectionRun {
 		ltp = LT_P_LO;
 		lti = 0;
 		ltd = 0;
-		lts = TARGET_SPEED_LO;
+		lts = TARGET_SPEED;
 		while(dm.getDistance() < RAIL_DISTANCE){
 			Delay.msDelay(4);
 		}
@@ -363,7 +366,7 @@ public class MoveArea extends SectionRun {
 		lti = LT_I;
 		ltd = LT_D;
 		lts = TARGET_SPEED_LO;
-		while(dm.getDistance() < CENTER_DISTANCE){
+		while(dm.getDistance() < TO_PRIZE_DISTANCE){
 			Delay.msDelay(4);
 		}
 
@@ -420,7 +423,7 @@ public class MoveArea extends SectionRun {
 			ltd = -LT_D;
 		}
 		ltb = LT_BRIGHT;
-		lts = TARGET_SPEED_LO;
+		lts = TARGET_SPEED;
 		while(dm.getDistance() < 10){
 			Delay.msDelay(4);
 		}
@@ -434,7 +437,7 @@ public class MoveArea extends SectionRun {
 			lti = -LT_I_RIGHT;
 			ltd = -LT_D_RIGHT;
 		}
-		lts = TARGET_SPEED_LO;
+		lts = TARGET_SPEED;
 		int blackCount = 0;
 		while(true){
 			if(bm.getNormalizedBrightness() < BLACK_THRESHOLD)++blackCount;
@@ -460,7 +463,7 @@ public class MoveArea extends SectionRun {
 			else dac.turn(RIGHT_TURN_ANGLE_INVERSE, false);
 		}
 		else{
-			dac.goStraightAhead(2, 40);
+			dac.goStraightAhead(3, 40);
 			stop();
 			if(isTraceRight)dac.turn(RIGHT_TURN_ANGLE, false);
 			else dac.turn(-RIGHT_TURN_ANGLE, false);

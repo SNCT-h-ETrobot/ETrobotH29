@@ -60,4 +60,16 @@ public class BrightnessMeasure {
 			nowLocation = WHITE_BRIGHTNESS;
 		}
 	}
+
+	public void changeLocation(boolean isWhite)
+	{
+		if(isWhite)
+		{
+			nowLocation = WHITE_BRIGHTNESS;
+		}
+		else
+		{
+			nowLocation = WOOD_BRIGHTNESS;
+		}
+	}
 }

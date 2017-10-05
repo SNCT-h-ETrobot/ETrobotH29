@@ -126,7 +126,7 @@ public class DistanceAngleController {
 			distance = (angle/360)*TIRE_CIRCUMFERENCE;
 			//LCD.drawString("dist:"+distance+",target:"+targetDistance, 0, 5);
 			if(distance == preDistance){
-				if(n == 50){
+				if(n == 25){
 					break;
 				}
 			}else{
@@ -284,7 +284,7 @@ public class DistanceAngleController {
 			//LCD.drawString("turnL:"+turnAngle, 0, 5);
 			//LCD.drawString("turnR:"+angleR*230.0F/360.0F, 0, 6);
 			if(turnAngle == preAngle){
-				if(n == 50){
+				if(n == 25){
 					break;
 				}
 			}else{
