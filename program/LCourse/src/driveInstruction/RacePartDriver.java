@@ -37,7 +37,7 @@ public class RacePartDriver {
 			//最初のカーブまで250cm
 			sectionList.add(new SectionInfo(0,250.0F,-40.0F,-10.0F,-5.0F,0.5F,100.0F));
 			//GATE1まで380
-			sectionList.add(new SectionInfo(1,380.0F,-80.0F,-10.0F,-5.0F,0.5F,100.0F));
+			sectionList.add(new SectionInfo(1,370.0F,-80.0F,-10.0F,-5.0F,0.5F,100.0F));
 			//GATE2まで508?
 			sectionList.add(new SectionInfo(2,528.0F,-50.0F,-20.0F,-5.0F,0.5F,100.0F));
 			//GATE2の急激なカーブに入る所が750

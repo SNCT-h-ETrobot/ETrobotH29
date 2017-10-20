@@ -37,13 +37,13 @@ public class SectionRunScenario {
 		scenario[13] = new PassRail(1);
 
 		scenario[14] = new MoveArea(1); //右手前まで移動
-		scenario[15] = new MoveBlock(RED_COLOR_ID,true, true);
+		scenario[15] = new MoveBlock(YELLOW_COLOR_ID,true, true);
 		scenario[16] = new MoveArea(2); //左手前まで移動
-		scenario[17] = new MoveBlock(BLUE_COLOR_ID,false, true);
+		scenario[17] = new MoveBlock(GREEN_COLOR_ID,false, true);
 		scenario[18] = new MoveArea(3); //左奥まで移動
-		scenario[19] = new MoveBlock(GREEN_COLOR_ID,true, true);
+		scenario[19] = new MoveBlock(RED_COLOR_ID,true, true);
 		scenario[20] = new MoveArea(4); //右奥まで移動
-		scenario[21] = new MoveBlock(YELLOW_COLOR_ID,false, true);
+		scenario[21] = new MoveBlock(BLUE_COLOR_ID,false, true);
 		scenario[22] = new MoveArea(6); //懸賞へ移動
 		scenario[23] = new HoldPrize();
 		scenario[24] = new MoveArea(7); //懸賞からエリア出口へ移動

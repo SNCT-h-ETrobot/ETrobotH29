@@ -23,7 +23,7 @@ public class DetectGray{
 	private static final float LT_P = -100.0f;
 	private static final float LT_I = -10.0f;
 	private static final float LT_D = -5.0f;
-	private static final float LT_BRIGHT = 0.58f;//0.62f;//灰色より若干低い値
+	private static final float LT_BRIGHT = 0.58f;//0.62f;//灰色より若干低い値//0.24
 	private static final float LT_P_2 = 120.0f;
 	private static final float LT_I_2 = 30.0f;
 	private static final float LT_D_2 = 5.0f;

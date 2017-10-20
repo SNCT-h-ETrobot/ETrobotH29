@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BlockArrangeInfo {
-	static private final int GREEN_PLACE_ID = 0; //仮の番号。当日打ち込む
+	static private final int GREEN_PLACE_ID = 132; //仮の番号。当日打ち込む
 	static private final int K_BLACK = 1331; //11*11*11
 	static private final int K_RED = 121; //11*11
 	static private final int K_YELLOW = 11; //11

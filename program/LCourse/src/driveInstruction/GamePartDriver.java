@@ -39,10 +39,10 @@ public class GamePartDriver {
 	
 	private float blockMoveCorrection = 0.0F;
 	private final float LINETRACE_ANGLE_CONNECTION = 6.0F;
-	private final float BLOCK_MOVE_DISTANCE = 2.0F;
+	private final float BLOCK_MOVE_DISTANCE = 3.0F;
 	
 	private HSVColorDetector colorDetect = new HSVColorDetector();
-	private WheelController whcon = new WheelController();
+	//private WheelController whcon = new WheelController();
 
 	public GamePartDriver(int courceID)
 	{
@@ -217,7 +217,8 @@ public class GamePartDriver {
 						Delay.msDelay(4);
 					}
 					*/
-					if(missionScenario.get(i).getColorID() != 0)
+					//if(missionScenario.get(i).getColorID() != 0)
+					/*if(false)
 					{
 						Timer timerColor = new Timer();
 						TimerTask colorTask = new TimerTask(){
@@ -243,11 +244,11 @@ public class GamePartDriver {
 						//dACtrl.goStraightAhead(8.0F,speed);
 					}
 					else
-					{
-					Timer timer = new Timer();
-					final float DISTANCE = distance;
-					final float SPEED = speed;
-					TimerTask timerTask = new TimerTask(){
+					{*/
+						Timer timer = new Timer();
+						final float DISTANCE = distance;
+						final float SPEED = speed;
+						TimerTask timerTask = new TimerTask(){
 						
 						public void run(){
 							if(distMeasure.getDistance()<(DISTANCE - blockMoveCorrection)/8.0f*5.0f)
@@ -271,7 +272,7 @@ public class GamePartDriver {
 					
 					
 						dACtrl.goStraightAhead((distance - blockMoveCorrection)/4.0f,speed);
-					}
+					//}
 					blockMoveCorrection = 0.0F;
 				}
 				else
