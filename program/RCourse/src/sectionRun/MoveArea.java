@@ -237,10 +237,10 @@ public class MoveArea extends SectionRun {
 	}
 
 	public void cornerToRight(boolean Inverse){
-		if(Inverse){
+		//if(Inverse){
 			useLT = false;
-			dac.turn(3, false);
-		}
+			dac.turn(7, false);
+		//}
 		useLT = true;
 		detectRightAngle(true);
 		dm.resetDistance();
@@ -309,7 +309,7 @@ public class MoveArea extends SectionRun {
 
 	public void cornerToRail(){
 		useLT = false;
-		dac.turn(3, false);
+		dac.turn(7, false);
 		useLT = true;
 		detectRightAngle(true);
 
@@ -353,7 +353,7 @@ public class MoveArea extends SectionRun {
 	//
 	public void cornerToPrize(){
 		useLT = false;
-		dac.turn(3, false);
+		dac.turn(7, false);
 		useLT = true;
 		detectRightAngle(true);
 		dm.resetDistance();

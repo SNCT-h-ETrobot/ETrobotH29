@@ -60,6 +60,7 @@ public class DetectGray extends SectionRun {
 
 	@Override
 	public void run() {
+		/*
 		for (float i : bright) {
 			i = 0;
 		}
@@ -107,7 +108,7 @@ public class DetectGray extends SectionRun {
 				break;
 			a = (a+1)%GRAY_QUEUE;
 			Delay.msDelay(4);
-		}*/
+		}*//*
 		dm.resetDistance();
 		ltP = LT_P_2;
 		ltI = LT_I_2;
