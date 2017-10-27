@@ -1,9 +1,10 @@
 package sectionRun;
 
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.LCD;
 import lejos.utility.Delay;
 import virtualDevices.BrightnessMeasure;
-import Hardware.Hardware;
+import virtualDevices.USDistanceMeasure;
 
 /**
  * 新幹線を検知する<br>
@@ -14,7 +15,7 @@ public class DetectTrain extends SectionRun {
 	private int detectID;
 	private static boolean detectFar = false;
 
-	private static final float DISTANCE_NEAR = 0.30f;
+	private static final float DISTANCE_NEAR = 0.20f;
 	private static final float DISTANCE_FAR = 0.90f; //2番目の検知の時に新幹線が奥にいるかの判定に使う
 	private static final int STOP_TIME_MS = 1000;
 
@@ -23,6 +24,8 @@ public class DetectTrain extends SectionRun {
 	private static final float TRAIN_TIME_NONE = 0.05f;//
 
 	BrightnessMeasure bright = new BrightnessMeasure();
+	USDistanceMeasure usdistance = new USDistanceMeasure();
+
 
 	// 引数ををbooleanからintに変えました
 	//
@@ -34,49 +37,45 @@ public class DetectTrain extends SectionRun {
 	public void run() {
 		// 距離検知
 		if(detectID!=2){
-			float[] sample = new float[Hardware.distanceMode.sampleSize()];
 			// 新幹線がいることを検知
-			Hardware.distanceMode.fetchSample(sample, 0);
+			float distance;
 			int counter = 0;
+			LCD.clear();
+			LCD.drawString("ready to detect:"+counter, 0, 1);
 			while(true){
-				LCD.drawString("ready to detect:"+counter, 0, 1);
+				distance = usdistance.getDistance();
 				//Delay.msDelay(4);
-				Hardware.distanceMode.fetchSample(sample, 0);
-				if(sample[0] < DISTANCE_NEAR){
-					if(++counter > 0){
-						detectFar = false;
-						break;
-					}
+				if(distance < DISTANCE_NEAR){
+					detectFar = false;
+					break;
 				}
-				else if(detectID==1 && sample[0] < DISTANCE_FAR){
-					if(++counter > 0){
-						detectFar = true;
-						break;
-					}
+				else if(detectID==1 && distance < DISTANCE_FAR){
+					detectFar = true;
+					break;
 				}
 				else counter = 0;
-				LCD.drawString("distance:"+sample[0], 0, 2);
+				LCD.drawString("distance:"+distance, 0, 2);
 			}
+			Sound.playTone(detectFar ? 2000 : 1000, 100);;
 			counter = 0;
 			// 新幹線が通り過ぎたことを検知
+			LCD.drawString("detected       "+counter, 0, 1);
 			while(true){
-				LCD.drawString("detected       "+counter, 0, 1);
-				Delay.msDelay(4);
-				Hardware.distanceMode.fetchSample(sample, 0);
-				if(!detectFar && sample[0] > DISTANCE_NEAR){
-					if(++counter > 1)break;
+				distance = usdistance.getDistance();
+				if(!detectFar && distance > DISTANCE_NEAR){
+					break;
 				}
-				else if(detectFar && sample[0] > DISTANCE_FAR){
-					if(++counter > 1)break;
+				else if(detectFar && distance > DISTANCE_FAR){
+					break;
 				}
 				else counter = 0;
 			}
 			passedTime = System.nanoTime();
 			// ちょっと待つ
+			Sound.playTone(1200, 100);;
 			Delay.msDelay(STOP_TIME_MS);
 			if(detectID==0) bright.changeLocation(false);
 			else if(detectID==2) bright.changeLocation(true);
-
 		}
 
 

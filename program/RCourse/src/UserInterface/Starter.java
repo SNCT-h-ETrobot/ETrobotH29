@@ -56,6 +56,7 @@ public class Starter {
 	*/
 	}
 	public void touchStart(){
+		armCtrl.controlArmNormalAngel();
 		float[] sampleTouch = new float[Hardware.touch.sampleSize()];
 		LCD.drawString("Touch Ready", 0, 0);
 		while(true){

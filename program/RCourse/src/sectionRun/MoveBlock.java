@@ -1,6 +1,7 @@
 package sectionRun;
 
 import driveControl.DistanceAngleController;
+import lejos.hardware.Sound;
 import lejos.utility.Delay;
 import virtualDevices.ArmController;
 import virtualDevices.HSVColorDetector;
@@ -42,10 +43,12 @@ public class MoveBlock extends SectionRun {
 
 		if(placeColor == colorDetector.getColorID())
 		{
+			Sound.playTone(1000, 100);
 			PushOutSameColor();
 		}
 		else
 		{
+			Sound.playTone(1500, 100);
 			PushOutDifferenceColor();
 		}
 
@@ -90,9 +93,9 @@ public class MoveBlock extends SectionRun {
 		dACtrl.goStraightAhead((COLOR_DETECTION_DISTANCE+SAME_COLOR_DISTANCE)*1.0f, RUN_SPEED);
 		//押し出し
 		armCtrl.controlArmDetectAngel();
-		Delay.msDelay(300);
+		Delay.msDelay(200);
 		armCtrl.controlArmNormalAngel();
-		Delay.msDelay(300);
+		Delay.msDelay(200);
 		dACtrl.goStraightAhead((-SAME_COLOR_DISTANCE-COLOR_DETECTION_DISTANCE)*0.5F, RUN_SPEED);
 		//180°回転
 		turnHalf(false);

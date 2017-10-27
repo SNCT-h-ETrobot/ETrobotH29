@@ -125,12 +125,12 @@ public class DistanceAngleController {
 			angle = (angleL+angleR)/2.0F;
 			distance = (angle/360)*TIRE_CIRCUMFERENCE;
 			//LCD.drawString("dist:"+distance+",target:"+targetDistance, 0, 5);
-			if(distance == preDistance){
+			if(Math.abs(distance) <= preDistance){
 				if(n == 25){
 					break;
 				}
 			}else{
-				preDistance = distance;
+				preDistance = Math.abs(distance);
 				n = 0;
 			}
 			n++;
@@ -283,12 +283,12 @@ public class DistanceAngleController {
 			turnAngle = angleL*222.0F/360.0F;	//ホイール140度くらいで90度機体が旋回するらしい
 			//LCD.drawString("turnL:"+turnAngle, 0, 5);
 			//LCD.drawString("turnR:"+angleR*230.0F/360.0F, 0, 6);
-			if(turnAngle == preAngle){
+			if(Math.abs(turnAngle) <= preAngle){
 				if(n == 25){
 					break;
 				}
 			}else{
-				preAngle = turnAngle;
+				preAngle = Math.abs(turnAngle);
 				n = 0;
 			}
 			n++;

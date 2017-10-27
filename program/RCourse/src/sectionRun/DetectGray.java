@@ -18,9 +18,9 @@ import driveControl.Linetracer;
  * レース区間終了から、灰色を検知し、レール前まで進んで停止する
  * */
 public class DetectGray extends SectionRun {
-	private static final float TARGET_DISTANCE = 127.0f;//灰色終端からレール前までの距離
-	private static final float TARGET_SPEED = 60.0f;
-	private static final float TARGET_SPEED_HI = 80.0f;
+	private static final float TARGET_DISTANCE = 25.0f;//灰色終端からレール前までの距離
+	private static final float TARGET_SPEED = 40.0f;
+	private static final float TARGET_SPEED_HI = 60.0f;
 
 	private static final float LT_P = 120.0f;
 	private static final float LT_I = 10.0f;
@@ -88,7 +88,7 @@ public class DetectGray extends SectionRun {
 		}
 		dm.resetDistance();
 		long time = System.nanoTime();
-		while(true){
+		/*while(true){
 			LCD.drawString("distance:"+dm.getDistance(), 0, 1);
 			bright[a] = bm.getNormalizedBrightness();
 			float nowtime = (System.nanoTime() - time)/1000000000.0f;
@@ -99,15 +99,15 @@ public class DetectGray extends SectionRun {
 			}
 			newer/=10.0f;older/=10.0f;
 			//if(newer < LT_BRIGHT && LT_BRIGHT < older + 0.1 && older - 0.1 < LT_BRIGHT && newer < older - GRAY_THRESHOLD)
-			/*log.addLog("bright", bright[a], nowtime);
-			log.addLog("newer", newer, nowtime);
-			log.addLog("older", older, nowtime);
-			log.addLog("distance", newer - older, nowtime);*/
+			//log.addLog("bright", bright[a], nowtime);
+			//log.addLog("newer", newer, nowtime);
+			//log.addLog("older", older, nowtime);
+			//log.addLog("distance", newer - older, nowtime);
 			if(dm.getDistance() > 25.0f && newer - older > GRAY_THRESHOLD)
 				break;
 			a = (a+1)%GRAY_QUEUE;
 			Delay.msDelay(4);
-		}
+		}*/
 		dm.resetDistance();
 		ltP = LT_P_2;
 		ltI = LT_I_2;

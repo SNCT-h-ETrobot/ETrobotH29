@@ -21,7 +21,7 @@ public class MoveArea extends SectionRun {
 	private static final float BLOCK_DISTANCE = 10.0f;//中央からブロックの目標地点までの距離
 	private static final float BLOCK_PASS_DISTANCE = 27.0f;//中央からブロックの目標地点までの距離
 	private static final float CENTER_DISTANCE = 14.0f;//ブロックから中央までの距離
-	private static final float PRIZE_DISTANCE = 20.0f;//中央から懸賞の目標地点までの距離
+	private static final float PRIZE_DISTANCE = 30.0f;//中央から懸賞の目標地点までの距離
 	private static final float RAIL_DISTANCE = 30.0f;//レールに近い方の縦ラインからレールまで進む距離
 	private static final float RAIL_CENTER_DISTANCE = 12.0f;//中央からレールまで進む距離
 	private static final float TO_PRIZE_DISTANCE = 14.0f;
@@ -230,7 +230,7 @@ public class MoveArea extends SectionRun {
 		ltp = -LT_P;
 		lti = -LT_I;
 		ltd = -LT_D;
-		lts = TARGET_SPEED;
+		lts = TARGET_SPEED_LO;
 		while(dm.getDistance() < BLOCK_PASS_DISTANCE){
 			Delay.msDelay(4);
 		}
@@ -310,13 +310,8 @@ public class MoveArea extends SectionRun {
 	public void cornerToRail(){
 		useLT = false;
 		dac.turn(3, false);
-		//detectBlackLine(false);
 		useLT = true;
 		detectRightAngle(true);
-		//useLT = false;
-		//dm.resetDistance();
-		//dac.goStraightAhead(-15, 60);//後退してライントレース距離を確保
-		//dac.turn(-10, false);
 
 		useLT = true;
 		dm.resetDistance();
@@ -380,23 +375,10 @@ public class MoveArea extends SectionRun {
 
 	private void prizeToRail(){
 		useLT = false;
-		dac.goStraightAhead(PRIZE_DISTANCE, 60);
+		dac.goStraightAhead(-PRIZE_DISTANCE, 60);
 		stop();
-		dac.turn(90, false);
+		dac.turn(-90, false);
 		stop();
-		//dac.goStraightAhead(RAIL_CENTER_DISTANCE, 40);
-		//stop();
-		/*dac.turn(105, false);//大きめにしてLTで戻す
-		stop();
-		dm.resetDistance();
-		ltp = LT_P;
-		lti = LT_I;
-		ltd = LT_D;
-		ltb = LT_BRIGHT;
-		lts = TARGET_SPEED_LO;
-		while(dm.getDistance() < RAIL_DISTANCE + 15){
-			Delay.msDelay(4);
-		}*/
 	}
 
 
@@ -437,24 +419,14 @@ public class MoveArea extends SectionRun {
 			lti = -LT_I_RIGHT;
 			ltd = -LT_D_RIGHT;
 		}
-		lts = TARGET_SPEED;
+		lts = TARGET_SPEED_LO;
 		int blackCount = 0;
 		while(true){
 			if(bm.getNormalizedBrightness() < BLACK_THRESHOLD)++blackCount;
 			else blackCount = 0;
-			if(20 < blackCount)break;
+			if(15 < blackCount)break;
 			Delay.msDelay(4);
 		}
-		/*過去仕様
-		mam.resetMotorAngle();
-		int[] motorAngle = mam.getMotorAngle();
-		while(true){
-			motorAngle = mam.getMotorAngle();
-			int  angleDiff = motorAngle[0] - motorAngle[1];
-			if(angleDiff > RIGHT_ANGLE_THRESHOLD || angleDiff < -RIGHT_ANGLE_THRESHOLD)
-				break;
-			Delay.msDelay(4);
-		}*/
 		stop();
 		if(isTurnInverse){
 			dac.goStraightAhead(2, 40);
@@ -469,6 +441,7 @@ public class MoveArea extends SectionRun {
 			else dac.turn(-RIGHT_TURN_ANGLE, false);
 		}
 		stop();
+		lt.reset();
 		//Delay.msDelay(4000);
 		useLT = true;
 	}
